@@ -1,0 +1,62 @@
+import { StyleSheet } from 'react-native';
+
+export const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    width: 82,
+    marginVertical: 12,
+  },
+  circle: {
+    width: 62,
+    height: 62,
+    borderRadius: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 12,
+    position: 'relative',
+  },
+  innerCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.30,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  createCircle: {
+    backgroundColor: 'rgba(255,255,255,0.50)',
+    borderStyle: 'dashed',
+    borderColor: 'rgba(45,90,27,0.25)',
+    borderWidth: 1.5,
+  },
+  name: {
+    fontSize: 11,
+    color: '#4A5A40',
+    fontWeight: '600',
+    marginTop: 6,
+    textAlign: 'center',
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: '#E85555',
+    borderWidth: 2,
+    borderColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 10,
+  },
+  deleteText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+});
