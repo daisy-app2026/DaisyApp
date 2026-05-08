@@ -1,10 +1,6 @@
 import { initializeApp } from 'firebase/app'
-import { 
-  initializeAuth, 
-  getReactNativePersistence 
-} from '@firebase/auth'
-import AsyncStorage from 
-  '@react-native-async-storage/async-storage'
+import { initializeAuth } from 'firebase/auth'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
@@ -17,8 +13,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 
+// Use require to bypass static compilation errors for React Native specific export
+const { getReactNativePersistence } = require('firebase/auth')
+
 export const auth = initializeAuth(app, {
-  // @ts-ignore
   persistence: getReactNativePersistence(AsyncStorage)
 })
 

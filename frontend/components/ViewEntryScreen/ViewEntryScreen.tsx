@@ -14,17 +14,17 @@ import { styles } from './ViewEntryScreen.styles';
 import { Entry } from '../../services/entryService';
 import FullImageViewer from '../shared/FullImageViewer/FullImageViewer';
 
-interface ViewEntryScreenProps {
-  entry: Entry;
-  onBack: () => void;
-  onEdit: (entry: Entry) => void;
-}
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { DiaryStackParamList } from '../../navigation/types';
 
-const ViewEntryScreen: React.FC<ViewEntryScreenProps> = ({
-  entry,
-  onBack,
-  onEdit,
-}) => {
+type ViewEntryScreenRouteProp = RouteProp<DiaryStackParamList, 'ViewEntry'>;
+type ViewEntryScreenNavigationProp = StackNavigationProp<DiaryStackParamList, 'ViewEntry'>;
+
+const ViewEntryScreen: React.FC = () => {
+  const route = useRoute<ViewEntryScreenRouteProp>();
+  const navigation = useNavigation<ViewEntryScreenNavigationProp>();
+  const { entry } = route.params;
   const isCapsule = entry.isCapsule;
   const isLocked = isCapsule && new Date() < new Date(entry.unlockDate!);
   const isUnlocked = isCapsule && !isLocked;
@@ -80,7 +80,7 @@ const ViewEntryScreen: React.FC<ViewEntryScreenProps> = ({
       <View style={styles.header}>
         <TouchableOpacity 
           style={styles.backButton} 
-          onPress={onBack}
+          onPress={() => navigation.goBack()}
           activeOpacity={0.7}
         >
           <Ionicons name="arrow-back" size={22} color="#2D5A1B" />
@@ -94,7 +94,12 @@ const ViewEntryScreen: React.FC<ViewEntryScreenProps> = ({
            entry.editCount >= 1) ? (
           <TouchableOpacity 
             style={styles.editButton} 
-            onPress={() => onEdit(entry)}
+            onPress={() => navigation.navigate('NewEntry', {
+              spaceId: entry.spaceId,
+              spaceName: entry.spaceName,
+              spaceIcon: 'bookmark-outline',
+              editEntry: entry,
+            })}
             activeOpacity={0.7}
           >
             <Ionicons name="create-outline" size={20} color="#2D5A1B" />

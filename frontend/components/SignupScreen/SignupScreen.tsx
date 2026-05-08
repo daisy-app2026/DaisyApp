@@ -19,19 +19,12 @@ import { signUpWithEmail } from '../../services/authService';
 import { useAuthStore } from '../../store/authStore';
 import { useGoogleAuth } from '../../hooks/useGoogleAuth';
 
-interface SignupScreenProps {
-  onBack: () => void;
-  onSignIn: () => void;
-  onGoogleSignup: () => void;
-  onCreateAccount: () => void;
-}
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AuthStackParamList } from '../../navigation/types';
 
-const SignupScreen: React.FC<SignupScreenProps> = ({
-  onBack,
-  onSignIn,
-  onGoogleSignup,
-  onCreateAccount,
-}) => {
+const SignupScreen: React.FC = () => {
+  const navigation = useNavigation<StackNavigationProp<AuthStackParamList, 'Signup'>>();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,7 +32,7 @@ const SignupScreen: React.FC<SignupScreenProps> = ({
   const [loading, setLoading] = useState(false);
 
   const { setUser } = useAuthStore();
-  const { request, promptAsync } = useGoogleAuth(onCreateAccount);
+  const { request, promptAsync } = useGoogleAuth(() => {});
 
   const handleSignup = async () => {
     if (!name || !email || !password || !confirmPassword) {
@@ -66,7 +59,6 @@ const SignupScreen: React.FC<SignupScreenProps> = ({
         name: name,
         token,
       });
-      onCreateAccount();
     } catch (error: any) {
       Alert.alert(
         'Signup Failed',
@@ -93,7 +85,7 @@ const SignupScreen: React.FC<SignupScreenProps> = ({
           <View style={styles.header}>
             <TouchableOpacity
               style={styles.backButton}
-              onPress={onBack}
+              onPress={() => navigation.goBack()}
               activeOpacity={0.7}
             >
               <Feather name="arrow-left" size={22} color="#2D5A1B" />
@@ -197,7 +189,7 @@ const SignupScreen: React.FC<SignupScreenProps> = ({
 
           <View style={styles.bottomContainer}>
             <Text style={styles.haveAccountText}>{en.signup.haveAccount} </Text>
-            <TouchableOpacity onPress={onSignIn} activeOpacity={0.7}>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')} activeOpacity={0.7}>
               <Text style={styles.signInText}>{en.signup.signIn}</Text>
             </TouchableOpacity>
           </View>

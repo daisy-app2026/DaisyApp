@@ -20,37 +20,30 @@ import EntryCard from '../shared/EntryCard/EntryCard';
 import CapsuleCard from '../shared/CapsuleCard/CapsuleCard';
 import { getEntriesBySpace, deleteEntry, Entry } from '../../services/entryService';
 
-interface CategoryScreenProps {
-  space: {
-    id: string;
-    name: string;
-    icon: string;
-  };
-  onBack: () => void;
-  onNewEntry: () => void;
-  onViewEntry: (entry: Entry) => void;
-  onEditEntry: (entry: Entry) => void;
-  onRefresh?: () => void;
-  onSearchPress: () => void;
-  onProfilePress: () => void;
-}
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { DiaryStackParamList } from '../../navigation/types';
+import { useEntriesStore } from '../../store/entriesStore';
 
-const CategoryScreen: React.FC<CategoryScreenProps> = ({
-  space,
-  onBack,
-  onNewEntry,
-  onViewEntry,
-  onEditEntry,
-  onRefresh,
-  onSearchPress,
-  onProfilePress,
-}) => {
+type CategoryScreenRouteProp = RouteProp<DiaryStackParamList, 'Category'>;
+type CategoryScreenNavigationProp = StackNavigationProp<DiaryStackParamList, 'Category'>;
+
+const CategoryScreen: React.FC = () => {
+  const route = useRoute<CategoryScreenRouteProp>();
+  const navigation = useNavigation<CategoryScreenNavigationProp>();
+  const { spaceId, spaceName, spaceIcon, spaceIconBg, spaceIconBgLight } = route.params;
+
   const { user } = useAuthStore();
-  
-  if (!space) return null;
-  
-  const [entries, setEntries] = useState<Entry[]>([]);
-  const [loading, setLoading] = useState(true);
+
+  const { 
+    entriesBySpace, 
+    setEntriesBySpace,
+  } = useEntriesStore();
+
+  const entries = entriesBySpace[spaceId] || [];
+  const isLoaded = !!entriesBySpace[spaceId];
+
+  const [loading, setLoading] = useState(!isLoaded);
   const [longPressedId, setLongPressedId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
@@ -60,14 +53,18 @@ const CategoryScreen: React.FC<CategoryScreenProps> = ({
   }, [user?.name]);
 
   useEffect(() => {
-    loadEntries();
-  }, [space.id]);
+    if (!isLoaded) {
+      loadEntries();
+    } else {
+      setLoading(false);
+    }
+  }, [spaceId, isLoaded]);
 
   const loadEntries = async () => {
     try {
       setLoading(true);
-      const data = await getEntriesBySpace(user!.token, space.id);
-      setEntries(data);
+      const data = await getEntriesBySpace(user!.token, spaceId);
+      setEntriesBySpace(spaceId, data);
     } catch (error) {
       console.log('Error loading entries:', error);
     } finally {
@@ -79,10 +76,14 @@ const CategoryScreen: React.FC<CategoryScreenProps> = ({
     if (!deleteConfirmId) return;
     try {
       await deleteEntry(user!.token, deleteConfirmId);
-      setEntries(prev => prev.filter(e => e.id !== deleteConfirmId));
+      const updated = entries.filter(e => e.id !== deleteConfirmId);
+      setEntriesBySpace(spaceId, updated);
+      
+      // Invalidate recent entries cache:
+      useEntriesStore.getState().invalidateCache();
+
       setDeleteConfirmId(null);
       setLongPressedId(null);
-      if (onRefresh) onRefresh();
     } catch (error) {
       Alert.alert('Error', 'Could not delete entry');
     }
@@ -100,17 +101,17 @@ const CategoryScreen: React.FC<CategoryScreenProps> = ({
           <View style={styles.header}>
             <TouchableOpacity 
               style={styles.backButton} 
-              onPress={onBack}
+              onPress={() => navigation.goBack()}
               activeOpacity={0.7}
             >
               <Ionicons name="arrow-back" size={22} color="#2D5A1B" />
             </TouchableOpacity>
             
-            <Text style={styles.headerTitle}>{space.name}</Text>
+            <Text style={styles.headerTitle}>{spaceName}</Text>
             
             <TouchableOpacity 
               style={styles.avatar} 
-              onPress={onProfilePress}
+              onPress={() => navigation.navigate('Profile')}
               activeOpacity={0.7}
             >
               {user?.photoURL ? (
@@ -129,7 +130,11 @@ const CategoryScreen: React.FC<CategoryScreenProps> = ({
         >
           <TouchableOpacity 
             style={styles.newEntryBtn}
-            onPress={onNewEntry}
+            onPress={() => navigation.navigate('NewEntry', {
+              spaceId,
+              spaceName,
+              spaceIcon,
+            })}
             activeOpacity={0.8}
           >
             <Ionicons name="add-circle-outline" size={20} color="#2D5A1B" />
@@ -140,7 +145,7 @@ const CategoryScreen: React.FC<CategoryScreenProps> = ({
             <Text style={styles.sectionTitle}>{en.category.allEntries}</Text>
             <TouchableOpacity 
               style={styles.searchBtn}
-              onPress={onSearchPress}
+              onPress={() => navigation.navigate('Search')}
             >
               <Ionicons name="search-outline" size={18} color="#4A7C2A" />
               <Text style={styles.searchText}>{en.category.search}</Text>
@@ -154,7 +159,7 @@ const CategoryScreen: React.FC<CategoryScreenProps> = ({
               <Ionicons name="create-outline" size={52} color="rgba(45,90,27,0.25)" />
               <Text style={styles.emptyTitle}>{en.category.noEntries}</Text>
               <Text style={styles.emptySubtitle}>
-                {en.category.noEntriesSubtitle.replace('entries', `${space.name} entries`)}
+                {en.category.noEntriesSubtitle.replace('entries', `${spaceName} entries`)}
               </Text>
             </View>
           ) : (
@@ -166,12 +171,17 @@ const CategoryScreen: React.FC<CategoryScreenProps> = ({
                   if (longPressedId === entry.id) {
                     setLongPressedId(null);
                   } else {
-                    onViewEntry(entry);
+                    navigation.navigate('ViewEntry', { entry });
                   }
                 },
                 onLongPress: () => setLongPressedId(entry.id),
                 showActions: longPressedId === entry.id,
-                onEdit: () => onEditEntry(entry),
+                onEdit: () => navigation.navigate('NewEntry', {
+                  spaceId: entry.spaceId,
+                  spaceName: entry.spaceName,
+                  spaceIcon: 'bookmark-outline',
+                  editEntry: entry,
+                }),
                 onDelete: () => setDeleteConfirmId(entry.id),
                 isEditDisabled: entry.type === 'doodle' || (isCapsule && entry.editCount >= 1),
               };

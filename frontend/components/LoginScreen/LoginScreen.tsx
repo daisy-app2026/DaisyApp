@@ -19,27 +19,18 @@ import { signInWithEmail } from '../../services/authService';
 import { useAuthStore } from '../../store/authStore';
 import { useGoogleAuth } from '../../hooks/useGoogleAuth';
 
-interface LoginScreenProps {
-  onBack: () => void;
-  onCreateAccount: () => void;
-  onForgotPassword: () => void;
-  onGoogleLogin: () => void;
-  onContinue: () => void;
-}
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AuthStackParamList } from '../../navigation/types';
 
-const LoginScreen: React.FC<LoginScreenProps> = ({
-  onBack,
-  onCreateAccount,
-  onForgotPassword,
-  onGoogleLogin,
-  onContinue,
-}) => {
+const LoginScreen: React.FC = () => {
+  const navigation = useNavigation<StackNavigationProp<AuthStackParamList, 'Login'>>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const { setUser } = useAuthStore();
-  const { request, promptAsync } = useGoogleAuth(onContinue);
+  const { request, promptAsync } = useGoogleAuth(() => {});
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -56,7 +47,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
         token,
         photoURL: photoURL || null,
       });
-      onContinue();
     } catch (error: any) {
       Alert.alert(
         'Login Failed',
@@ -83,7 +73,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
           <View style={styles.header}>
             <TouchableOpacity
               style={styles.backButton}
-              onPress={onBack}
+              onPress={() => navigation.goBack()}
               activeOpacity={0.7}
             >
               <Feather name="x" size={22} color="#2D5A1B" />
@@ -126,7 +116,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
 
             <TouchableOpacity
               style={styles.forgotPassword}
-              onPress={onForgotPassword}
+              onPress={() => console.log('Forgot password')}
               activeOpacity={0.7}
             >
               <Text style={styles.forgotPasswordText}>
@@ -170,7 +160,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
 
           <View style={styles.bottomContainer}>
             <Text style={styles.newHereText}>{en.login.newHere} </Text>
-            <TouchableOpacity onPress={onCreateAccount} activeOpacity={0.7}>
+            <TouchableOpacity onPress={() => navigation.navigate('Signup')} activeOpacity={0.7}>
               <Text style={styles.createAccountText}>{en.login.createAccount}</Text>
             </TouchableOpacity>
           </View>

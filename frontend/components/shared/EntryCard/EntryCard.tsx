@@ -175,4 +175,4 @@ const EntryCard: React.FC<EntryCardProps> = ({
   );
 };
 
-export default EntryCard;
+export default React.memo(EntryCard);

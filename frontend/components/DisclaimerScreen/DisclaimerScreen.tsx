@@ -11,11 +11,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { styles } from './DisclaimerScreen.styles';
 import en from '../../locales/en.json';
 
-interface DisclaimerScreenProps {
-  onBack: () => void;
-}
+import { useNavigation } from '@react-navigation/native';
 
-const DisclaimerScreen: React.FC<DisclaimerScreenProps> = ({ onBack }) => {
+const DisclaimerScreen: React.FC = () => {
+  const navigation = useNavigation();
   const t = en.disclaimer;
 
   const InfoCard = ({ 
@@ -51,7 +50,7 @@ const DisclaimerScreen: React.FC<DisclaimerScreenProps> = ({ onBack }) => {
         <View style={styles.header}>
           <TouchableOpacity 
             style={styles.backButton} 
-            onPress={onBack}
+            onPress={() => navigation.goBack()}
             activeOpacity={0.7}
           >
             <Ionicons name="arrow-back" size={22} color="#2D5A1B" />
@@ -100,7 +99,7 @@ const DisclaimerScreen: React.FC<DisclaimerScreenProps> = ({ onBack }) => {
 
         <TouchableOpacity 
           style={styles.agreeButton}
-          onPress={onBack}
+          onPress={() => navigation.goBack()}
           activeOpacity={0.8}
         >
           <Text style={styles.agreeButtonText}>{t.agree}</Text>

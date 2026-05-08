@@ -31,24 +31,22 @@ const SpaceCircle: React.FC<SpaceCircleProps> = ({
   const iconColor = isSelected ? '#B8860B' : '#2D5A1B';
 
   return (
-    <TouchableOpacity 
-      style={styles.container} 
-      activeOpacity={0.75} 
+    <TouchableOpacity
+      activeOpacity={0.85}
       onPress={onPress}
       onLongPress={onLongPress}
-      delayLongPress={500}
+      style={styles.wrapper}
     >
       <View 
         style={[
-          styles.circle, 
+          styles.outerCircle, 
           { backgroundColor: iconBgLight },
-          isSelected && { borderWidth: 2, borderColor: iconBg },
+          isSelected && { 
+            borderWidth: 2.5, 
+            borderColor: iconBg,
+          },
           isAdd && styles.createCircle,
-          { 
-            shadowColor: iconBg,
-            shadowOpacity: isAdd ? 0 : 0.20,
-            elevation: isAdd ? 0 : 4
-          }
+          { shadowColor: iconBg }
         ]}
       >
         {showDelete && (
@@ -88,4 +86,4 @@ const SpaceCircle: React.FC<SpaceCircleProps> = ({
   );
 };
 
-export default SpaceCircle;
+export default React.memo(SpaceCircle);

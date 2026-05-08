@@ -22,17 +22,26 @@ import { getAllEntries, Entry } from '../../services/entryService';
 import EntryCard from '../shared/EntryCard/EntryCard';
 import CapsuleCard from '../shared/CapsuleCard/CapsuleCard';
 
-interface SearchScreenProps {
-  onBack: () => void;
-  onViewEntry: (entry: Entry) => void;
-}
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { DiaryStackParamList } from '../../navigation/types';
+import { useEntriesStore } from '../../store/entriesStore';
 
-const SearchScreen: React.FC<SearchScreenProps> = ({ onBack, onViewEntry }) => {
+type SearchScreenNavigationProp = StackNavigationProp<DiaryStackParamList, 'Search'>;
+
+const SearchScreen: React.FC = () => {
+  const navigation = useNavigation<SearchScreenNavigationProp>();
   const { user } = useAuthStore();
   const [query, setQuery] = useState('');
-  const [allEntries, setAllEntries] = useState<Entry[]>([]);
+
+  const {
+    allEntries,
+    setAllEntries,
+    isAllLoaded,
+  } = useEntriesStore();
+
   const [filteredEntries, setFilteredEntries] = useState<Entry[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!isAllLoaded);
   const [showFilter, setShowFilter] = useState(false);
 
   // Filter states
@@ -47,8 +56,13 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ onBack, onViewEntry }) => {
   const modalAnim = useRef(new Animated.Value(Dimensions.get('window').height)).current;
 
   useEffect(() => {
-    loadAllEntries();
-  }, []);
+    if (!isAllLoaded) {
+      loadAllEntries();
+    } else {
+      setFilteredEntries(allEntries);
+      setLoading(false);
+    }
+  }, [isAllLoaded]);
 
   useEffect(() => {
     if (showFilter) {
@@ -183,7 +197,7 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ onBack, onViewEntry }) => {
       {/* Header */}
       <SafeAreaView edges={['top']} style={styles.headerSafeArea}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={onBack}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={22} color="#2D5A1B" />
           </TouchableOpacity>
 
@@ -237,7 +251,7 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ onBack, onViewEntry }) => {
           filteredEntries.map((entry) => {
             const commonProps = {
               entry,
-              onPress: () => onViewEntry(entry),
+              onPress: () => navigation.navigate('ViewEntry', { entry }),
               onLongPress: () => {},
               onEdit: () => {},
               onDelete: () => {},

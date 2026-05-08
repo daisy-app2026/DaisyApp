@@ -1,19 +1,19 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  container: {
+  wrapper: {
+    backgroundColor: 'transparent',
     alignItems: 'center',
+    borderRadius: 999,
     width: 82,
     marginVertical: 12,
   },
-  circle: {
+  outerCircle: {
     width: 62,
     height: 62,
     borderRadius: 36,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 12,
     position: 'relative',
   },
   innerCircle: {

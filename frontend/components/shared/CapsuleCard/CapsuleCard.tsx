@@ -155,4 +155,4 @@ const CapsuleCard: React.FC<CapsuleCardProps> = ({
   );
 };
 
-export default CapsuleCard;
+export default React.memo(CapsuleCard);

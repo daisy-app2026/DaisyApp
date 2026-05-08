@@ -22,17 +22,14 @@ import CustomModal from '../shared/CustomModal/CustomModal';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-interface ProfileScreenProps {
-  onBack: () => void;
-  onLogout: () => void;
-  onDisclaimerPress: () => void;
-}
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { DiaryStackParamList } from '../../navigation/types';
 
-const ProfileScreen: React.FC<ProfileScreenProps> = ({
-  onBack,
-  onLogout: onLogoutProp,
-  onDisclaimerPress,
-}) => {
+type ProfileScreenNavigationProp = StackNavigationProp<DiaryStackParamList, 'Profile'>;
+
+const ProfileScreen: React.FC = () => {
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
   const { user, updateName, updatePhotoURL, logout: clearStore } = useAuthStore();
   const [editingName, setEditingName] = useState(false);
   const [newName, setNewName] = useState(user?.name || '');
@@ -134,7 +131,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({
     setShowLogoutModal(false);
     await logOut();
     clearStore();
-    onLogoutProp();
   };
 
   const languages = [
@@ -165,7 +161,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={onBack}
+          onPress={() => navigation.goBack()}
           activeOpacity={0.7}
         >
           <Ionicons name="arrow-back" size={22} color="#2D5A1B" />
@@ -279,7 +275,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({
             <Ionicons name="chevron-forward" size={18} color="#BBBBBB" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={onDisclaimerPress}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Disclaimer')}>
             <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(45, 90, 27, 0.10)' }]}>
               <Ionicons name="shield-checkmark-outline" size={18} color="#2D5A1B" />
             </View>

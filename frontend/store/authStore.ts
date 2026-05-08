@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { useEntriesStore } from './entriesStore';
+import { useSpacesStore } from './spacesStore';
 
 interface User {
   uid: string;
@@ -25,17 +27,32 @@ export const useAuthStore = create<AuthState>(
     user: null,
     isLoading: false,
     isAuthenticated: false,
-    setUser: (user) =>
+    setUser: (user) => {
+      // Clear old cache first!
+      useEntriesStore.getState().invalidateCache();
+      useSpacesStore.getState().invalidateCache();
+
       set({
         user,
         isAuthenticated: user !== null,
-      }),
+        isLoading: false,
+      });
+    },
     setLoading: (isLoading) => set({ isLoading }),
-    logout: () =>
+    logout: () => {
+      // Clear auth
       set({
         user: null,
         isAuthenticated: false,
-      }),
+        isLoading: false,
+      });
+
+      // Clear entries cache
+      useEntriesStore.getState().invalidateCache();
+
+      // Clear spaces cache
+      useSpacesStore.getState().invalidateCache();
+    },
     updateName: (name) =>
       set((state) => ({
         user: state.user ? { ...state.user, name } : null,

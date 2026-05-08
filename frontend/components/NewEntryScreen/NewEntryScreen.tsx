@@ -10,6 +10,7 @@ import {
   Animated,
   StatusBar,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -24,28 +25,22 @@ import DoodleCanvas, { DoodleCanvasRef } from './DoodleCanvas';
 import axios from 'axios';
 import CustomModal from '../shared/CustomModal/CustomModal';
 
-interface NewEntryScreenProps {
-  space: {
-    id: string;
-    name: string;
-    icon: string;
-  };
-  onBack: () => void;
-  onSave: () => void;
-  editEntry?: Entry;
-  onNavigateHome: () => void;
-}
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { DiaryStackParamList } from '../../navigation/types';
+import { useEntriesStore } from '../../store/entriesStore';
+
+type NewEntryScreenRouteProp = RouteProp<DiaryStackParamList, 'NewEntry'>;
+type NewEntryScreenNavigationProp = StackNavigationProp<DiaryStackParamList, 'NewEntry'>;
 
 type Tab = 'text' | 'audio' | 'image' | 'doodle';
 type CapsuleDuration = '1mo' | '6mo' | '1yr' | 'custom';
 
-const NewEntryScreen: React.FC<NewEntryScreenProps> = ({
-  space,
-  onBack,
-  onSave,
-  editEntry,
-  onNavigateHome,
-}) => {
+const NewEntryScreen: React.FC = () => {
+  const route = useRoute<NewEntryScreenRouteProp>();
+  const navigation = useNavigation<NewEntryScreenNavigationProp>();
+  const { spaceId, spaceName, spaceIcon, editEntry } = route.params;
+
   const { user } = useAuthStore();
   
   const [title, setTitle] = useState(editEntry?.title || '');
@@ -74,6 +69,9 @@ const NewEntryScreen: React.FC<NewEntryScreenProps> = ({
 
   // Modal states
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
+  const [pendingNavAction, setPendingNavAction] = useState<(() => void) | null>(null);
+  const isSavingRef = useRef(false);
+
   const [alertConfig, setAlertConfig] = useState<{
     visible: boolean;
     title: string;
@@ -120,14 +118,35 @@ const NewEntryScreen: React.FC<NewEntryScreenProps> = ({
       })()
     : [];
 
-  const hasUnsavedChanges = title.trim().length > 0 || content.trim().length > 0;
+  const hasUnsavedChanges = (() => {
+    switch (activeTab) {
+      case 'text':
+        return title.trim().length > 0 || content.trim().length > 0;
+      case 'audio':
+        return title.trim().length > 0 || audioRecordings.length > 0;
+      case 'image':
+        return title.trim().length > 0 || imageUris.length > 0;
+      case 'doodle':
+        return title.trim().length > 0 || hasDoodle;
+      default:
+        return false;
+    }
+  })();
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      if (!hasUnsavedChanges || isSavingRef.current) return;
+
+      e.preventDefault();
+
+      setShowUnsavedModal(true);
+      setPendingNavAction(() => () => navigation.dispatch(e.data.action));
+    });
+    return unsubscribe;
+  }, [navigation, hasUnsavedChanges]);
 
   const handleBack = () => {
-    if (hasUnsavedChanges) {
-      setShowUnsavedModal(true);
-    } else {
-      onBack();
-    }
+    navigation.goBack();
   };
 
   const handleTextChange = (text: string) => {
@@ -306,6 +325,7 @@ const NewEntryScreen: React.FC<NewEntryScreenProps> = ({
 
     try {
       setLoading(true);
+      isSavingRef.current = true;
       const token = user?.token;
       if (!token) throw new Error('No token');
 
@@ -348,16 +368,19 @@ const NewEntryScreen: React.FC<NewEntryScreenProps> = ({
           title,
           content: finalContent,
           type: currentTab,
-          spaceId: space.id,
-          spaceName: space.name,
+          spaceId: spaceId,
+          spaceName: spaceName,
           isCapsule,
           capsuleDuration: isCapsule ? capsuleDuration : null,
           unlockDate,
         });
       }
 
-      onSave();
+      useEntriesStore.getState().invalidateCache();
+      useEntriesStore.getState().invalidateSpaceCache(spaceId);
+      navigation.goBack();
     } catch (error) {
+      isSavingRef.current = false;
       console.error('Save error:', error);
       showAlert('Error', 'Could not save entry. Try again!');
     } finally {
@@ -678,18 +701,50 @@ const NewEntryScreen: React.FC<NewEntryScreenProps> = ({
       </KeyboardAvoidingView>
 
       {/* Popups */}
-      <CustomModal
+      <Modal
         visible={showUnsavedModal}
-        title="Unsaved Changes"
-        message="Do you want to discard your changes?"
-        cancelText="Keep Writing"
-        confirmText="Discard"
-        onCancel={() => setShowUnsavedModal(false)}
-        onConfirm={() => {
-          setShowUnsavedModal(false);
-          onBack();
-        }}
-      />
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.unsavedModalCard}>
+            <Text style={styles.unsavedModalTitle}>Unsaved Changes</Text>
+            <Text style={styles.unsavedModalMessage}>Do you want to save your entry before leaving?</Text>
+            
+            <View style={styles.unsavedModalButtons}>
+              <TouchableOpacity 
+                style={styles.unsavedCancelBtn}
+                onPress={() => setShowUnsavedModal(false)}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.unsavedCancelText}>Keep Writing</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.unsavedDiscardBtn}
+                onPress={() => {
+                  setShowUnsavedModal(false);
+                  pendingNavAction?.();
+                }}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.unsavedDiscardText}>Discard</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.unsavedSaveBtn}
+                onPress={async () => {
+                  setShowUnsavedModal(false);
+                  await handleSave();
+                }}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.unsavedSaveText}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       <CustomModal
         visible={alertConfig.visible}

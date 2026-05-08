@@ -11,12 +11,15 @@ import {
 import { styles } from './SplashScreen.styles';
 import en from '../../locales/en.json';
 
-interface SplashScreenProps {
-  onGetStarted: () => void;
-  onLogin: () => void;
-}
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AuthStackParamList } from '../../navigation/types';
 
-const SplashScreen: React.FC<SplashScreenProps> = ({ onGetStarted, onLogin }) => {
+type SplashScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Splash'>;
+
+const SplashScreen: React.FC = () => {
+  const navigation = useNavigation<SplashScreenNavigationProp>();
+
   // Animation refs
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.85)).current;
@@ -69,7 +72,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onGetStarted, onLogin }) =>
             <TouchableOpacity
               style={styles.getStartedButton}
               activeOpacity={0.85}
-              onPress={onGetStarted}
+              onPress={() => navigation.navigate('Signup')}
             >
               <Text style={styles.getStartedButtonText}>
                 {en.splash.getStarted}
@@ -79,7 +82,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onGetStarted, onLogin }) =>
             <TouchableOpacity
               style={styles.loginButton}
               activeOpacity={0.7}
-              onPress={onLogin}
+              onPress={() => navigation.navigate('Login')}
             >
               <Text style={styles.loginButtonText}>
                 {en.splash.haveAccount}

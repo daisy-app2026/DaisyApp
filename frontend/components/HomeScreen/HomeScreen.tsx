@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -53,36 +53,37 @@ type Screen =
   | 'past'
   | 'crush';
 
-interface HomeScreenProps {
-  onNavigate: (screen: string) => void;
-  onSpacePress: (space: {
-    id: string;
-    name: string;
-    icon: string;
-  }) => void;
-  onViewEntry: (entry: Entry) => void;
-  onEditEntry: (entry: Entry) => void;
-  onSearchPress: () => void;
-  onProfilePress: () => void;
-}
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { DiaryStackParamList } from '../../navigation/types';
+import { useEntriesStore } from '../../store/entriesStore';
+import { useSpacesStore } from '../../store/spacesStore';
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ 
-  onNavigate, 
-  onSpacePress,
-  onViewEntry,
-  onEditEntry,
-  onSearchPress,
-  onProfilePress
-}) => {
+const HomeScreen: React.FC = () => {
+  const navigation = useNavigation<StackNavigationProp<DiaryStackParamList, 'Home'>>();
   const { user } = useAuthStore();
-  const [spaces, setSpaces] = useState<any[]>([]);
-  const [spacesLoading, setSpacesLoading] = useState(true);
+
+  const { 
+    recentEntries, 
+    setRecentEntries,
+    isRecentLoaded,
+  } = useEntriesStore();
+
+  const {
+    spaces,
+    setSpaces,
+    isLoaded: isSpacesLoaded,
+    addSpace: addSpaceToStore,
+    removeSpace: removeSpaceFromStore,
+  } = useSpacesStore();
+
+  const [spacesLoading, setSpacesLoading] = useState(!isSpacesLoaded);
+  const [recentLoading, setRecentLoading] = useState(!isRecentLoaded);
+
   const [activePage, setActivePage] = useState(0);
   const [selectedSpaceId, setSelectedSpaceId] = useState<string | null>(null);
   const [deletingSpaceId, setDeletingSpaceId] = useState<string | null>(null);
   
-  const [recentEntries, setRecentEntries] = useState<Entry[]>([]);
-  const [recentLoading, setRecentLoading] = useState(true);
   const [longPressedId, setLongPressedId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
@@ -110,9 +111,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 
   // Load spaces and recent entries on mount
   React.useEffect(() => {
-    loadData();
+    if (!isSpacesLoaded || !isRecentLoaded) {
+      loadData();
+    } else {
+      setSpacesLoading(false);
+      setRecentLoading(false);
+    }
     checkUnlockedCapsules();
-  }, []);
+  }, [isSpacesLoaded, isRecentLoaded]);
 
   const checkUnlockedCapsules = async () => {
     try {
@@ -125,15 +131,20 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const loadData = async () => {
     try {
-      setSpacesLoading(true);
-      setRecentLoading(true);
+      const spacesPromise = isSpacesLoaded ? Promise.resolve(spaces) : fetchSpaces(user!.token);
+      const recentPromise = isRecentLoaded ? Promise.resolve(recentEntries) : getRecentEntries(user!.token);
+
+      if (!isSpacesLoaded) setSpacesLoading(true);
+      if (!isRecentLoaded) setRecentLoading(true);
+
       const [fetchedSpaces, fetchedRecent, fetchedStats] = await Promise.all([
-        fetchSpaces(user!.token),
-        getRecentEntries(user!.token),
+        spacesPromise,
+        recentPromise,
         getEntryStats(user!.token)
       ]);
-      setSpaces(fetchedSpaces);
-      setRecentEntries(fetchedRecent);
+
+      if (!isSpacesLoaded) setSpaces(fetchedSpaces);
+      if (!isRecentLoaded) setRecentEntries(fetchedRecent);
       setStreak(fetchedStats.streak);
     } catch (error) {
       console.log('Error loading home data:', error);
@@ -144,25 +155,51 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
   };
 
   const handleAddSpace = async () => {
-    if (newSpaceName.trim()) {
-      try {
-        const newSpace = await addCustomSpace(
-          user!.token,
-          newSpaceName.trim(),
-          selectedIconOption.name,
-          selectedIconOption.color,
-          `${selectedIconOption.color}26` // 15% opacity in hex (26)
-        );
-        setSpaces(prev => [...prev, newSpace]);
-        setNewSpaceName('');
-        setModalVisible(false);
-      } catch (error) {
-        console.log('Error adding space:', error);
-      }
+    if (!newSpaceName.trim()) return;
+
+    const name = newSpaceName.trim();
+    const icon = selectedIconOption.name;
+    const iconBg = selectedIconOption.color;
+    const iconBgLight = `${selectedIconOption.color}26`; // 15% opacity in hex (26)
+
+    // Create temp space immediately
+    const tempSpace = {
+      id: `temp_${Date.now()}`,
+      name,
+      icon,
+      iconBg,
+      iconBgLight,
+      isDefault: false,
+    };
+
+    // Add to store immediately (no lag!)
+    addSpaceToStore(tempSpace);
+
+    // Close modal immediately (no lag!)
+    setModalVisible(false);
+    setNewSpaceName('');
+
+    // Then API call in background
+    try {
+      const newSpace = await addCustomSpace(
+        user!.token,
+        name,
+        icon,
+        iconBg,
+        iconBgLight
+      );
+      // Replace temp with real space
+      removeSpaceFromStore(tempSpace.id);
+      addSpaceToStore(newSpace);
+    } catch (error) {
+      // Remove temp if failed
+      removeSpaceFromStore(tempSpace.id);
+      // Show error
+      Alert.alert('Error', 'Could not add space');
     }
   };
 
-  const handleDeleteSpace = async (id: string) => {
+  const handleDeleteSpace = useCallback(async (id: string) => {
     try {
       const spaceToDelete = spaces.find(s => s.id === id);
       if (!spaceToDelete) return;
@@ -173,38 +210,42 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
         !!spaceToDelete.isDefault
       );
       
-      setSpaces(prev => prev.filter(s => s.id !== id));
+      removeSpaceFromStore(id);
       if (selectedSpaceId === id) setSelectedSpaceId(null);
       setDeletingSpaceId(null);
     } catch (error) {
       console.log('Error deleting space:', error);
     }
-  };
+  }, [spaces, user, removeSpaceFromStore, selectedSpaceId]);
 
-  const handleDeleteEntry = async () => {
+  const handleDeleteEntry = useCallback(async () => {
     if (!deleteConfirmId) return;
     try {
+      const entryToDelete = recentEntries.find(e => e.id === deleteConfirmId);
       await deleteEntry(user!.token, deleteConfirmId);
-      setRecentEntries(prev => prev.filter(e => e.id !== deleteConfirmId));
+      setRecentEntries(recentEntries.filter(e => e.id !== deleteConfirmId));
+      if (entryToDelete) {
+        useEntriesStore.getState().invalidateSpaceCache(entryToDelete.spaceId);
+      }
       setDeleteConfirmId(null);
       setLongPressedId(null);
     } catch (error) {
       Alert.alert('Error', 'Could not delete entry');
     }
-  };
+  }, [deleteConfirmId, recentEntries, user]);
 
-  const handleDismissCapsule = async (entryId: string) => {
+  const handleDismissCapsule = useCallback(async (entryId: string) => {
     try {
       await markNotificationShown(user!.token, entryId);
       setUnlockedCapsules(prev => prev.filter(c => c.id !== entryId));
     } catch (error) {
       console.log('Mark shown error:', error);
     }
-  };
+  }, [user]);
 
-  const handleViewCapsule = (entry: Entry) => {
-    onViewEntry(entry);
-  };
+  const handleViewCapsule = useCallback((entry: Entry) => {
+    navigation.navigate('ViewEntry', { entry });
+  }, [navigation]);
 
   const paginatedItems = useMemo(() => {
     const allItems = [...spaces, { id: 'add', name: 'Create own', isAdd: true }];
@@ -237,15 +278,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
     return user.name.charAt(0).toUpperCase();
   }, [user?.name]);
 
-  if (spacesLoading) {
-    return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator color="#2D5A1B" size="large" />
-      </View>
-    );
-  }
-
-  const renderPage = ({ item }: { item: any[] }) => (
+  const renderPage = useCallback(({ item }: { item: any[] }) => (
     <View style={styles.page}>
       {item.map((space) => (
         <SpaceCircle
@@ -264,7 +297,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
               setModalVisible(true);
             } else {
               setSelectedSpaceId(space.id);
-              onSpacePress(space);
+              navigation.navigate('Category', {
+                spaceId: space.id,
+                spaceName: space.name,
+                spaceIcon: space.icon,
+                spaceIconBg: space.iconBg,
+                spaceIconBgLight: space.iconBgLight,
+              });
             }
           }}
           onLongPress={() => {
@@ -279,7 +318,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
         ))
       }
     </View>
-  );
+  ), [selectedSpaceId, deletingSpaceId, navigation, handleDeleteSpace]);
+
+  if (spacesLoading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator color="#2D5A1B" size="large" />
+      </View>
+    );
+  }
 
   return (
     <TouchableWithoutFeedback onPress={() => {
@@ -320,7 +367,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
             </View>
             <TouchableOpacity 
               style={styles.headerRight}
-              onPress={() => onProfilePress()}
+              onPress={() => navigation.navigate('Profile')}
             >
               <View style={styles.avatar}>
                 {user?.photoURL ? (
@@ -333,7 +380,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           </View>
         </SafeAreaView>
 
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 20 }}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
           <View style={styles.greetingCard}>
             <Text style={styles.greetingTop}>{en.home.whatsOnMind}</Text>
             <Text style={styles.greetingBottom}>{en.home.chooseSpace}</Text>
@@ -375,7 +422,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>{en.home.recent}</Text>
               <TouchableOpacity
-                onPress={onSearchPress}
+                onPress={() => navigation.navigate('Search')}
                 style={styles.searchBtn}
               >
                 <Ionicons 
@@ -400,12 +447,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
                   if (longPressedId === entry.id) {
                     setLongPressedId(null);
                   } else {
-                    onViewEntry(entry);
+                    navigation.navigate('ViewEntry', { entry });
                   }
                 },
                 onLongPress: () => setLongPressedId(entry.id),
                 showActions: longPressedId === entry.id,
-                onEdit: () => onEditEntry(entry),
+                onEdit: () => navigation.navigate('NewEntry', {
+                  spaceId: entry.spaceId,
+                  spaceName: entry.spaceName,
+                  spaceIcon: 'bookmark-outline',
+                  editEntry: entry,
+                }),
                 onDelete: () => setDeleteConfirmId(entry.id),
                 isEditDisabled: entry.type === 'doodle' || (isCapsule && entry.editCount >= 1),
               };
