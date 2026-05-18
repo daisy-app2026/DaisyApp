@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth';
 import spacesRoutes from './routes/spaces';
 import entriesRoutes from './routes/entries';
+import talkToPastRoutes from './routes/talkToPast';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/spaces', spacesRoutes);
 app.use('/api/entries', entriesRoutes);
+app.use('/api/talk-to-past', talkToPastRoutes);
 
 app.listen(PORT, () => {
   console.log(

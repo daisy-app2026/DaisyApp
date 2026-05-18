@@ -326,8 +326,6 @@ const NewEntryScreen: React.FC = () => {
     try {
       setLoading(true);
       isSavingRef.current = true;
-      const token = user?.token;
-      if (!token) throw new Error('No token');
 
       const unlockDate = isCapsule ? getUnlockDate() : null;
       let finalContent = content;
@@ -359,12 +357,12 @@ const NewEntryScreen: React.FC = () => {
       }
 
       if (editEntry) {
-        await updateEntry(token, editEntry.id, {
+        await updateEntry(editEntry.id, {
           title,
           content: finalContent,
         });
       } else {
-        await createEntry(token, {
+        await createEntry({
           title,
           content: finalContent,
           type: currentTab,

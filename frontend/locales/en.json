@@ -139,5 +139,25 @@
     "audio": "Audio",
     "image": "Image",
     "doodle": "Doodle"
+  },
+  "talkToPast": {
+    "title": "Talk to the Past",
+    "homeTitle": "Talk to the Past",
+    "startNew": "Start a new reflection",
+    "startNewSub": "Tap to begin a guided journey",
+    "pastReflections": "Past reflections",
+    "eachPersonFresh": "Each new person starts fresh",
+    "chatsLeft": "left",
+    "guidedReflection": "Guided reflection — not a real person",
+    "inputPlaceholder": "What are you thinking...",
+    "introTitle": "Talk to the Past",
+    "introSubtitle": "A space to reflect, process, and express what was left unsaid.",
+    "beforeYouBegin": "Before you begin:",
+    "beforeYouBeginText": "This is a guided reflection. You're not contacting the real person — only exploring your own memory and feelings in a safe, grounded way.",
+    "beginButton": "Begin Guided Journey",
+    "sections": "4 sections · Takes about 5 minutes",
+    "continue": "Continue →",
+    "startConversation": "Start Conversation →",
+    "of": "of"
   }
 }

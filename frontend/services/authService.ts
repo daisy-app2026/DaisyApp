@@ -101,10 +101,12 @@ export const logOut = async () => {
   await signOut(auth)
 }
 
+import { getFreshToken } from '../utils/getToken'
+
 export const updateUserName = async (
-  token: string,
   name: string
 ): Promise<void> => {
+  const token = await getFreshToken()
   await axios.put(
     `${API_URL}/api/auth/update-name`,
     { name },
@@ -117,10 +119,10 @@ export const updateUserName = async (
 }
 
 export const uploadProfilePhoto = async (
-  token: string,
   imageUri: string
 ): Promise<string> => {
   try {
+    const token = await getFreshToken()
     const formData = new FormData()
     formData.append('file', {
       uri: imageUri,

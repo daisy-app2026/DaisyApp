@@ -122,7 +122,7 @@ const HomeScreen: React.FC = () => {
 
   const checkUnlockedCapsules = async () => {
     try {
-      const capsules = await getUnlockedCapsules(user!.token);
+      const capsules = await getUnlockedCapsules();
       setUnlockedCapsules(capsules);
     } catch (error) {
       console.log('Capsule check error:', error);
@@ -131,8 +131,8 @@ const HomeScreen: React.FC = () => {
 
   const loadData = async () => {
     try {
-      const spacesPromise = isSpacesLoaded ? Promise.resolve(spaces) : fetchSpaces(user!.token);
-      const recentPromise = isRecentLoaded ? Promise.resolve(recentEntries) : getRecentEntries(user!.token);
+      const spacesPromise = isSpacesLoaded ? Promise.resolve(spaces) : fetchSpaces();
+      const recentPromise = isRecentLoaded ? Promise.resolve(recentEntries) : getRecentEntries();
 
       if (!isSpacesLoaded) setSpacesLoading(true);
       if (!isRecentLoaded) setRecentLoading(true);
@@ -140,7 +140,7 @@ const HomeScreen: React.FC = () => {
       const [fetchedSpaces, fetchedRecent, fetchedStats] = await Promise.all([
         spacesPromise,
         recentPromise,
-        getEntryStats(user!.token)
+        getEntryStats()
       ]);
 
       if (!isSpacesLoaded) setSpaces(fetchedSpaces);
@@ -182,7 +182,6 @@ const HomeScreen: React.FC = () => {
     // Then API call in background
     try {
       const newSpace = await addCustomSpace(
-        user!.token,
         name,
         icon,
         iconBg,
@@ -205,7 +204,6 @@ const HomeScreen: React.FC = () => {
       if (!spaceToDelete) return;
 
       await removeSpace(
-        user!.token,
         id,
         !!spaceToDelete.isDefault
       );
@@ -216,13 +214,13 @@ const HomeScreen: React.FC = () => {
     } catch (error) {
       console.log('Error deleting space:', error);
     }
-  }, [spaces, user, removeSpaceFromStore, selectedSpaceId]);
+  }, [spaces, removeSpaceFromStore, selectedSpaceId]);
 
   const handleDeleteEntry = useCallback(async () => {
     if (!deleteConfirmId) return;
     try {
       const entryToDelete = recentEntries.find(e => e.id === deleteConfirmId);
-      await deleteEntry(user!.token, deleteConfirmId);
+      await deleteEntry(deleteConfirmId);
       setRecentEntries(recentEntries.filter(e => e.id !== deleteConfirmId));
       if (entryToDelete) {
         useEntriesStore.getState().invalidateSpaceCache(entryToDelete.spaceId);
@@ -232,16 +230,16 @@ const HomeScreen: React.FC = () => {
     } catch (error) {
       Alert.alert('Error', 'Could not delete entry');
     }
-  }, [deleteConfirmId, recentEntries, user]);
+  }, [deleteConfirmId, recentEntries]);
 
   const handleDismissCapsule = useCallback(async (entryId: string) => {
     try {
-      await markNotificationShown(user!.token, entryId);
+      await markNotificationShown(entryId);
       setUnlockedCapsules(prev => prev.filter(c => c.id !== entryId));
     } catch (error) {
       console.log('Mark shown error:', error);
     }
-  }, [user]);
+  }, []);
 
   const handleViewCapsule = useCallback((entry: Entry) => {
     navigation.navigate('ViewEntry', { entry });

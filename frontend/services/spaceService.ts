@@ -1,10 +1,10 @@
-import axios from 'axios'
+import axios from 'axios';
+import { getFreshToken } from '../utils/getToken';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-export const fetchSpaces = async (
-  token: string
-) => {
+export const fetchSpaces = async () => {
+  const token = await getFreshToken();
   const response = await axios.get(
     `${API_URL}/api/spaces`,
     {
@@ -12,17 +12,17 @@ export const fetchSpaces = async (
         Authorization: `Bearer ${token}` 
       }
     }
-  )
-  return response.data.spaces
-}
+  );
+  return response.data.spaces;
+};
 
 export const addCustomSpace = async (
-  token: string,
   name: string,
   icon: string,
   iconBg: string,
   iconBgLight: string
 ) => {
+  const token = await getFreshToken();
   const response = await axios.post(
     `${API_URL}/api/spaces/add`,
     { name, icon, iconBg, iconBgLight },
@@ -31,15 +31,15 @@ export const addCustomSpace = async (
         Authorization: `Bearer ${token}` 
       }
     }
-  )
-  return response.data.space
-}
+  );
+  return response.data.space;
+};
 
 export const removeSpace = async (
-  token: string,
   spaceId: string,
   isDefault: boolean
 ) => {
+  const token = await getFreshToken();
   await axios.delete(
     `${API_URL}/api/spaces/delete`,
     {
@@ -48,5 +48,5 @@ export const removeSpace = async (
       },
       data: { spaceId, isDefault }
     }
-  )
-}
+  );
+};

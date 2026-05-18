@@ -63,7 +63,7 @@ const CategoryScreen: React.FC = () => {
   const loadEntries = async () => {
     try {
       setLoading(true);
-      const data = await getEntriesBySpace(user!.token, spaceId);
+      const data = await getEntriesBySpace(spaceId);
       setEntriesBySpace(spaceId, data);
     } catch (error) {
       console.log('Error loading entries:', error);
@@ -75,7 +75,7 @@ const CategoryScreen: React.FC = () => {
   const handleDelete = async () => {
     if (!deleteConfirmId) return;
     try {
-      await deleteEntry(user!.token, deleteConfirmId);
+      await deleteEntry(deleteConfirmId);
       const updated = entries.filter(e => e.id !== deleteConfirmId);
       setEntriesBySpace(spaceId, updated);
       

@@ -94,6 +94,28 @@ export const createEntry = async (
     }
 
     await entryRef.set(newEntry)
+
+    // Index text entries in Pinecone
+    if (
+      (type === 'text' || !type) && 
+      content
+    ) {
+      const { indexDiaryEntry } = 
+        require('../services/pineconeService')
+      
+      indexDiaryEntry(
+        userId,
+        entryRef.id,
+        title || '',
+        content,
+        spaceId || '',
+        spaceName || '',
+        new Date().toISOString()
+      ).catch((err: any) => 
+        console.error('Pinecone err:', err)
+      )
+    }
+
     await updateStreak(userId)
 
     res.status(200).json({
@@ -265,6 +287,14 @@ export const deleteEntry = async (
     }
 
     await entryRef.delete()
+
+    const { deleteEntryFromPinecone } = 
+      require('../services/pineconeService')
+
+    deleteEntryFromPinecone(userId, entryId)
+      .catch((err: any) => 
+        console.error('Delete err:', err)
+      )
 
     res.status(200).json({
       success: true

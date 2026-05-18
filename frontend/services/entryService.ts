@@ -1,37 +1,38 @@
-import axios from 'axios'
+import axios from 'axios';
+import { getFreshToken } from '../utils/getToken';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export interface Entry {
-  id: string
-  userId: string
-  title: string
-  content: string
-  type: 'text' | 'audio' | 'image' | 'doodle'
-  spaceId: string
-  spaceName: string
-  isCapsule: boolean
-  capsuleDuration: string | null
-  unlockDate: string | null
-  isEdited: boolean
-  editCount: number
-  createdAt: string
-  updatedAt: string
+  id: string;
+  userId: string;
+  title: string;
+  content: string;
+  type: 'text' | 'audio' | 'image' | 'doodle';
+  spaceId: string;
+  spaceName: string;
+  isCapsule: boolean;
+  capsuleDuration: string | null;
+  unlockDate: string | null;
+  isEdited: boolean;
+  editCount: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export const createEntry = async (
-  token: string,
   data: {
-    title: string
-    content: string
-    type: string
-    spaceId: string
-    spaceName: string
-    isCapsule: boolean
-    capsuleDuration: string | null
-    unlockDate: string | null
+    title: string;
+    content: string;
+    type: string;
+    spaceId: string;
+    spaceName: string;
+    isCapsule: boolean;
+    capsuleDuration: string | null;
+    unlockDate: string | null;
   }
 ): Promise<Entry> => {
+  const token = await getFreshToken();
   const response = await axios.post(
     `${API_URL}/api/entries/create`,
     data,
@@ -40,14 +41,14 @@ export const createEntry = async (
         Authorization: `Bearer ${token}` 
       }
     }
-  )
-  return response.data.entry
-}
+  );
+  return response.data.entry;
+};
 
 export const getEntriesBySpace = async (
-  token: string,
   spaceId: string
 ): Promise<Entry[]> => {
+  const token = await getFreshToken();
   const response = await axios.get(
     `${API_URL}/api/entries/space/${spaceId}`,
     {
@@ -55,13 +56,12 @@ export const getEntriesBySpace = async (
         Authorization: `Bearer ${token}` 
       }
     }
-  )
-  return response.data.entries
-}
+  );
+  return response.data.entries;
+};
 
-export const getRecentEntries = async (
-  token: string
-): Promise<Entry[]> => {
+export const getRecentEntries = async (): Promise<Entry[]> => {
+  const token = await getFreshToken();
   const response = await axios.get(
     `${API_URL}/api/entries/recent`,
     {
@@ -69,15 +69,15 @@ export const getRecentEntries = async (
         Authorization: `Bearer ${token}` 
       }
     }
-  )
-  return response.data.entries
-}
+  );
+  return response.data.entries;
+};
 
 export const updateEntry = async (
-  token: string,
   entryId: string,
   data: { title: string; content: string }
 ): Promise<Entry> => {
+  const token = await getFreshToken();
   const response = await axios.put(
     `${API_URL}/api/entries/update/${entryId}`,
     data,
@@ -86,14 +86,14 @@ export const updateEntry = async (
         Authorization: `Bearer ${token}` 
       }
     }
-  )
-  return response.data.entry
-}
+  );
+  return response.data.entry;
+};
 
 export const deleteEntry = async (
-  token: string,
   entryId: string
 ): Promise<void> => {
+  const token = await getFreshToken();
   await axios.delete(
     `${API_URL}/api/entries/delete/${entryId}`,
     {
@@ -101,12 +101,11 @@ export const deleteEntry = async (
         Authorization: `Bearer ${token}` 
       }
     }
-  )
-}
+  );
+};
 
-export const getEntryStats = async (
-  token: string
-): Promise<{ entries: number; capsules: number; streak: number }> => {
+export const getEntryStats = async (): Promise<{ entries: number; capsules: number; streak: number }> => {
+  const token = await getFreshToken();
   const response = await axios.get(
     `${API_URL}/api/entries/stats`,
     {
@@ -114,13 +113,12 @@ export const getEntryStats = async (
         Authorization: `Bearer ${token}`
       }
     }
-  )
-  return response.data.stats
-}
+  );
+  return response.data.stats;
+};
 
-export const getUnlockedCapsules = async (
-  token: string
-): Promise<Entry[]> => {
+export const getUnlockedCapsules = async (): Promise<Entry[]> => {
+  const token = await getFreshToken();
   const response = await axios.get(
     `${API_URL}/api/entries/unlocked-capsules`,
     {
@@ -128,14 +126,14 @@ export const getUnlockedCapsules = async (
         Authorization: `Bearer ${token}` 
       }
     }
-  )
-  return response.data.unlockedCapsules
-}
+  );
+  return response.data.unlockedCapsules;
+};
 
 export const markNotificationShown = async (
-  token: string,
   entryId: string
 ): Promise<void> => {
+  const token = await getFreshToken();
   await axios.put(
     `${API_URL}/api/entries/mark-shown/${entryId}`,
     {},
@@ -144,12 +142,11 @@ export const markNotificationShown = async (
         Authorization: `Bearer ${token}` 
       }
     }
-  )
-}
+  );
+};
 
-export const getAllEntries = async (
-  token: string
-): Promise<Entry[]> => {
+export const getAllEntries = async (): Promise<Entry[]> => {
+  const token = await getFreshToken();
   const response = await axios.get(
     `${API_URL}/api/entries/all`,
     {
@@ -157,6 +154,6 @@ export const getAllEntries = async (
         Authorization: `Bearer ${token}` 
       }
     }
-  )
-  return response.data.entries
-}
+  );
+  return response.data.entries;
+};

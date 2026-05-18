@@ -16,6 +16,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { styles } from './ProfileScreen.styles';
 import { useAuthStore } from '../../store/authStore';
 import { logOut, updateUserName } from '../../services/authService';
+import { getEntryStats } from '../../services/entryService';
 import axios from 'axios';
 import en from '../../locales/en.json';
 import CustomModal from '../shared/CustomModal/CustomModal';
@@ -66,14 +67,8 @@ const ProfileScreen: React.FC = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/entries/stats`, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      if (response.data.success) {
-        setStats(response.data.stats);
-      }
+      const statsData = await getEntryStats();
+      setStats(statsData);
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
@@ -91,7 +86,7 @@ const ProfileScreen: React.FC = () => {
       try {
         setPhotoLoading(true);
         const { uploadProfilePhoto } = await import('../../services/authService');
-        const photoURL = await uploadProfilePhoto(user!.token, result.assets[0].uri);
+        const photoURL = await uploadProfilePhoto(result.assets[0].uri);
         updatePhotoURL(photoURL);
       } catch (error) {
         showAlert('Error', 'Could not upload photo');
@@ -113,7 +108,7 @@ const ProfileScreen: React.FC = () => {
     }
     setNameLoading(true);
     try {
-      await updateUserName(user!.token, trimmed);
+      await updateUserName(trimmed);
       updateName(trimmed);
       setEditingName(false);
     } catch (error) {

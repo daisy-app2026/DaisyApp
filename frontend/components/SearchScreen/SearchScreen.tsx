@@ -84,7 +84,7 @@ const SearchScreen: React.FC = () => {
   const loadAllEntries = async () => {
     try {
       setLoading(true);
-      const entries = await getAllEntries(user!.token);
+      const entries = await getAllEntries();
       setAllEntries(entries);
       setFilteredEntries(entries);
     } catch (error) {
