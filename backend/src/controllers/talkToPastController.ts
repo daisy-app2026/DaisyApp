@@ -189,8 +189,8 @@ export const sendMessage = async (
 
     // Build message history for AI
     const messageHistory = (session.messages || []).map(
-      (m: any) => ({
-        role: m.isUser ? 'user' : 'assistant',
+      (m: { isUser: boolean; text: string }) => ({
+        role: m.isUser ? 'user' as const : 'assistant' as const,
         content: m.text
       })
     );

@@ -37,11 +37,20 @@ import TalkToPastIntro from '../components/TalkToPast/TalkToPastIntro'
 import TalkToPastSection from '../components/TalkToPast/TalkToPastSection'
 import TalkToPastChat from '../components/TalkToPast/TalkToPastChat'
 
+// Talk to Crush Screens
+import TalkToCrushHome from '../components/TalkToCrush/TalkToCrushHome'
+import TalkToCrushIntro from '../components/TalkToCrush/TalkToCrushIntro'
+import TalkToCrushSection from '../components/TalkToCrush/TalkToCrushSection'
+import TalkToCrushChat from '../components/TalkToCrush/TalkToCrushChat'
+import { getTalkToCrushSessions } from '../services/talkToCrushService'
+import { useTalkToCrushStore } from '../store/talkToCrushStore'
+
 import {
   AuthStackParamList,
   DiaryStackParamList,
   MainTabParamList,
   TalkToPastStackParamList,
+  TalkToCrushStackParamList,
 } from './types'
 
 const AuthStack = createStackNavigator<AuthStackParamList>()
@@ -206,7 +215,78 @@ const TalkToPastNavigator = () => {
   )
 }
 
-const TalkToCrushPlaceholder = () => null
+const TalkToCrushStack = createStackNavigator<TalkToCrushStackParamList>()
+
+const TalkToCrushNavigator = () => {
+  const { sessions, isLoaded, setSessions } = useTalkToCrushStore()
+  
+  const [checking, setChecking] = useState(!isLoaded)
+
+  useEffect(() => {
+    if (!isLoaded) {
+      checkSessions()
+    }
+  }, [])
+
+  const checkSessions = async () => {
+    try {
+      const data = await getTalkToCrushSessions()
+      setSessions(data || [])
+    } catch {
+      setSessions([])
+    } finally {
+      setChecking(false)
+    }
+  }
+
+  if (checking) {
+    return (
+      <View style={{
+        flex: 1,
+        backgroundColor: '#FAFAF8',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        <ActivityIndicator
+          color='#2D5A1B'
+          size='large'
+        />
+      </View>
+    )
+  }
+
+  return (
+    <TalkToCrushStack.Navigator
+      screenOptions={{
+        headerShown: false,
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        gestureEnabled: true,
+      }}
+      initialRouteName={
+        sessions.length > 0
+          ? 'TalkToCrushHome'
+          : 'TalkToCrushIntro'
+      }
+    >
+      <TalkToCrushStack.Screen
+        name='TalkToCrushIntro'
+        component={TalkToCrushIntro}
+      />
+      <TalkToCrushStack.Screen
+        name='TalkToCrushHome'
+        component={TalkToCrushHome}
+      />
+      <TalkToCrushStack.Screen
+        name='TalkToCrushSection'
+        component={TalkToCrushSection}
+      />
+      <TalkToCrushStack.Screen
+        name='TalkToCrushChat'
+        component={TalkToCrushChat}
+      />
+    </TalkToCrushStack.Navigator>
+  )
+}
 
 // Main Tab Navigator
 const MainNavigator = () => (
@@ -320,8 +400,31 @@ const MainNavigator = () => (
     />
     <Tab.Screen
       name='TalkToCrushTab'
-      component={TalkToCrushPlaceholder}
-      options={{ tabBarLabel: 'Talk to Crush' }}
+      component={TalkToCrushNavigator}
+      options={({ route }) => {
+        const routeName = getFocusedRouteNameFromRoute(route);
+        const isChat = routeName === 'TalkToCrushChat';
+        
+        return {
+          tabBarLabel: 'Talk to Crush',
+          tabBarStyle: isChat ? {
+            display: 'none',
+            position: 'absolute',
+          } : {
+            backgroundColor: '#FFFFFF',
+            borderTopColor: 'rgba(255,255,255,0.92)',
+            borderTopWidth: 1,
+            paddingBottom: 16,
+            paddingTop: 8,
+            height: 72,
+            elevation: 8,
+            shadowColor: '#2D5A1B',
+            shadowOffset: { width: 0, height: -2 },
+            shadowOpacity: 0.06,
+            shadowRadius: 8,
+          }
+        };
+      }}
     />
   </Tab.Navigator>
 )

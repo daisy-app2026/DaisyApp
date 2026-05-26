@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { useEntriesStore } from './entriesStore';
 import { useSpacesStore } from './spacesStore';
 import { useTalkToPastStore } from './talkToPastStore';
+import { useTalkToCrushStore } from './talkToCrushStore';
 
 interface User {
   uid: string;
@@ -56,6 +57,9 @@ export const useAuthStore = create<AuthState>(
 
       // Clear talk to past cache
       useTalkToPastStore.getState().invalidateCache();
+
+      // Clear talk to crush cache
+      useTalkToCrushStore.getState().invalidateCache();
     },
     updateName: (name) =>
       set((state) => ({

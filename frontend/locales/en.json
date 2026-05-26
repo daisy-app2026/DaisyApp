@@ -159,5 +159,131 @@
     "continue": "Continue →",
     "startConversation": "Start Conversation →",
     "of": "of"
+  },
+  "talkToCrush": {
+    "title": "Talk to Crush",
+    "homeTitle": "Talk to Crush",
+    "startNew": "Start a new chat",
+    "startNewSub": "Get bestie advice about your crush",
+    "pastChats": "Past chats",
+    "eachFresh": "Each crush starts fresh",
+    "guidedReflection": "Your AI bestie — not your actual crush",
+    "inputPlaceholder": "Tell me everything...",
+    "introTitle": "Talk to Crush",
+    "introSubtitle": "Your personal bestie for all things crush-related",
+    "beforeYouBegin": "Before you begin:",
+    "beforeYouBeginText": "This is a safe, fun space to get advice, practice conversations, and figure out your next move with your crush!",
+    "beginButton": "Let's Go! →",
+    "sections": "3 sections · Takes about 5 minutes",
+    "continue": "Continue →",
+    "startChat": "Start Chat! →",
+    "noChats": "No crushes yet",
+    "noChatsSubtitle": "Tap + to get bestie advice about your crush!",
+    "chatsLeft": "left",
+    "section1": {
+      "title": "About Your Crush",
+      "subtitle": "Tell me about them!",
+      "description": "Let's get all the juicy details",
+      "q1Label": "What's their name or nickname?",
+      "q1Placeholder": "My crush's name...",
+      "q2Label": "How did you meet?",
+      "q2Options": [
+        "🏫  School / College",
+        "💼  Work / Office",
+        "👥  Through mutual friends",
+        "📱  Social media",
+        "🎲  Random / Other"
+      ],
+      "q3Label": "Which stage are you at?",
+      "q3Options": [
+        "Stage 1 — Eye contact & vibes only",
+        "Stage 2 — FBI investigation mode 🕵️",
+        "Stage 3 — Caught feelings 😵",
+        "Stage 4 — Getting vulnerable",
+        "Stage 5 — Full-on relationship"
+      ],
+      "q4Label": "Your attachment style?",
+      "q4Options": [
+        "😰  Anxious (I overthink everything)",
+        "🏃  Avoidant (I run when it gets real)",
+        "😌  Secure (Pretty balanced)",
+        "🤷  Not sure yet"
+      ],
+      "buttonText": "Continue →"
+    },
+    "section2": {
+      "title": "What Do You Need",
+      "subtitle": "I'm here for ALL of it!",
+      "description": "Select everything that applies",
+      "q1Label": "What do you mainly need help with?",
+      "q1Sublabel": "(Select all that apply)",
+      "q1Options": [
+        "💬  Flirting advice",
+        "🚦  Reading their signals",
+        "💌  Texting strategy",
+        "📅  Date planning & conversation topics",
+        "❤️  Dropping the L-bomb",
+        "🎭  Practice a conversation",
+        "🔄  I self-sabotaged, help!",
+        "👥  Someone toxic in my circle",
+        "🗣️  Comeback lines training",
+        "😕  They're sending mixed signals"
+      ],
+      "q2Label": "Current situation vibe?",
+      "q2Options": [
+        "🔥  Things are going great!",
+        "😐  It's... complicated",
+        "❄️  They went cold on me",
+        "💔  I messed up badly",
+        "🤔  I genuinely can't read them"
+      ],
+      "q3Label": "Your biggest fear right now?",
+      "q3Options": [
+        "😨  Rejection",
+        "👻  Being ghosted",
+        "😳  Embarrassing myself",
+        "💭  Misreading the situation",
+        "🏃  Scaring them away",
+        "🔒  Being too vulnerable"
+      ],
+      "buttonText": "Continue →"
+    },
+    "section3": {
+      "title": "Tell Me Everything",
+      "subtitle": "Spill ALL the tea bestie!",
+      "description": "The more details, the better advice I can give!",
+      "q1Label": "What's been happening lately? Give me ALL the details!",
+      "q1Placeholder": "Okay so basically...",
+      "q2Label": "What do you WISH you could say or do?",
+      "q2Placeholder": "If I could just...",
+      "q3Label": "What outcome are you hoping for?",
+      "q3Options": [
+        "💑  Start a relationship",
+        "📱  Get them to reach out first",
+        "💬  Have a real honest conversation",
+        "🎯  Confess my feelings",
+        "🔄  Fix what I messed up",
+        "😌  Just process my feelings",
+        "🎭  Practice talking to them"
+      ],
+      "buttonText": "Start Chat! →"
+    },
+    "sectionHeaders": {
+      "1of3": "1 of 3",
+      "2of3": "2 of 3",
+      "3of3": "3 of 3"
+    },
+    "deleteModal": {
+      "title": "Delete Chat?",
+      "message": "Are you sure you want to permanently delete this chat? This cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    },
+    "errors": {
+      "createSession": "Could not start chat. Please try again!",
+      "sendMessage": "Could not send message. Please try again!",
+      "loadSessions": "Could not load chats.",
+      "deleteSession": "Could not delete chat."
+    }
   }
 }

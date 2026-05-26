@@ -52,6 +52,23 @@ export type TalkToPastStackParamList = {
 
 export type TalkToCrushStackParamList = {
   TalkToCrushHome: undefined
+  TalkToCrushIntro: undefined
+  TalkToCrushSection: {
+    sectionNumber: 1 | 2 | 3
+    crushName: string
+    answers: Record<string, any>
+  }
+  TalkToCrushChat: {
+    sessionId: string
+    crushName: string
+    answers: Record<string, any>
+    initialMessages?: {
+      id: string
+      text: string
+      isUser: boolean
+      timestamp: string
+    }[]
+  }
 }
 
 export type MainTabParamList = {

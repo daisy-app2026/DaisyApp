@@ -175,6 +175,59 @@ POST   /api/spaces/add
 DELETE /api/spaces/delete
 ```
 
+## Talk to Past Feature
+
+Complete AI-powered healing chat:
+- 4 section questionnaire
+- RAG pipeline (Pinecone + OpenAI)
+- Psychology-based responses
+- Crisis protocol built-in
+- Sessions saved to Firebase
+
+## RAG Pipeline
+
+- Embeddings: `openai/text-embedding-3-small`
+- Vector DB: Pinecone (1536 dimensions)
+- Index: `daisy-entries`
+- 3 data types: `diary_entry`, `section_answer`, `predefined`
+
+## Psychology Data Setup
+
+Run once to index predefined data:
+```bash
+cd backend
+npx ts-node scripts/indexPredefined.ts
+```
+
+## Common Issues & Solutions
+
+### Network Error / App Not Loading:
+1. Check IP: `ipconfig`
+2. Update `frontend/.env` `EXPO_PUBLIC_API_URL`
+3. Add firewall rule (PowerShell Admin):
+   ```powershell
+   New-NetFirewallRule -DisplayName "Daisy Backend 3000" -Direction Inbound -LocalPort 3000 -Protocol TCP -Action Allow -Profile Any
+   ```
+4. Restart both backend and frontend
+
+### Port Conflict:
+```bash
+npx expo start --clear
+```
+Accept new port when prompted
+
+### Token Expired (401 errors):
+Already fixed via `getFreshToken()` in `frontend/utils/getToken.ts`
+
+### Pinecone Dimension Error:
+Recreate index with `text-embedding-3-small` model = 1536 dimensions automatically
+
+## Production Switch
+
+Change in `backend/.env` only:
+- `ANTHROPIC_API_KEY` → Real Anthropic key
+- `OPENAI_API_KEY` → Real OpenAI key
+
 ## Notes
 - IP changes daily on local network
   Update EXPO_PUBLIC_API_URL in .env

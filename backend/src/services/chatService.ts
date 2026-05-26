@@ -9,9 +9,9 @@ interface Message {
 }
 
 const MODELS = [
-  'minimax/minimax-m2.5:free',
-  'openai/gpt-oss-120b:free',
-  'microsoft/phi-3-mini-128k-instruct:free',
+  'google/gemma-3-27b-it:free',
+  'meta-llama/llama-4-scout:free',
+  'deepseek/deepseek-r1-0528:free',
 ];
 
 export const generateChatResponse = async (
@@ -51,9 +51,9 @@ export const generateChatResponse = async (
       contextString
     )
 
-    // Step 4: Build messages (last 10 only)
+    // Step 4: Build messages (last 30 only)
     const chatMessages = [
-      ...messages.slice(-10),
+      ...messages.slice(-30),
       { role: 'user', content: userMessage }
     ];
 

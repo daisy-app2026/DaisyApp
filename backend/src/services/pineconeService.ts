@@ -39,17 +39,18 @@ export const indexDiaryEntry = async (
   }
 };
 
-// Index session answers (all 4 sections)
+// Index session answers (all sections)
 export const indexSessionAnswers = async (
   userId: string,
   sessionId: string,
   personName: string,
-  answers: Record<string, any>
+  answers: Record<string, any>,
+  type: 'section_answer' | 'crush_answer' = 'section_answer'
 ): Promise<void> => {
   try {
     const vectors = [];
 
-    // Index ALL 4 sections
+    // Index ALL sections (up to 4)
     for (let i = 1; i <= 4; i++) {
       const section = answers[`section${i}`];
       if (!section) continue;
@@ -66,7 +67,7 @@ export const indexSessionAnswers = async (
         id: `session_${sessionId}_s${i}_${userId}`,
         values: embedding,
         metadata: {
-          type: 'section_answer',
+          type,
           userId,
           sessionId,
           personName,
@@ -81,7 +82,7 @@ export const indexSessionAnswers = async (
         records: vectors
       });
       console.log(
-        `Indexed ${vectors.length} sections for session ${sessionId}`
+        `Indexed ${vectors.length} sections for session ${sessionId} as ${type}`
       );
     }
   } catch (error) {
