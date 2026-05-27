@@ -154,4 +154,35 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
   },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: -6,
+    marginBottom: 12,
+    marginLeft: 4,
+    gap: 4,
+  },
+  errorText: {
+    fontSize: 12,
+    color: '#E85555',
+    flex: 1,
+  },
+  generalError: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(232, 85, 85, 0.08)',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 12,
+    gap: 6,
+  },
+  generalErrorText: {
+    fontSize: 13,
+    color: '#E85555',
+    flex: 1,
+  },
+  errorInput: {
+    borderColor: '#E85555',
+    borderWidth: 1.5,
+  },
 });

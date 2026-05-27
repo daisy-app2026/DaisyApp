@@ -9,9 +9,11 @@ interface Message {
 }
 
 const MODELS = [
-  'google/gemma-3-27b-it:free',
-  'meta-llama/llama-4-scout:free',
-  'deepseek/deepseek-r1-0528:free',
+  'z-ai/glm-4-5-air:free',
+  'nvidia/llama-3.1-nemotron-ultra-253b-v1:free',
+  'deepseek/deepseek-v4-0324:free',
+  'minimax/minimax-m2.5:free',
+  'openai/gpt-oss-120b:free',
 ];
 
 export const generateChatResponse = async (

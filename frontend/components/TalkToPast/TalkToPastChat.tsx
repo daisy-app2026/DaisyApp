@@ -33,7 +33,7 @@ import { getPersonIcon } from '../../utils/personIcon';
 
 const TypingIndicator: React.FC = () => {
   const [dots, setDots] = useState('');
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setDots(prev => {
@@ -85,7 +85,9 @@ const TalkToPastChat: React.FC = () => {
       showEvent,
       (e: KeyboardEvent) => {
         Animated.timing(keyboardHeight, {
-          toValue: e.endCoordinates.height,
+          toValue: Platform.OS === 'android'
+            ? e.endCoordinates.height + 24
+            : e.endCoordinates.height,
           duration: 250,
           useNativeDriver: false,
         }).start();
@@ -131,7 +133,7 @@ const TalkToPastChat: React.FC = () => {
   }, [navigation]);
 
   useEffect(() => {
-    const backHandler = 
+    const backHandler =
       BackHandler.addEventListener(
         'hardwareBackPress',
         () => {
@@ -147,7 +149,7 @@ const TalkToPastChat: React.FC = () => {
     parent?.setOptions({
       tabBarStyle: { display: 'none' }
     });
-    
+
     return () => {
       parent?.setOptions({
         tabBarStyle: {
@@ -222,7 +224,7 @@ const TalkToPastChat: React.FC = () => {
           updatedAt: new Date().toISOString(),
         };
         setCurrentSession(updatedSession);
-        
+
         // Defer store update to next tick to avoid setState during render error
         setTimeout(() => {
           updateSession(updatedSession);
@@ -258,8 +260,8 @@ const TalkToPastChat: React.FC = () => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      
-      <SafeAreaView 
+
+      <SafeAreaView
         edges={['top']}
         style={styles.topSafe}
       >
@@ -277,7 +279,7 @@ const TalkToPastChat: React.FC = () => {
           <View style={styles.headerCenter}>
             <View style={[
               styles.avatarCircle,
-              { 
+              {
                 backgroundColor: personIcon.bgColor,
                 borderColor: personIcon.color + '33',
               }
@@ -339,9 +341,9 @@ const TalkToPastChat: React.FC = () => {
           style={[
             styles.sendBtn,
             { backgroundColor: 
-              inputText.trim()
-                ? '#2D5A1B'
-                : 'rgba(45,90,27,0.15)'
+                inputText.trim()
+                  ? '#2D5A1B'
+                  : 'rgba(45,90,27,0.15)'
             }
           ]}
           onPress={handleSend}
@@ -351,8 +353,8 @@ const TalkToPastChat: React.FC = () => {
           <Ionicons
             name='arrow-forward'
             size={20}
-            color={inputText.trim() 
-              ? 'white' 
+            color={inputText.trim()
+              ? 'white'
               : 'rgba(45,90,27,0.4)'
             }
           />

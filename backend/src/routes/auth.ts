@@ -3,7 +3,8 @@ import {
   registerUser, 
   getUser,
   updateUserName,
-  updateProfilePhoto
+  updateProfilePhoto,
+  checkEmail
 } from '../controllers/authController';
 import { verifyToken } from '../middleware/verifyToken';
 
@@ -13,5 +14,6 @@ router.post('/register', registerUser);
 router.get('/user/:uid', verifyToken, getUser);
 router.put('/update-name', verifyToken, updateUserName);
 router.put('/update-photo', verifyToken, updateProfilePhoto);
+router.post('/check-email', checkEmail);
 
 export default router;

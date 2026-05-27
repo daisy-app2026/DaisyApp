@@ -1,12 +1,20 @@
 import { create } from 'zustand'
 import { Entry } from '../services/entryService'
 
+export interface Stats {
+  totalEntries: number
+  totalCapsules: number
+  currentStreak: number
+}
+
 interface EntriesState {
   recentEntries: Entry[]
   allEntries: Entry[]
   entriesBySpace: Record<string, Entry[]>
   isRecentLoaded: boolean
   isAllLoaded: boolean
+  stats: Stats | null
+  isStatsLoaded: boolean
   
   setRecentEntries: (entries: Entry[]) => void
   setAllEntries: (entries: Entry[]) => void
@@ -16,6 +24,8 @@ interface EntriesState {
   ) => void
   invalidateCache: () => void
   invalidateSpaceCache: (spaceId: string) => void
+  updateEntryInCache: (updatedEntry: Entry) => void
+  setStats: (stats: Stats) => void
 }
 
 export const useEntriesStore = create<EntriesState>(
@@ -25,6 +35,8 @@ export const useEntriesStore = create<EntriesState>(
     entriesBySpace: {},
     isRecentLoaded: false,
     isAllLoaded: false,
+    stats: null,
+    isStatsLoaded: false,
 
     setRecentEntries: (entries) =>
       set({ 
@@ -53,6 +65,8 @@ export const useEntriesStore = create<EntriesState>(
         entriesBySpace: {},
         isRecentLoaded: false,
         isAllLoaded: false,
+        stats: null,
+        isStatsLoaded: false,
       }),
 
     invalidateSpaceCache: (spaceId) =>
@@ -62,6 +76,39 @@ export const useEntriesStore = create<EntriesState>(
         }
         delete updated[spaceId]
         return { entriesBySpace: updated }
+      }),
+
+    updateEntryInCache: (updatedEntry) =>
+      set(state => ({
+        recentEntries: state.recentEntries
+          .map(e => 
+            e.id === updatedEntry.id 
+              ? updatedEntry 
+              : e
+          ),
+        allEntries: state.allEntries
+          .map(e =>
+            e.id === updatedEntry.id
+              ? updatedEntry
+              : e
+          ),
+        entriesBySpace: Object.fromEntries(
+          Object.entries(state.entriesBySpace)
+            .map(([spaceId, entries]) => [
+              spaceId,
+              entries.map(e =>
+                e.id === updatedEntry.id
+                  ? updatedEntry
+                  : e
+              )
+            ])
+        )
+      })),
+
+    setStats: (stats) =>
+      set({ 
+        stats, 
+        isStatsLoaded: true 
       }),
   })
 )

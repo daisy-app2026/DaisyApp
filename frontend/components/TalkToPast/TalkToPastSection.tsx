@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -22,6 +22,124 @@ import { useAuthStore } from '../../store/authStore';
 import { createTalkToPastSession } from '../../services/talkToPastService';
 import { useTalkToPastStore } from '../../store/talkToPastStore';
 import { styles } from './TalkToPastSection.styles';
+
+const section1Q3Options = [
+  '😰 Anxious', '😡 Angry', '😕 Confused',
+  '🥰 Loved', '😔 Sad', '🤯 Overwhelmed',
+  '😌 Safe', '🫤 Unseen', '💔 Hurt',
+  '😤 Frustrated', '🌪️ Chaotic', '🥺 Small'
+];
+
+const section2Q1Options = [
+  'They ended it',
+  'I ended it',
+  'It was mutual',
+  'It just faded away',
+  'They passed away',
+  'We lost touch'
+];
+
+const section2Q4Options = [
+  '😢 Sad', '😡 Angry', '😶 Numb',
+  '😰 Helpless', '💔 Heartbroken',
+  '😮 Shocked', '😌 Relieved',
+  '😤 Frustrated', '🫤 Empty',
+  '😣 Lost', '😪 Exhausted'
+];
+
+const section4Q1Options = [
+  '☕ A quiet café',
+  '🌳 A peaceful park',
+  '🏠 Somewhere we used to go',
+  '🌙 A place from our memories',
+  '✍️ Write your own...'
+];
+
+interface SingleSelectProps {
+  options: string[];
+  selected: string | undefined;
+  onChange: (value: string) => void;
+}
+
+const SingleSelect: React.FC<SingleSelectProps> = ({
+  options,
+  selected,
+  onChange,
+}) => (
+  <View>
+    {options.map((option) => {
+      const isSelected = selected === option;
+      return (
+        <TouchableOpacity
+          key={option}
+          style={[
+            styles.optionButton,
+            isSelected && styles.optionButtonSelected
+          ]}
+          onPress={() => onChange(option)}
+          activeOpacity={0.8}
+        >
+          <Text style={[
+            styles.optionText,
+            isSelected && styles.optionTextSelected
+          ]}>
+            {option}
+          </Text>
+          {isSelected && (
+            <Ionicons
+              name='checkmark-circle'
+              size={18}
+              color='#2D5A1B'
+              style={styles.checkIcon}
+            />
+          )}
+        </TouchableOpacity>
+      );
+    })}
+  </View>
+);
+
+interface MultiSelectProps {
+  options: string[];
+  selected: string[] | undefined;
+  onChange: (value: string[]) => void;
+}
+
+const MultiSelect: React.FC<MultiSelectProps> = ({
+  options,
+  selected,
+  onChange,
+}) => (
+  <View style={styles.optionsGrid}>
+    {options.map((option) => {
+      const isSelected = selected?.includes(option);
+      return (
+        <TouchableOpacity
+          key={option}
+          style={[
+            styles.gridOption,
+            isSelected && styles.gridOptionSelected
+          ]}
+          onPress={() => {
+            if (isSelected) {
+              onChange((selected || []).filter(s => s !== option));
+            } else {
+              onChange([...(selected || []), option]);
+            }
+          }}
+          activeOpacity={0.8}
+        >
+          <Text style={[
+            styles.gridOptionText,
+            isSelected && styles.gridOptionTextSelected
+          ]}>
+            {option}
+          </Text>
+        </TouchableOpacity>
+      );
+    })}
+  </View>
+);
 
 const sections = [
   {
@@ -122,7 +240,9 @@ const TalkToPastSection: React.FC = () => {
   const { user } = useAuthStore();
   const { addSession } = useTalkToPastStore();
 
-  const [answers, setAnswers] = useState<Record<string, string>>(
+  const scrollRef = useRef<ScrollView>(null);
+
+  const [answers, setAnswers] = useState<Record<string, any>>(
     route.params.answers || {}
   );
 
@@ -130,7 +250,18 @@ const TalkToPastSection: React.FC = () => {
     route.params.personName || ''
   );
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+
+  // Scroll to top when section changes!
+  useEffect(() => {
+    setTimeout(() => {
+      scrollRef.current?.scrollTo({
+        y: 0,
+        animated: false
+      });
+    }, 100);
+  }, [sectionNumber]);
 
   // Sync state if route params change
   useEffect(() => {
@@ -177,23 +308,58 @@ const TalkToPastSection: React.FC = () => {
     return () => backHandler.remove()
   }, [sectionNumber])
 
-  const isNextDisabled = useMemo(() => {
-    return currentSection.questions.every((_, index) => {
-      const key = `q_${sectionNumber}_${index}`;
-      return !answers[key]?.trim();
-    });
-  }, [sectionNumber, currentSection, answers]);
-
   const handleTextChange = useCallback((text: string, index: number) => {
     const key = `q_${sectionNumber}_${index}`;
     setAnswers((prev) => ({
       ...prev,
       [key]: text,
     }));
+    setErrors((prev) => ({
+      ...prev,
+      [key]: '',
+    }));
     if (sectionNumber === 1 && index === 0) {
       setPersonName(text);
     }
   }, [sectionNumber]);
+
+  const handleExtraTextChange = useCallback((key: string, text: string) => {
+    setAnswers((prev) => ({
+      ...prev,
+      [key]: text,
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      [key]: '',
+    }));
+  }, []);
+
+  const handleSelectChange = useCallback((key: string, value: any) => {
+    setAnswers((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      [key]: '',
+    }));
+  }, []);
+
+  const handlePromptTap = (promptText: string) => {
+    const key = 'q_3_0';
+    setAnswers((prev) => {
+      const currentVal = prev[key] || '';
+      const newVal = currentVal + (currentVal ? '\n' : '') + promptText;
+      return {
+        ...prev,
+        [key]: newVal,
+      };
+    });
+    setErrors((prev) => ({
+      ...prev,
+      [key]: '',
+    }));
+  };
 
   const bundleAnswers = useCallback(() => {
     const sectionsData: Record<string, Record<string, string>> = {};
@@ -201,7 +367,31 @@ const TalkToPastSection: React.FC = () => {
       const sectionQuestions = sections[s - 1].questions;
       const sectionObj: Record<string, string> = {};
       sectionQuestions.forEach((_, index) => {
-        sectionObj[`q${index + 1}`] = answers[`q_${s}_${index}`] || '';
+        const key = `q_${s}_${index}`;
+        const val = answers[key];
+        let valStr = Array.isArray(val) ? val.join(', ') : (val || '');
+        
+        if (s === 1 && index === 2) {
+          const extraVal = answers[`${key}_extra`];
+          if (extraVal?.trim()) {
+            valStr += (valStr ? '. ' : '') + 'Extra notes: ' + extraVal;
+          }
+        }
+        
+        if (s === 2 && index === 3) {
+          const extraVal = answers[`${key}_extra`];
+          if (extraVal?.trim()) {
+            valStr += (valStr ? '. ' : '') + 'Extra notes: ' + extraVal;
+          }
+        }
+        
+        if (s === 4 && index === 0) {
+          if (val === '✍️ Write your own...') {
+            valStr = answers[`${key}_custom`] || '';
+          }
+        }
+
+        sectionObj[`q${index + 1}`] = valStr;
       });
       sectionsData[`section${s}`] = sectionObj;
     }
@@ -209,7 +399,45 @@ const TalkToPastSection: React.FC = () => {
   }, [answers]);
 
   const handleContinue = useCallback(async () => {
-    if (isNextDisabled || saving) return;
+    if (saving) return;
+
+    const newErrors: Record<string, string> = {};
+    
+    if (sectionNumber === 1) {
+      if (!answers.q_1_0?.trim()) {
+        newErrors.q_1_0 = en.talkToPast.errors.nameRequired;
+      }
+    }
+    
+    if (sectionNumber === 2) {
+      if (!answers.q_2_0) {
+        newErrors.q_2_0 = en.talkToPast.errors.whoEndedRequired;
+      }
+      const q2q4 = answers.q_2_3;
+      if (!q2q4 || q2q4.length === 0) {
+        newErrors.q_2_3 = en.talkToPast.errors.feelingRequired;
+      }
+    }
+    
+    if (sectionNumber === 3) {
+      const q3q1 = answers.q_3_0;
+      if (!q3q1?.trim() || q3q1.trim().length < 10) {
+        newErrors.q_3_0 = en.talkToPast.errors.whatNeverSaidRequired;
+      }
+    }
+    
+    if (sectionNumber === 4) {
+      if (!answers.q_4_3?.trim()) {
+        newErrors.q_4_3 = en.talkToPast.errors.whatWouldAskRequired;
+      }
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    
+    setErrors({});
 
     if (currentSection.nextSection) {
       navigation.navigate('TalkToPastSection', {
@@ -243,7 +471,7 @@ const TalkToPastSection: React.FC = () => {
         setSaving(false);
       }
     }
-  }, [navigation, currentSection, personName, answers, isNextDisabled, saving, user, bundleAnswers, addSession]);
+  }, [navigation, currentSection, personName, answers, saving, bundleAnswers, addSession, sectionNumber]);
 
   const renderStepper = useCallback(() => {
     const steps = [1, 2, 3, 4];
@@ -281,11 +509,209 @@ const TalkToPastSection: React.FC = () => {
   };
 
   const continueButtonStyle = useMemo(() => {
-    if (isNextDisabled || saving) {
+    if (saving) {
       return [styles.continueButton, styles.continueButtonDisabled];
     }
     return [styles.continueButton, styles.continueButtonActive];
-  }, [isNextDisabled, saving]);
+  }, [saving]);
+
+  const renderQuestionBlock = (question: string, index: number) => {
+    const key = `q_${sectionNumber}_${index}`;
+    const value = answers[key];
+    const error = errors[key];
+    
+    // Determine mandatory fields
+    const isSection1Q1 = sectionNumber === 1 && index === 0;
+    const isSection2Q1 = sectionNumber === 2 && index === 0;
+    const isSection2Q4 = sectionNumber === 2 && index === 3;
+    const isSection3Q1 = sectionNumber === 3 && index === 0;
+    const isSection4Q4 = sectionNumber === 4 && index === 3;
+    
+    const isMandatory = isSection1Q1 || isSection2Q1 || isSection2Q4 || isSection3Q1 || isSection4Q4;
+    
+    const label = isSection1Q1 
+      ? 'Their name or what you called them' 
+      : question;
+      
+    const placeholder = currentSection.placeholders[index];
+
+    let customInput = null;
+
+    if (sectionNumber === 1) {
+      if (index === 2) {
+        // Section 1 Q3: Multi-Select + Optional text input
+        const selectedList = Array.isArray(value) ? value : [];
+        const extraKey = `${key}_extra`;
+        const extraValue = answers[extraKey] || '';
+        
+        customInput = (
+          <View>
+            <MultiSelect
+              options={section1Q3Options}
+              selected={selectedList}
+              onChange={(vals) => handleSelectChange(key, vals)}
+            />
+            <TextInput
+              style={[styles.textInput, { minHeight: 48, marginTop: 8 }]}
+              placeholder="Anything else? (optional)"
+              placeholderTextColor="#CCCCCC"
+              underlineColorAndroid="transparent"
+              value={extraValue}
+              onChangeText={(text) => handleExtraTextChange(extraKey, text)}
+              editable={!saving}
+            />
+          </View>
+        );
+      }
+    } else if (sectionNumber === 2) {
+      if (index === 0) {
+        // Section 2 Q1: Single-Select
+        customInput = (
+          <SingleSelect
+            options={section2Q1Options}
+            selected={typeof value === 'string' ? value : undefined}
+            onChange={(val) => handleSelectChange(key, val)}
+          />
+        );
+      } else if (index === 3) {
+        // Section 2 Q4: Multi-Select + Optional text input
+        const selectedList = Array.isArray(value) ? value : [];
+        const extraKey = `${key}_extra`;
+        const extraValue = answers[extraKey] || '';
+        
+        customInput = (
+          <View>
+            <MultiSelect
+              options={section2Q4Options}
+              selected={selectedList}
+              onChange={(vals) => handleSelectChange(key, vals)}
+            />
+            <TextInput
+              style={[styles.textInput, { minHeight: 48, marginTop: 8 }]}
+              placeholder="Add more..."
+              placeholderTextColor="#CCCCCC"
+              underlineColorAndroid="transparent"
+              value={extraValue}
+              onChangeText={(text) => handleExtraTextChange(extraKey, text)}
+              editable={!saving}
+            />
+          </View>
+        );
+      }
+    } else if (sectionNumber === 3) {
+      if (index === 0) {
+        // Section 3 Q1: Prompts + Large Text area
+        const promptChips = [
+          "Something I should have told you is...",
+          "I appreciated you for...",
+          "I was hurt when...",
+          "I wish I had said...",
+          "What I never told you is...",
+          "I forgive you for..."
+        ];
+        
+        customInput = (
+          <View>
+            <Text style={[styles.promptsTitle, { marginBottom: 8 }]}>PROMPTS TO INSPIRE YOU:</Text>
+            <View style={styles.promptsContainer}>
+              {promptChips.map((prompt) => (
+                <TouchableOpacity
+                  key={prompt}
+                  style={styles.promptChip}
+                  onPress={() => handlePromptTap(prompt)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.promptChipText}>{prompt}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            <TextInput
+              style={[styles.textInput, error ? styles.errorInput : null, { minHeight: 120 }]}
+              placeholder={placeholder}
+              placeholderTextColor="#CCCCCC"
+              multiline
+              underlineColorAndroid="transparent"
+              value={typeof value === 'string' ? value : ''}
+              onChangeText={(text) => handleTextChange(text, index)}
+              editable={!saving}
+            />
+          </View>
+        );
+      }
+    } else if (sectionNumber === 4) {
+      if (index === 0) {
+        // Section 4 Q1: Single-Select + Write your own
+        const isCustomSelected = value === '✍️ Write your own...';
+        const customKey = `${key}_custom`;
+        const customValue = answers[customKey] || '';
+        
+        customInput = (
+          <View>
+            <SingleSelect
+              options={section4Q1Options}
+              selected={typeof value === 'string' ? value : undefined}
+              onChange={(val) => handleSelectChange(key, val)}
+            />
+            {isCustomSelected && (
+              <TextInput
+                style={[styles.textInput, { minHeight: 48, marginTop: 8 }]}
+                placeholder="Write your own meeting place..."
+                placeholderTextColor="#CCCCCC"
+                underlineColorAndroid="transparent"
+                value={customValue}
+                onChangeText={(text) => handleExtraTextChange(customKey, text)}
+                editable={!saving}
+              />
+            )}
+          </View>
+        );
+      }
+    }
+
+    if (!customInput) {
+      // Default Text Input
+      customInput = (
+        <TextInput
+          style={[styles.textInput, error ? styles.errorInput : null, { minHeight: 48 }]}
+          placeholder={placeholder}
+          placeholderTextColor="#CCCCCC"
+          multiline
+          underlineColorAndroid="transparent"
+          value={typeof value === 'string' ? value : ''}
+          onChangeText={(text) => handleTextChange(text, index)}
+          editable={!saving}
+        />
+      );
+    }
+
+    return (
+      <View key={index} style={styles.questionBlock}>
+        <View style={styles.questionHeader}>
+          <Text style={styles.questionLabel}>
+            Q{index + 1} {label}
+          </Text>
+          {isMandatory && (
+            <Text style={styles.mandatoryBadge}>*</Text>
+          )}
+        </View>
+        
+        {customInput}
+        
+        {error ? (
+          <View style={styles.errorContainer}>
+            <Ionicons
+              name='alert-circle-outline'
+              size={13}
+              color='#E85555'
+            />
+            <Text style={styles.errorText}>
+              {error}
+            </Text>
+          </View>
+        ) : null}
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -318,6 +744,7 @@ const TalkToPastSection: React.FC = () => {
         keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
         <ScrollView
+          ref={scrollRef}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 120 }}
@@ -339,51 +766,12 @@ const TalkToPastSection: React.FC = () => {
             </Text>
           )}
 
-          {sectionNumber === 3 && currentSection.prompts && (
-            <View style={styles.promptsContainer}>
-              <Text style={styles.promptsTitle}>PROMPTS TO GUIDE YOU:</Text>
-              {currentSection.prompts.map((prompt, idx) => (
-                <Text key={idx} style={styles.promptText}>
-                  {prompt}
-                </Text>
-              ))}
-            </View>
-          )}
-
-          {currentSection.questions.map((question, index) => {
-            const isSection1Q1 = sectionNumber === 1 && index === 0;
-            const questionLabel = isSection1Q1
-              ? 'Their name or what you called them'
-              : question;
-
-            const key = `q_${sectionNumber}_${index}`;
-            const value = answers[key] || '';
-
-            const inputMinHeight = sectionNumber === 3 ? 120 : 48;
-
-            return (
-              <View key={index} style={styles.questionBlock}>
-                <Text style={styles.questionLabel}>
-                  Q{index + 1} {questionLabel}
-                </Text>
-                <TextInput
-                  style={[styles.textInput, { minHeight: inputMinHeight }]}
-                  placeholder={currentSection.placeholders[index]}
-                  placeholderTextColor="#CCCCCC"
-                  multiline
-                  underlineColorAndroid="transparent"
-                  value={value}
-                  onChangeText={(text) => handleTextChange(text, index)}
-                  editable={!saving}
-                />
-              </View>
-            );
-          })}
+          {currentSection.questions.map((question, index) => renderQuestionBlock(question, index))}
 
           <TouchableOpacity
             style={continueButtonStyle}
             onPress={handleContinue}
-            disabled={isNextDisabled || saving}
+            disabled={saving}
             activeOpacity={0.8}
           >
             {saving ? (

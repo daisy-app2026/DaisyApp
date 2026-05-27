@@ -158,7 +158,14 @@
     "sections": "4 sections · Takes about 5 minutes",
     "continue": "Continue →",
     "startConversation": "Start Conversation →",
-    "of": "of"
+    "of": "of",
+    "errors": {
+      "nameRequired": "Please tell us their name",
+      "whoEndedRequired": "Please select who ended it",
+      "feelingRequired": "Please select at least one feeling",
+      "whatNeverSaidRequired": "Please write at least a few words",
+      "whatWouldAskRequired": "Please write what you would ask them"
+    }
   },
   "talkToCrush": {
     "title": "Talk to Crush",
@@ -284,6 +291,25 @@
       "sendMessage": "Could not send message. Please try again!",
       "loadSessions": "Could not load chats.",
       "deleteSession": "Could not delete chat."
+    }
+  },
+  "forgotPassword": {
+    "title": "Forgot Password?",
+    "subtitle": "No worries! Enter your email and we'll send you a reset link.",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "your@email.com",
+    "sendButton": "Send Reset Link",
+    "backToLogin": "Back to Sign In",
+    "successTitle": "Check Your Email!",
+    "successSubtitle": "We sent a password reset link to:",
+    "successNote": "Check your inbox and follow the link to reset your password. Don't forget to check spam!",
+    "tryDifferent": "Try a different email",
+    "errors": {
+      "emptyEmail": "Please enter your email",
+      "invalidEmail": "Please enter a valid email",
+      "userNotFound": "No account found with this email",
+      "tooManyRequests": "Too many attempts. Try again later.",
+      "generic": "Something went wrong. Try again."
     }
   }
 }

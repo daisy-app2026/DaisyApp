@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { styles } from './ProfileScreen.styles';
 import { useAuthStore } from '../../store/authStore';
+import { useEntriesStore } from '../../store/entriesStore';
 import { logOut, updateUserName } from '../../services/authService';
 import { getEntryStats } from '../../services/entryService';
 import axios from 'axios';
@@ -37,11 +38,13 @@ const ProfileScreen: React.FC = () => {
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [nameLoading, setNameLoading] = useState(false);
   const [photoLoading, setPhotoLoading] = useState(false);
-  const [stats, setStats] = useState({
-    entries: 0,
-    capsules: 0,
-    streak: 0,
-  });
+  
+  const { 
+    stats,
+    isStatsLoaded,
+    setStats
+  } = useEntriesStore();
+  const [statsLoading, setStatsLoading] = useState(false);
 
   // Modal states
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -58,19 +61,50 @@ const ProfileScreen: React.FC = () => {
   const t = en.profile;
 
   useEffect(() => {
-    fetchStats();
+    loadStats();
   }, []);
 
   const showAlert = (title: string, message: string) => {
     setAlertConfig({ visible: true, title, message });
   };
 
-  const fetchStats = async () => {
+  const loadStats = async () => {
     try {
-      const statsData = await getEntryStats();
-      setStats(statsData);
+      // Show cached stats immediately!
+      if (isStatsLoaded && stats) {
+        // Already have stats, 
+        // no loading state!
+        // Refresh in background:
+        refreshStats();
+        return;
+      }
+      
+      // First time: show loading
+      setStatsLoading(true);
+      const data = await getEntryStats();
+      setStats({
+        totalEntries: data.entries,
+        totalCapsules: data.capsules,
+        currentStreak: data.streak
+      });
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      console.log('Stats error:', error);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
+  const refreshStats = async () => {
+    try {
+      // Silent refresh - no loading!
+      const data = await getEntryStats();
+      setStats({
+        totalEntries: data.entries,
+        totalCapsules: data.capsules,
+        currentStreak: data.streak
+      });
+    } catch (error) {
+      console.log('Refresh error:', error);
     }
   };
 
@@ -229,17 +263,29 @@ const ProfileScreen: React.FC = () => {
         {/* Stats Row */}
         <View style={styles.statsRow}>
           <View style={styles.statCard}>
-            <Text style={styles.statNumber}>{stats.entries}</Text>
+            {statsLoading ? (
+              <ActivityIndicator size="small" color="#2D5A1B" />
+            ) : (
+              <Text style={styles.statNumber}>{stats?.totalEntries || 0}</Text>
+            )}
             <Text style={styles.statLabel}>{t.entries}</Text>
           </View>
           <View style={styles.statCard}>
-            <Text style={styles.statNumber}>{stats.capsules}</Text>
+            {statsLoading ? (
+              <ActivityIndicator size="small" color="#2D5A1B" />
+            ) : (
+              <Text style={styles.statNumber}>{stats?.totalCapsules || 0}</Text>
+            )}
             <Text style={styles.statLabel}>{t.capsules}</Text>
           </View>
           <View style={styles.statCard}>
-            <Text style={styles.statNumber}>
-              {stats.streak} {stats.streak > 0 ? '🔥' : ''}
-            </Text>
+            {statsLoading ? (
+              <ActivityIndicator size="small" color="#2D5A1B" />
+            ) : (
+              <Text style={styles.statNumber}>
+                {stats?.currentStreak || 0} {(stats?.currentStreak || 0) > 0 ? '🔥' : ''}
+              </Text>
+            )}
             <Text style={styles.statLabel}>{t.streak}</Text>
           </View>
         </View>

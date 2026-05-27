@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import FullImageViewer from '../shared/FullImageViewer/FullImageViewer';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { DiaryStackParamList } from '../../navigation/types';
+import { useEntriesStore } from '../../store/entriesStore';
 
 type ViewEntryScreenRouteProp = RouteProp<DiaryStackParamList, 'ViewEntry'>;
 type ViewEntryScreenNavigationProp = StackNavigationProp<DiaryStackParamList, 'ViewEntry'>;
@@ -24,7 +25,15 @@ type ViewEntryScreenNavigationProp = StackNavigationProp<DiaryStackParamList, 'V
 const ViewEntryScreen: React.FC = () => {
   const route = useRoute<ViewEntryScreenRouteProp>();
   const navigation = useNavigation<ViewEntryScreenNavigationProp>();
-  const { entry } = route.params;
+  
+  const { recentEntries, allEntries } = useEntriesStore();
+
+  const entry = useMemo(() => {
+    const fromRecent = recentEntries.find(e => e.id === route.params.entry.id);
+    const fromAll = allEntries.find(e => e.id === route.params.entry.id);
+    return fromRecent || fromAll || route.params.entry;
+  }, [recentEntries, allEntries, route.params.entry]);
+
   const isCapsule = entry.isCapsule;
   const isLocked = isCapsule && new Date() < new Date(entry.unlockDate!);
   const isUnlocked = isCapsule && !isLocked;

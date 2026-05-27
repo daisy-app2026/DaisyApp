@@ -35,7 +35,7 @@ ${section4.q1 || ''} ${section4.q4 || ''}
 ${section4.q5 || ''}
 
 ═══════════════════════════════
-PSYCHOLOGICAL GUIDELINES:
+HEALING GUIDELINES:
 ═══════════════════════════════
 
 CORE PRINCIPLES:

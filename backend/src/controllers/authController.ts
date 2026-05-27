@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { db } from '../config/firebase';
+import { db, auth } from '../config/firebase';
 import { AuthRequest } from '../middleware/verifyToken';
 
 export const registerUser = async (
@@ -118,5 +118,38 @@ export const updateProfilePhoto = async (
     res.status(500).json({ 
       error: 'Server error' 
     })
+  }
+}
+
+export const checkEmail = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { email } = req.body
+    
+    if (!email) {
+      res.status(400).json({
+        exists: false
+      })
+      return
+    }
+    
+    // Check in Firebase Auth
+    await auth.getUserByEmail(email.trim())
+    
+    res.status(200).json({
+      exists: true
+    })
+  } catch (error: any) {
+    if (error.code === 'auth/user-not-found') {
+      res.status(200).json({
+        exists: false
+      })
+    } else {
+      res.status(200).json({
+        exists: false
+      })
+    }
   }
 }

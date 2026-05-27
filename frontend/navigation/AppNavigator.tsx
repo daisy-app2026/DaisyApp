@@ -21,6 +21,7 @@ import { useTalkToPastStore } from '../store/talkToPastStore'
 import SplashScreen from '../components/SplashScreen/SplashScreen'
 import LoginScreen from '../components/LoginScreen/LoginScreen'
 import SignupScreen from '../components/SignupScreen/SignupScreen'
+import ForgotPasswordScreen from '../components/ForgotPasswordScreen/ForgotPasswordScreen'
 
 // Diary Screens
 import HomeScreen from '../components/HomeScreen/HomeScreen'
@@ -73,6 +74,10 @@ const AuthNavigator = () => (
     <AuthStack.Screen 
       name='Signup' 
       component={SignupScreen} 
+    />
+    <AuthStack.Screen 
+      name='ForgotPassword' 
+      component={ForgotPasswordScreen} 
     />
   </AuthStack.Navigator>
 )

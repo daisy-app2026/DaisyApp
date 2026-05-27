@@ -132,6 +132,9 @@ export const styles = StyleSheet.create({
   promptsContainer: {
     marginHorizontal: 16,
     marginTop: 12,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 12,
   },
   promptsTitle: {
     fontSize: 11,
@@ -193,5 +196,101 @@ export const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '700',
+  },
+  optionButton: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: 'rgba(45,90,27,0.12)',
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    marginBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  optionButtonSelected: {
+    backgroundColor: 'rgba(45,90,27,0.08)',
+    borderColor: '#2D5A1B',
+    borderWidth: 1.5,
+  },
+  optionText: {
+    fontSize: 14,
+    color: '#1A2E0F',
+    flex: 1,
+  },
+  optionTextSelected: {
+    color: '#2D5A1B',
+    fontWeight: '600',
+  },
+  checkIcon: {
+    marginLeft: 8,
+  },
+  optionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 8,
+  },
+  gridOption: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: 'rgba(45,90,27,0.12)',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  gridOptionSelected: {
+    backgroundColor: 'rgba(45,90,27,0.08)',
+    borderColor: '#2D5A1B',
+  },
+  gridOptionText: {
+    fontSize: 13,
+    color: '#1A2E0F',
+  },
+  gridOptionTextSelected: {
+    color: '#2D5A1B',
+    fontWeight: '600',
+  },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+    marginLeft: 4,
+    gap: 4,
+  },
+  errorText: {
+    fontSize: 12,
+    color: '#E85555',
+    flex: 1,
+  },
+  mandatoryBadge: {
+    fontSize: 11,
+    color: '#E85555',
+    marginLeft: 4,
+  },
+  promptChip: {
+    backgroundColor: 'rgba(45,90,27,0.07)',
+    borderRadius: 20,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(45,90,27,0.15)',
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  promptChipText: {
+    fontSize: 12,
+    color: '#2D5A1B',
+    fontStyle: 'italic',
+  },
+  questionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  errorInput: {
+    borderColor: '#E85555',
+    borderWidth: 1.5,
   },
 });

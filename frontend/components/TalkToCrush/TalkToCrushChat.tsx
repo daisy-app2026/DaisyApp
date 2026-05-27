@@ -84,7 +84,9 @@ const TalkToCrushChat: React.FC = () => {
       showEvent,
       (e: KeyboardEvent) => {
         Animated.timing(keyboardHeight, {
-          toValue: e.endCoordinates.height,
+          toValue: Platform.OS === 'android'
+            ? e.endCoordinates.height + 24
+            : e.endCoordinates.height,
           duration: 250,
           useNativeDriver: false,
         }).start();

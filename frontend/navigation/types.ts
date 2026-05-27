@@ -4,6 +4,7 @@ export type AuthStackParamList = {
   Splash: undefined
   Login: undefined
   Signup: undefined
+  ForgotPassword: undefined
 }
 
 export type DiaryStackParamList = {

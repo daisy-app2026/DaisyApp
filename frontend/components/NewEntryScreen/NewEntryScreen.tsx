@@ -356,8 +356,9 @@ const NewEntryScreen: React.FC = () => {
         }
       }
 
+      let updatedEntry: Entry | null = null;
       if (editEntry) {
-        await updateEntry(editEntry.id, {
+        updatedEntry = await updateEntry(editEntry.id, {
           title,
           content: finalContent,
         });
@@ -374,9 +375,19 @@ const NewEntryScreen: React.FC = () => {
         });
       }
 
-      useEntriesStore.getState().invalidateCache();
-      useEntriesStore.getState().invalidateSpaceCache(spaceId);
-      navigation.goBack();
+      if (editEntry && updatedEntry) {
+        // Update store
+        useEntriesStore.getState().updateEntryInCache(updatedEntry);
+
+        // Navigate back with updated data
+        navigation.navigate('ViewEntry', {
+          entry: updatedEntry
+        });
+      } else {
+        useEntriesStore.getState().invalidateCache();
+        useEntriesStore.getState().invalidateSpaceCache(spaceId);
+        navigation.goBack();
+      }
     } catch (error) {
       isSavingRef.current = false;
       console.error('Save error:', error);

@@ -9,10 +9,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather, FontAwesome } from '@expo/vector-icons';
+import { Feather, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { styles } from './LoginScreen.styles';
 import en from '../../locales/en.json';
 import { signInWithEmail } from '../../services/authService';
@@ -29,14 +28,36 @@ const LoginScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [generalError, setGeneralError] = useState('');
+
   const { setUser } = useAuthStore();
   const { request, promptAsync } = useGoogleAuth(() => {});
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill all fields');
-      return;
+  const validateForm = () => {
+    let isValid = true;
+    
+    setEmailError('');
+    setPasswordError('');
+    setGeneralError('');
+    
+    if (!email.trim()) {
+      setEmailError('Please enter your email');
+      isValid = false;
     }
+    
+    if (!password.trim()) {
+      setPasswordError('Please enter your password');
+      isValid = false;
+    }
+    
+    return isValid;
+  };
+
+  const handleLogin = async () => {
+    if (!validateForm()) return;
+    
     try {
       setLoading(true);
       const { user, token, name, email: fetchedEmail, photoURL } = await signInWithEmail(email, password);
@@ -48,10 +69,19 @@ const LoginScreen: React.FC = () => {
         photoURL: photoURL || null,
       });
     } catch (error: any) {
-      Alert.alert(
-        'Login Failed',
-        error.message || 'Something went wrong'
-      );
+      const code = error?.code || '';
+      
+      if (code === 'auth/user-not-found' ||
+          code === 'auth/wrong-password' ||
+          code === 'auth/invalid-credential') {
+        setGeneralError('Incorrect email or password. Please try again.');
+      } else if (code === 'auth/invalid-email') {
+        setEmailError('Please enter a valid email address');
+      } else if (code === 'auth/too-many-requests') {
+        setGeneralError('Too many attempts. Please try again later.');
+      } else {
+        setGeneralError('Something went wrong. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -85,7 +115,7 @@ const LoginScreen: React.FC = () => {
             <Text style={styles.title}>{en.login.welcome}</Text>
             <Text style={styles.subtitle}>{en.login.subtitle}</Text>
 
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer, emailError ? styles.errorInput : null]}>
               <View style={{ marginRight: 10 }}>
                 <Feather name="mail" size={18} color="#888888" />
               </View>
@@ -96,11 +126,27 @@ const LoginScreen: React.FC = () => {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  setEmailError('');
+                  setGeneralError('');
+                }}
               />
             </View>
+            {emailError ? (
+              <View style={styles.errorContainer}>
+                <Ionicons
+                  name='alert-circle-outline'
+                  size={14}
+                  color='#E85555'
+                />
+                <Text style={styles.errorText}>
+                  {emailError}
+                </Text>
+              </View>
+            ) : null}
 
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer, passwordError ? styles.errorInput : null]}>
               <View style={{ marginRight: 10 }}>
                 <Feather name="lock" size={18} color="#888888" />
               </View>
@@ -110,19 +156,48 @@ const LoginScreen: React.FC = () => {
                 placeholderTextColor="#888"
                 secureTextEntry={true}
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setPasswordError('');
+                  setGeneralError('');
+                }}
               />
             </View>
+            {passwordError ? (
+              <View style={styles.errorContainer}>
+                <Ionicons
+                  name='alert-circle-outline'
+                  size={14}
+                  color='#E85555'
+                />
+                <Text style={styles.errorText}>
+                  {passwordError}
+                </Text>
+              </View>
+            ) : null}
 
             <TouchableOpacity
               style={styles.forgotPassword}
-              onPress={() => console.log('Forgot password')}
+              onPress={() => navigation.navigate('ForgotPassword')}
               activeOpacity={0.7}
             >
               <Text style={styles.forgotPasswordText}>
                 {en.login.forgotPassword}
               </Text>
             </TouchableOpacity>
+
+            {generalError ? (
+              <View style={styles.generalError}>
+                <Ionicons
+                  name='alert-circle-outline'
+                  size={14}
+                  color='#E85555'
+                />
+                <Text style={styles.generalErrorText}>
+                  {generalError}
+                </Text>
+              </View>
+            ) : null}
 
             <TouchableOpacity
               style={[styles.continueButton, loading && { opacity: 0.7 }]}

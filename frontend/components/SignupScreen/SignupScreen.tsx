@@ -9,10 +9,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather, FontAwesome } from '@expo/vector-icons';
+import { Feather, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { styles } from './SignupScreen.styles';
 import en from '../../locales/en.json';
 import { signUpWithEmail } from '../../services/authService';
@@ -31,25 +30,53 @@ const SignupScreen: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [nameError, setNameError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [generalError, setGeneralError] = useState('');
+
   const { setUser } = useAuthStore();
   const { request, promptAsync } = useGoogleAuth(() => {});
 
+  const validateForm = () => {
+    let isValid = true;
+    
+    // Reset errors
+    setNameError('');
+    setEmailError('');
+    setPasswordError('');
+    setGeneralError('');
+    
+    if (!name.trim()) {
+      setNameError('Please enter your name');
+      isValid = false;
+    }
+    
+    if (!email.trim()) {
+      setEmailError('Please enter your email');
+      isValid = false;
+    } else if (!email.includes('@') || !email.includes('.')) {
+      setEmailError('Please enter a valid email address');
+      isValid = false;
+    }
+    
+    if (!password.trim()) {
+      setPasswordError('Please enter a password');
+      isValid = false;
+    } else if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters');
+      isValid = false;
+    } else if (password !== confirmPassword) {
+      setPasswordError('Passwords do not match');
+      isValid = false;
+    }
+    
+    return isValid;
+  };
+
   const handleSignup = async () => {
-    if (!name || !email || !password || !confirmPassword) {
-      Alert.alert('Error', 'Please fill all fields');
-      return;
-    }
-    if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
-      return;
-    }
-    if (password.length < 6) {
-      Alert.alert(
-        'Error',
-        'Password must be at least 6 characters'
-      );
-      return;
-    }
+    if (!validateForm()) return;
+    
     try {
       setLoading(true);
       const { user, token } = await signUpWithEmail(email, password, name);
@@ -60,10 +87,17 @@ const SignupScreen: React.FC = () => {
         token,
       });
     } catch (error: any) {
-      Alert.alert(
-        'Signup Failed',
-        error.message || 'Something went wrong'
-      );
+      const code = error?.code || '';
+      
+      if (code === 'auth/email-already-in-use') {
+        setEmailError('This email is already registered. Please sign in instead.');
+      } else if (code === 'auth/invalid-email') {
+        setEmailError('Please enter a valid email address');
+      } else if (code === 'auth/weak-password') {
+        setPasswordError('Password must be at least 6 characters');
+      } else {
+        setGeneralError('Something went wrong. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -97,7 +131,7 @@ const SignupScreen: React.FC = () => {
             <Text style={styles.title}>{en.signup.welcome}</Text>
             <Text style={styles.subtitle}>{en.signup.subtitle}</Text>
 
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer, nameError ? styles.errorInput : null]}>
               <View style={{ marginRight: 10 }}>
                 <Feather name="user" size={18} color="#888888" />
               </View>
@@ -106,11 +140,27 @@ const SignupScreen: React.FC = () => {
                 placeholder={en.signup.namePlaceholder}
                 placeholderTextColor="#888"
                 value={name}
-                onChangeText={setName}
+                onChangeText={(text) => {
+                  setName(text);
+                  setNameError('');
+                  setGeneralError('');
+                }}
               />
             </View>
+            {nameError ? (
+              <View style={styles.errorContainer}>
+                <Ionicons 
+                  name='alert-circle-outline'
+                  size={14}
+                  color='#E85555'
+                />
+                <Text style={styles.errorText}>
+                  {nameError}
+                </Text>
+              </View>
+            ) : null}
 
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer, emailError ? styles.errorInput : null]}>
               <View style={{ marginRight: 10 }}>
                 <Feather name="mail" size={18} color="#888888" />
               </View>
@@ -121,11 +171,27 @@ const SignupScreen: React.FC = () => {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  setEmailError('');
+                  setGeneralError('');
+                }}
               />
             </View>
+            {emailError ? (
+              <View style={styles.errorContainer}>
+                <Ionicons
+                  name='alert-circle-outline'
+                  size={14}
+                  color='#E85555'
+                />
+                <Text style={styles.errorText}>
+                  {emailError}
+                </Text>
+              </View>
+            ) : null}
 
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer, passwordError ? styles.errorInput : null]}>
               <View style={{ marginRight: 10 }}>
                 <Feather name="lock" size={18} color="#888888" />
               </View>
@@ -135,11 +201,27 @@ const SignupScreen: React.FC = () => {
                 placeholderTextColor="#888"
                 secureTextEntry
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setPasswordError('');
+                  setGeneralError('');
+                }}
               />
             </View>
+            {passwordError ? (
+              <View style={styles.errorContainer}>
+                <Ionicons
+                  name='alert-circle-outline'
+                  size={14}
+                  color='#E85555'
+                />
+                <Text style={styles.errorText}>
+                  {passwordError}
+                </Text>
+              </View>
+            ) : null}
 
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer, passwordError ? styles.errorInput : null]}>
               <View style={{ marginRight: 10 }}>
                 <Feather name="lock" size={18} color="#888888" />
               </View>
@@ -149,9 +231,26 @@ const SignupScreen: React.FC = () => {
                 placeholderTextColor="#888"
                 secureTextEntry
                 value={confirmPassword}
-                onChangeText={setConfirmPassword}
+                onChangeText={(text) => {
+                  setConfirmPassword(text);
+                  setPasswordError('');
+                  setGeneralError('');
+                }}
               />
             </View>
+
+            {generalError ? (
+              <View style={styles.generalError}>
+                <Ionicons
+                  name='alert-circle-outline'
+                  size={14}
+                  color='#E85555'
+                />
+                <Text style={styles.generalErrorText}>
+                  {generalError}
+                </Text>
+              </View>
+            ) : null}
 
             <TouchableOpacity
               style={[styles.createButton, loading && { opacity: 0.7 }]}

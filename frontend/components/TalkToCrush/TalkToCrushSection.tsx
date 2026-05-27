@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -30,6 +30,8 @@ const TalkToCrushSection: React.FC = () => {
   const { sectionNumber } = route.params;
   const { addSession } = useTalkToCrushStore();
 
+  const scrollRef = useRef<ScrollView>(null);
+
   const [currentAnswers, setCurrentAnswers] = useState<Record<string, any>>(() => {
     const existing = route.params.answers || {};
     return existing[`section${sectionNumber}`] || {};
@@ -37,6 +39,15 @@ const TalkToCrushSection: React.FC = () => {
 
   const [crushName, setCrushName] = useState(route.params.crushName || '');
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      scrollRef.current?.scrollTo({
+        y: 0,
+        animated: false
+      });
+    }, 100);
+  }, [sectionNumber]);
 
   // Sync state if route params change
   useEffect(() => {
@@ -298,6 +309,7 @@ Data: ${JSON.stringify(error?.response?.data) || 'None'}`
         keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
         <ScrollView
+          ref={scrollRef}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollViewContent}
