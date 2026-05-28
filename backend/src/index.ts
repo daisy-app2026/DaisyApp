@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/auth';
 import spacesRoutes from './routes/spaces';
 import entriesRoutes from './routes/entries';
@@ -14,6 +15,33 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+
+// Global rate limit
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  message: {
+    error: 'Too many requests, please try again later.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// AI endpoints strict limit
+const aiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  message: {
+    error: 'Too many AI requests, please slow down.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply limits
+app.use(globalLimiter);
+app.use('/api/talk-to-past', aiLimiter);
+app.use('/api/talk-to-crush', aiLimiter);
 
 // Request logger middleware
 app.use((req, res, next) => {

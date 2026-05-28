@@ -165,6 +165,13 @@ export const sendMessage = async (
       return;
     }
 
+    if (message.length > 1000) {
+      res.status(400).json({
+        error: 'Message too long!'
+      });
+      return;
+    }
+
     const sessionRef = db
       .collection('talkToPastSessions')
       .doc(sessionId);
