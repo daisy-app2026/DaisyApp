@@ -1,3 +1,8 @@
+/**
+ * Entries Store
+ * Manages the state of recent entries, all entries, and entry statistics.
+ * Supports caching and background synchronization.
+ */
 import { create } from 'zustand'
 import { Entry } from '../services/entryService'
 

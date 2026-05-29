@@ -1,3 +1,8 @@
+/**
+ * Spaces Store
+ * Manages the state of default and custom spaces.
+ * Supports caching and preload loading states.
+ */
 import { create } from 'zustand'
 
 interface Space {

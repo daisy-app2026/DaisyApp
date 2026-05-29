@@ -263,29 +263,17 @@ const ProfileScreen: React.FC = () => {
         {/* Stats Row */}
         <View style={styles.statsRow}>
           <View style={styles.statCard}>
-            {statsLoading ? (
-              <ActivityIndicator size="small" color="#2D5A1B" />
-            ) : (
-              <Text style={styles.statNumber}>{stats?.totalEntries || 0}</Text>
-            )}
+            <Text style={styles.statsValue}>{stats?.totalEntries ?? '0'}</Text>
             <Text style={styles.statLabel}>{t.entries}</Text>
           </View>
           <View style={styles.statCard}>
-            {statsLoading ? (
-              <ActivityIndicator size="small" color="#2D5A1B" />
-            ) : (
-              <Text style={styles.statNumber}>{stats?.totalCapsules || 0}</Text>
-            )}
+            <Text style={styles.statsValue}>{stats?.totalCapsules ?? '0'}</Text>
             <Text style={styles.statLabel}>{t.capsules}</Text>
           </View>
           <View style={styles.statCard}>
-            {statsLoading ? (
-              <ActivityIndicator size="small" color="#2D5A1B" />
-            ) : (
-              <Text style={styles.statNumber}>
-                {stats?.currentStreak || 0} {(stats?.currentStreak || 0) > 0 ? '🔥' : ''}
-              </Text>
-            )}
+            <Text style={styles.statsValue}>
+              {stats?.currentStreak ?? '0'}{(stats?.currentStreak || 0) > 0 ? ' 🔥' : ''}
+            </Text>
             <Text style={styles.statLabel}>{t.streak}</Text>
           </View>
         </View>

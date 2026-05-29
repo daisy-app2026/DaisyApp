@@ -193,6 +193,12 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#2D5A1B',
   },
+  statsValue: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#2D5A1B',
+    fontFamily: 'serif',
+  },
   statLabel: {
     fontSize: 11,
     color: '#7A9060',

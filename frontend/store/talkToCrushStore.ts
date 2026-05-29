@@ -1,3 +1,8 @@
+/**
+ * Talk to Crush Store
+ * Manages conversation sessions with the user's crush avatar.
+ * Supports caching and session preloading.
+ */
 import { create } from 'zustand';
 import { TalkToCrushSession } from '../services/talkToCrushService';
 

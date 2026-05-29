@@ -1,3 +1,8 @@
+/**
+ * Talk to Past Store
+ * Manages conversation sessions with the user's past self.
+ * Supports caching and session preloading.
+ */
 import { create } from 'zustand';
 import { TalkToPastSession } from '../services/talkToPastService';
 

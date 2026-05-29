@@ -11,7 +11,11 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#1A3A0F"
+    },
+    "androidStatusBar": {
+      "backgroundColor": "#1A3A0F",
+      "barStyle": "light-content"
     },
     "ios": {
       "supportsTablet": true
