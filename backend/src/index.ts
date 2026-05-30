@@ -19,7 +19,7 @@ app.use(express.json());
 // Global rate limit
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 200,
+  max: 500,
   message: {
     error: 'Too many requests, please try again later.'
   },
@@ -30,7 +30,7 @@ const globalLimiter = rateLimit({
 // AI endpoints strict limit
 const aiLimiter = rateLimit({
   windowMs: 60 * 1000,
-  max: 10,
+  max: 50,
   message: {
     error: 'Too many AI requests, please slow down.'
   },
