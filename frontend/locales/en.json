@@ -166,7 +166,18 @@
       "feelingRequired": "Please select at least one feeling",
       "whatNeverSaidRequired": "Please write at least a few words",
       "whatWouldAskRequired": "Please write what you would ask them"
-    }
+    },
+    "s4OutcomeLabel": "What outcome are you hoping for from this?",
+    "s4OutcomeOptions": [
+      "💔  Find closure",
+      "🤝  Forgive and move on",
+      "💬  Just say what I never said",
+      "🌱  Heal and let go",
+      "😌  Understand what happened",
+      "🔄  Reconnect if possible",
+      "💭  Process my feelings",
+      "🕊️  Make peace with the past"
+    ]
   },
   "talkToCrush": {
     "title": "Talk to Crush",

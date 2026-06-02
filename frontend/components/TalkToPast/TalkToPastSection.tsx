@@ -214,6 +214,7 @@ const sections = [
       'What would you order? What might they order?',
       'What would you ask them?',
       'Based on what you know about them, what do you think they would say?',
+      'What outcome are you hoping for from this?',
     ],
     placeholders: [
       'A quiet café we used to go to...',
@@ -221,6 +222,7 @@ const sections = [
       'Coffee. They would order tea...',
       'How are you? Are you happy?',
       'I think they would say they are sorry...',
+      '',
     ],
     buttonText: 'Start Conversation →',
     nextSection: null,
@@ -387,6 +389,10 @@ const TalkToPastSection: React.FC = () => {
           }
         }
 
+        if (s === 4 && index === 5) {
+          sectionObj['outcome'] = valStr;
+        }
+
         sectionObj[`q${index + 1}`] = valStr;
       });
       sectionsData[`section${s}`] = sectionObj;
@@ -535,6 +541,8 @@ const TalkToPastSection: React.FC = () => {
     
     const label = isSection1Q1 
       ? 'Their name or what you called them' 
+      : (sectionNumber === 4 && index === 5)
+      ? (en.talkToPast.s4OutcomeLabel || question)
       : question;
       
     const placeholder = currentSection.placeholders[index];
@@ -668,6 +676,15 @@ const TalkToPastSection: React.FC = () => {
               />
             )}
           </View>
+        );
+      } else if (index === 5) {
+        const outcomeOptions = en.talkToPast.s4OutcomeOptions || [];
+        customInput = (
+          <SingleSelect
+            options={outcomeOptions}
+            selected={typeof value === 'string' ? value : undefined}
+            onChange={(val) => handleSelectChange(key, val)}
+          />
         );
       }
     }

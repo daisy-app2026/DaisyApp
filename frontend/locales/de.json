@@ -166,7 +166,18 @@
       "feelingRequired": "Bitte wähle mindestens ein Gefühl aus",
       "whatNeverSaidRequired": "Bitte schreibe mindestens ein paar Wörter",
       "whatWouldAskRequired": "Bitte schreibe, was du fragen würdest"
-    }
+    },
+    "s4OutcomeLabel": "Welches Ergebnis erhoffst du dir davon?",
+    "s4OutcomeOptions": [
+      "💔  Abschluss finden",
+      "🤝  Vergeben und weitermachen",
+      "💬  Einfach sagen, was ungesagt blieb",
+      "🌱  Heilen und loslassen",
+      "😌  Verstehen, was passiert ist",
+      "🔄  Wieder verbinden, falls möglich",
+      "💭  Meine Gefühle verarbeiten",
+      "🕊️  Frieden mit der Vergangenheit schließen"
+    ]
   },
   "talkToCrush": {
     "title": "Mit dem Schwarm sprechen",
