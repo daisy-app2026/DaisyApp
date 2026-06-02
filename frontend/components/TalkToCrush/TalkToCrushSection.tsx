@@ -28,7 +28,7 @@ const TalkToCrushSection: React.FC = () => {
   const route = useRoute<RouteProp<TalkToCrushStackParamList, 'TalkToCrushSection'>>();
 
   const { sectionNumber } = route.params;
-  const { addSession } = useTalkToCrushStore();
+  const { addSession, setHasCreatedSession } = useTalkToCrushStore();
 
   const scrollRef = useRef<ScrollView>(null);
 
@@ -169,6 +169,7 @@ const TalkToCrushSection: React.FC = () => {
       );
       
       addSession(session);
+      setHasCreatedSession(true);
       
       navigation.navigate('TalkToCrushChat', {
         sessionId: session.id,
@@ -178,9 +179,13 @@ const TalkToCrushSection: React.FC = () => {
       });
     } catch (error: any) {
       console.log('Error details:', error)
-      console.log('Error message:', error?.message)
-      console.log('Error response:', error?.response?.data)
-      console.log('Error status:', error?.response?.status)
+      if (error?.response?.data?.error === 'CHAT_LIMIT_REACHED') {
+        Alert.alert(
+          'Limit Reached',
+          'You can only have 2 chats. Delete one to create a new one.'
+        );
+        return;
+      }
       
       Alert.alert(
         'Error Details',

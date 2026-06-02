@@ -1,0 +1,291 @@
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 140px 24px 100px;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 900px;
+  width: 100%;
+}
+
+/* Glass badge top */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245, 220, 50, 0.1);
+  border: 1px solid rgba(245, 220, 50, 0.25);
+  border-radius: 25px;
+  padding: 8px 20px;
+  font-size: 13px;
+  color: var(--yellow);
+  font-weight: 600;
+  margin-bottom: 28px;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.badgeIcon {
+  width: 16px;
+  height: 16px;
+  fill: var(--yellow);
+}
+
+.heroTitle {
+  font-family: var(--font-heading);
+  font-size: 64px;
+  font-weight: 700;
+  color: white;
+  line-height: 1.2;
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: -1px;
+}
+
+.line1 {
+  display: block;
+  color: white;
+  white-space: nowrap;
+}
+
+.line2 {
+  display: block;
+  color: var(--yellow);
+  white-space: nowrap;
+}
+
+.heroSubtitle {
+  font-size: 17px;
+  color: var(--text-soft);
+  line-height: 1.8;
+  max-width: 520px;
+  margin: 32px auto 40px;
+  text-align: center;
+}
+
+/* 3D Glass Video Container with 16:9 ratio */
+.videoWrapper {
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto 0 auto;
+  position: relative;
+}
+
+.videoGlow {
+  position: absolute;
+  inset: -20px;
+  background: rgba(245, 220, 50, 0.05);
+  border-radius: 40px;
+  filter: blur(40px);
+  z-index: -1;
+}
+
+.videoContainer {
+  width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 32px 80px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  /* Perfect 16:9 ratio hook! */
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+}
+
+.videoPlaceholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(45, 90, 27, 0.3) 0%,
+    rgba(10, 26, 5, 0.8) 100%
+  );
+  cursor: pointer;
+}
+
+.playButton {
+  width: 72px;
+  height: 72px;
+  background: rgba(245, 220, 50, 0.15);
+  border: 2px solid rgba(245, 220, 50, 0.4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.playButton:hover {
+  background: rgba(245, 220, 50, 0.25);
+  box-shadow: 0 0 30px rgba(245, 220, 50, 0.3);
+}
+
+.playIcon {
+  width: 28px;
+  height: 28px;
+  fill: var(--yellow);
+  margin-left: 4px;
+}
+
+.videoLabel {
+  color: var(--text-soft);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Download Buttons */
+.downloadButtons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Uniform Store Badge Wrapper size! */
+.storeBadgeWrapper {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.storeBadgeWrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* App Store badge */
+.appStoreBadge {
+  height: 52px;
+  width: auto;
+  display: block;
+}
+
+/* Play Store badge whitespace crop margins */
+.playStoreBadge {
+  height: 52px;
+  width: auto;
+  display: block;
+  margin: -8px -10px;
+  height: 68px;
+}
+
+/* APK download button matches height! */
+.apkBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  padding: 10px 20px;
+  height: 52px;
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.apkBtn:hover {
+  background: rgba(245, 220, 50, 0.1);
+  border-color: rgba(245, 220, 50, 0.3);
+  color: var(--yellow);
+  transform: translateY(-2px);
+}
+
+.apkIcon {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* Mobile Responsive overrides */
+@media (max-width: 768px) {
+  .hero {
+    padding: 120px 20px 80px;
+  }
+
+  .heroTitle {
+    font-size: 28px;
+    letter-spacing: -0.5px;
+    gap: 8px;
+  }
+
+  .heroSubtitle {
+    font-size: 15px;
+    padding: 0 8px;
+    margin: 24px auto 32px;
+  }
+
+  .videoWrapper {
+    border-radius: 16px;
+    margin-bottom: 0;
+  }
+
+  .videoContainer {
+    border-radius: 16px;
+  }
+
+  .downloadButtons {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .storeBadgeWrapper {
+    width: 200px;
+    justify-content: center;
+    height: 52px;
+  }
+  
+  .playStoreBadge {
+    height: 68px; /* Maintain whitespace cropping height */
+  }
+
+  .apkBtn {
+    width: 200px;
+    justify-content: center;
+  }
+}

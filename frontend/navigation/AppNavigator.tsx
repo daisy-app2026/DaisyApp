@@ -145,7 +145,8 @@ const TalkToPastNavigator = () => {
   const { 
     sessions,
     isLoaded,
-    setSessions 
+    setSessions,
+    hasCreatedSession,
   } = useTalkToPastStore()
   
   const [checking, setChecking] = useState(!isLoaded)
@@ -168,6 +169,16 @@ const TalkToPastNavigator = () => {
     }
   }
 
+  const navigatorKey = 
+    hasCreatedSession || sessions.length > 0
+      ? 'ttp-home'
+      : 'ttp-intro'
+
+  const initialRoute = 
+    hasCreatedSession || sessions.length > 0
+      ? 'TalkToPastHome'
+      : 'TalkToPastIntro'
+
   // Show loading ONLY first time!
   if (checking) {
     return (
@@ -187,6 +198,7 @@ const TalkToPastNavigator = () => {
 
   return (
     <TalkToPastStack.Navigator
+      key={navigatorKey}
       screenOptions={{
         headerShown: false,
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
@@ -194,11 +206,7 @@ const TalkToPastNavigator = () => {
         presentation: 'card',
         detachPreviousScreen: true,
       }}
-      initialRouteName={
-        sessions.length > 0
-          ? 'TalkToPastHome'
-          : 'TalkToPastIntro'
-      }
+      initialRouteName={initialRoute}
     >
       <TalkToPastStack.Screen
         name='TalkToPastIntro'
@@ -223,7 +231,12 @@ const TalkToPastNavigator = () => {
 const TalkToCrushStack = createStackNavigator<TalkToCrushStackParamList>()
 
 const TalkToCrushNavigator = () => {
-  const { sessions, isLoaded, setSessions } = useTalkToCrushStore()
+  const { 
+    sessions, 
+    isLoaded, 
+    setSessions,
+    hasCreatedSession,
+  } = useTalkToCrushStore()
   
   const [checking, setChecking] = useState(!isLoaded)
 
@@ -244,6 +257,16 @@ const TalkToCrushNavigator = () => {
     }
   }
 
+  const navigatorKey = 
+    hasCreatedSession || sessions.length > 0
+      ? 'ttc-home'
+      : 'ttc-intro'
+
+  const initialRoute = 
+    hasCreatedSession || sessions.length > 0
+      ? 'TalkToCrushHome'
+      : 'TalkToCrushIntro'
+
   if (checking) {
     return (
       <View style={{
@@ -262,16 +285,13 @@ const TalkToCrushNavigator = () => {
 
   return (
     <TalkToCrushStack.Navigator
+      key={navigatorKey}
       screenOptions={{
         headerShown: false,
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         gestureEnabled: true,
       }}
-      initialRouteName={
-        sessions.length > 0
-          ? 'TalkToCrushHome'
-          : 'TalkToCrushIntro'
-      }
+      initialRouteName={initialRoute}
     >
       <TalkToCrushStack.Screen
         name='TalkToCrushIntro'
@@ -402,6 +422,14 @@ const MainNavigator = () => (
           }
         };
       }}
+      listeners={({ navigation }) => ({
+        tabPress: (e) => {
+          const isFocused = navigation.isFocused();
+          if (isFocused) {
+            e.preventDefault();
+          }
+        }
+      })}
     />
     <Tab.Screen
       name='TalkToCrushTab'
@@ -430,6 +458,14 @@ const MainNavigator = () => (
           }
         };
       }}
+      listeners={({ navigation }) => ({
+        tabPress: (e) => {
+          const isFocused = navigation.isFocused();
+          if (isFocused) {
+            e.preventDefault();
+          }
+        }
+      })}
     />
   </Tab.Navigator>
 )

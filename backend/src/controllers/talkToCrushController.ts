@@ -130,6 +130,19 @@ export const createSession = async (
       return;
     }
 
+    const existingSessions = await db
+      .collection('talkToCrushSessions')
+      .where('userId', '==', userId)
+      .get();
+
+    if (existingSessions.size >= 2) {
+      res.status(403).json({
+        error: 'CHAT_LIMIT_REACHED',
+        message: 'Maximum 2 chats allowed'
+      });
+      return;
+    }
+
     const sessionRef = db
       .collection('talkToCrushSessions')
       .doc();
@@ -281,6 +294,22 @@ export const sendMessage = async (
     if (session.userId !== userId) {
       res.status(403).json({ 
         error: 'Unauthorized' 
+      });
+      return;
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+    const messages = (session.messages || []) as SessionMessage[];
+    const todayUserMessages = messages.filter((msg: SessionMessage) => {
+      if (!msg.isUser) return false;
+      const msgDate = new Date(msg.timestamp).toISOString().split('T')[0];
+      return msgDate === today;
+    });
+
+    if (todayUserMessages.length >= 5) {
+      res.status(403).json({
+        error: 'DAILY_LIMIT_REACHED',
+        message: 'Daily limit of 5 messages reached'
       });
       return;
     }

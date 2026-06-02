@@ -73,6 +73,19 @@ const TalkToPastChat: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [pendingMessage, setPendingMessage] = useState<string | null>(null);
+  const [dailyCount, setDailyCount] = useState(0);
+
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    const count = messages.filter((msg) => {
+      if (!msg.isUser) return false;
+      const msgDate = new Date(msg.timestamp).toISOString().split('T')[0];
+      return msgDate === today;
+    }).length;
+    setDailyCount(count);
+  }, [messages]);
+
+  const remaining = Math.max(0, 5 - dailyCount);
 
   const flatListRef = useRef<FlatList>(null);
   const keyboardHeight = useRef(new Animated.Value(0)).current;
@@ -230,12 +243,19 @@ const TalkToPastChat: React.FC = () => {
           updateSession(updatedSession);
         }, 0);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log('Send error:', error);
       setPending(sessionId, false);
       setPendingMessage(null);
       // Remove typing indicator
       setMessages((prev) => prev.filter((m) => m.id !== 'typing'));
+      
+      const errorCode = error?.response?.data?.error;
+      if (errorCode === 'DAILY_LIMIT_REACHED') {
+        setDailyCount(5);
+        return;
+      }
+      
       Alert.alert('Error', 'Could not send message. Try again!');
     } finally {
       setIsSending(false);
@@ -292,7 +312,21 @@ const TalkToPastChat: React.FC = () => {
             </View>
             <Text style={styles.personName}>{name}</Text>
           </View>
-          <View style={styles.headerRight} />
+          <View style={styles.headerRight}>
+            {remaining > 0 ? (
+              <View style={styles.limitBadge}>
+                <Text style={styles.limitText}>
+                  {remaining} left
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.limitBadgeEmpty}>
+                <Text style={styles.limitTextEmpty}>
+                  No msgs left
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
 
         {/* Banner */}
@@ -331,35 +365,42 @@ const TalkToPastChat: React.FC = () => {
           style={styles.textInput}
           value={inputText}
           onChangeText={setInputText}
-          placeholder="What are you thinking..."
+          placeholder={remaining === 0 ? "Daily limit reached..." : "What are you thinking..."}
           placeholderTextColor='#CCCCCC'
           multiline={true}
           underlineColorAndroid='transparent'
-          editable={!isSending}
+          editable={!isSending && remaining > 0}
         />
         <TouchableOpacity
           style={[
             styles.sendBtn,
             { backgroundColor: 
-                inputText.trim()
+                inputText.trim() && remaining > 0
                   ? '#2D5A1B'
                   : 'rgba(45,90,27,0.15)'
             }
           ]}
           onPress={handleSend}
-          disabled={!inputText.trim() || isSending}
+          disabled={!inputText.trim() || isSending || remaining === 0}
           activeOpacity={0.8}
         >
           <Ionicons
             name='arrow-forward'
             size={20}
-            color={inputText.trim()
+            color={inputText.trim() && remaining > 0
               ? 'white'
               : 'rgba(45,90,27,0.4)'
             }
           />
         </TouchableOpacity>
       </Animated.View>
+      {remaining === 0 && (
+        <SafeAreaView edges={['bottom']} style={styles.limitReached}>
+          <Text style={styles.limitReachedText}>
+            Daily limit reached. Come back tomorrow! 🌼
+          </Text>
+        </SafeAreaView>
+      )}
     </View>
   );
 };

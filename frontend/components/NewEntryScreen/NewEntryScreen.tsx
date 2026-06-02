@@ -380,9 +380,7 @@ const NewEntryScreen: React.FC = () => {
         useEntriesStore.getState().updateEntryInCache(updatedEntry);
 
         // Navigate back with updated data
-        navigation.navigate('ViewEntry', {
-          entry: updatedEntry
-        });
+        navigation.pop(1);
       } else {
         useEntriesStore.getState().invalidateCache();
         useEntriesStore.getState().invalidateSpaceCache(spaceId);

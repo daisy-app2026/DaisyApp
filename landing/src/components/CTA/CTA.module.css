@@ -1,0 +1,174 @@
+.cta {
+  padding: 100px 48px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.ctaCard {
+  background: rgba(245, 220, 50, 0.06);
+  border: 1px solid rgba(245, 220, 50, 0.15);
+  border-radius: 40px;
+  padding: 80px 48px;
+  max-width: 800px;
+  margin: 0 auto;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 24px 60px rgba(0, 0, 0, 0.4),
+    0 2px 10px rgba(245, 220, 50, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.ctaGlow {
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  height: 400px;
+  background: rgba(245, 220, 50, 0.08);
+  border-radius: 50%;
+  filter: blur(80px);
+  -webkit-filter: blur(80px);
+  pointer-events: none;
+}
+
+.ctaTitle {
+  font-family: var(--font-heading);
+  font-size: 44px;
+  color: var(--text);
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.ctaSubtitle {
+  font-size: 17px;
+  color: var(--text-soft);
+  margin-bottom: 40px;
+  position: relative;
+  z-index: 2;
+}
+
+.ctaButtons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* Uniform Store Badge Wrapper size! */
+.storeBadgeWrapper {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.storeBadgeWrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* App Store badge */
+.appStoreBadge {
+  height: 52px;
+  width: auto;
+  display: block;
+}
+
+/* Play Store badge whitespace crop margins */
+.playStoreBadge {
+  height: 52px;
+  width: auto;
+  display: block;
+  margin: -8px -10px;
+  height: 68px;
+}
+
+/* Direct APK Download button */
+.apkBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  padding: 10px 20px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  height: 52px;
+}
+
+.apkBtn:hover {
+  background: rgba(245, 220, 50, 0.1);
+  border-color: rgba(245, 220, 50, 0.3);
+  color: var(--yellow);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.apkIcon {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .cta {
+    padding: 60px 20px;
+  }
+
+  .ctaCard {
+    padding: 48px 24px;
+    border-radius: 30px;
+  }
+
+  .ctaTitle {
+    font-size: 30px;
+  }
+
+  .ctaSubtitle {
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+
+  .ctaButtons {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .storeBadgeWrapper {
+    width: 200px;
+    justify-content: center;
+    height: 52px;
+  }
+
+  .playStoreBadge {
+    height: 68px;
+  }
+
+  .apkBtn {
+    height: 52px;
+    width: 100%;
+    max-width: 200px;
+    justify-content: center;
+  }
+}

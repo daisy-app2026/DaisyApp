@@ -238,7 +238,7 @@ const TalkToPastSection: React.FC = () => {
 
   const { sectionNumber } = route.params;
   const { user } = useAuthStore();
-  const { addSession } = useTalkToPastStore();
+  const { addSession, setHasCreatedSession } = useTalkToPastStore();
 
   const scrollRef = useRef<ScrollView>(null);
 
@@ -457,6 +457,7 @@ const TalkToPastSection: React.FC = () => {
         );
 
         addSession(session);
+        setHasCreatedSession(true);
 
         navigation.navigate('TalkToPastChat', {
           sessionId: session.id,
@@ -464,8 +465,15 @@ const TalkToPastSection: React.FC = () => {
           answers: session.answers,
           initialMessages: [],
         });
-      } catch (error) {
+      } catch (error: any) {
         console.log('Create session error:', error);
+        if (error?.response?.data?.error === 'CHAT_LIMIT_REACHED') {
+          Alert.alert(
+            'Limit Reached',
+            'You can only have 2 chats. Delete one to create a new one.'
+          );
+          return;
+        }
         Alert.alert('Error', 'Could not start session. Try again!');
       } finally {
         setSaving(false);

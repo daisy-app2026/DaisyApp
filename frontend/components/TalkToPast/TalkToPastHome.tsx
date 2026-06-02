@@ -203,13 +203,22 @@ const TalkToPastHome: React.FC = () => {
             })}
           </View>
 
-          <Text style={styles.bottomLabel}>Each new person starts fresh</Text>
+          <Text style={styles.bottomLabel}>
+            {sessions.length >= 2 
+              ? "Chat limit reached (2/2). Delete a chat to start a new one." 
+              : `Chat count: ${sessions.length}/2 • Each new person starts fresh`
+            }
+          </Text>
         </ScrollView>
       )}
 
       <TouchableOpacity
-        style={styles.plusButton}
+        style={[
+          styles.plusButton,
+          sessions.length >= 2 && styles.plusButtonDisabled
+        ]}
         onPress={handleStartNew}
+        disabled={sessions.length >= 2}
         activeOpacity={0.8}
       >
         <Ionicons name="add" size={28} color="white" />

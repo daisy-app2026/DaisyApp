@@ -10,8 +10,10 @@ interface TalkToCrushState {
   sessions: TalkToCrushSession[];
   isLoaded: boolean;
   pendingMessages: Record<string, boolean>;
+  hasCreatedSession: boolean;
   setPending: (sessionId: string, isPending: boolean) => void;
   setSessions: (sessions: TalkToCrushSession[]) => void;
+  setHasCreatedSession: (val: boolean) => void;
   updateSession: (session: TalkToCrushSession) => void;
   deleteSession: (sessionId: string) => void;
   addSession: (session: TalkToCrushSession) => void;
@@ -22,6 +24,7 @@ export const useTalkToCrushStore = create<TalkToCrushState>((set) => ({
   sessions: [],
   isLoaded: false,
   pendingMessages: {},
+  hasCreatedSession: false,
 
   setPending: (sessionId, isPending) =>
     set((state) => ({
@@ -38,6 +41,8 @@ export const useTalkToCrushStore = create<TalkToCrushState>((set) => ({
       ),
       isLoaded: true,
     }),
+
+  setHasCreatedSession: (val) => set({ hasCreatedSession: val }),
 
   updateSession: (updatedSession) =>
     set((state) => {
@@ -74,5 +79,5 @@ export const useTalkToCrushStore = create<TalkToCrushState>((set) => ({
     })),
 
   invalidateCache: () =>
-    set({ sessions: [], isLoaded: false, pendingMessages: {} }),
+    set({ sessions: [], isLoaded: false, pendingMessages: {}, hasCreatedSession: false }),
 }));

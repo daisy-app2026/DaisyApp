@@ -238,4 +238,26 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  limitBadgeEmpty: {
+    backgroundColor: 'rgba(232,85,85,0.08)',
+    borderRadius: 12,
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+  },
+  limitTextEmpty: {
+    fontSize: 11,
+    color: '#E85555',
+    fontWeight: '600',
+  },
+  limitReached: {
+    backgroundColor: 'rgba(45,90,27,0.06)',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  limitReachedText: {
+    fontSize: 13,
+    color: '#2D5A1B',
+    textAlign: 'center',
+  },
 });

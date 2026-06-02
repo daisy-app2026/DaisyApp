@@ -10,8 +10,10 @@ interface TalkToPastState {
   sessions: TalkToPastSession[];
   isLoaded: boolean;
   pendingMessages: Record<string, boolean>;
+  hasCreatedSession: boolean;
   setPending: (sessionId: string, isPending: boolean) => void;
   setSessions: (sessions: TalkToPastSession[]) => void;
+  setHasCreatedSession: (val: boolean) => void;
   updateSession: (session: TalkToPastSession) => void;
   deleteSession: (sessionId: string) => void;
   addSession: (session: TalkToPastSession) => void;
@@ -22,6 +24,7 @@ export const useTalkToPastStore = create<TalkToPastState>((set) => ({
   sessions: [],
   isLoaded: false,
   pendingMessages: {},
+  hasCreatedSession: false,
 
   setPending: (sessionId, isPending) =>
     set((state) => ({
@@ -38,6 +41,8 @@ export const useTalkToPastStore = create<TalkToPastState>((set) => ({
       ),
       isLoaded: true,
     }),
+
+  setHasCreatedSession: (val) => set({ hasCreatedSession: val }),
 
   updateSession: (updatedSession) =>
     set((state) => {
@@ -74,5 +79,5 @@ export const useTalkToPastStore = create<TalkToPastState>((set) => ({
     })),
 
   invalidateCache: () =>
-    set({ sessions: [], isLoaded: false, pendingMessages: {} }),
+    set({ sessions: [], isLoaded: false, pendingMessages: {}, hasCreatedSession: false }),
 }));

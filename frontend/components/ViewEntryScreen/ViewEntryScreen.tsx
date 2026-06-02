@@ -28,14 +28,16 @@ const ViewEntryScreen: React.FC = () => {
   
   const { recentEntries, allEntries } = useEntriesStore();
 
-  const entry = useMemo(() => {
-    const fromRecent = recentEntries.find(e => e.id === route.params.entry.id);
-    const fromAll = allEntries.find(e => e.id === route.params.entry.id);
-    return fromRecent || fromAll || route.params.entry;
-  }, [recentEntries, allEntries, route.params.entry]);
+  const freshEntry = useMemo(() => {
+    return recentEntries.find(
+      e => e.id === route.params.entry.id
+    ) || allEntries.find(
+      e => e.id === route.params.entry.id
+    ) || route.params.entry
+  }, [recentEntries, allEntries, route.params.entry.id]);
 
-  const isCapsule = entry.isCapsule;
-  const isLocked = isCapsule && new Date() < new Date(entry.unlockDate!);
+  const isCapsule = freshEntry.isCapsule;
+  const isLocked = isCapsule && new Date() < new Date(freshEntry.unlockDate!);
   const isUnlocked = isCapsule && !isLocked;
 
   const [playingId, setPlayingId] = useState<string | null>(null);
@@ -95,19 +97,19 @@ const ViewEntryScreen: React.FC = () => {
           <Ionicons name="arrow-back" size={22} color="#2D5A1B" />
         </TouchableOpacity>
         
-        <Text style={styles.headerTitle}>{entry.spaceName}</Text>
+        <Text style={styles.headerTitle}>{freshEntry.spaceName}</Text>
         
-        {entry.type !== 'doodle' && 
-         entry.type !== 'audio' &&
-         !(entry.isCapsule && 
-           entry.editCount >= 1) ? (
+        {freshEntry.type !== 'doodle' && 
+         freshEntry.type !== 'audio' &&
+         !(freshEntry.isCapsule && 
+           freshEntry.editCount >= 1) ? (
           <TouchableOpacity 
             style={styles.editButton} 
             onPress={() => navigation.navigate('NewEntry', {
-              spaceId: entry.spaceId,
-              spaceName: entry.spaceName,
+              spaceId: freshEntry.spaceId,
+              spaceName: freshEntry.spaceName,
               spaceIcon: 'bookmark-outline',
-              editEntry: entry,
+              editEntry: freshEntry,
             })}
             activeOpacity={0.7}
           >
@@ -121,10 +123,10 @@ const ViewEntryScreen: React.FC = () => {
   );
 
   const renderContent = () => {
-    switch (entry.type) {
+    switch (freshEntry.type) {
       case 'audio':
         try {
-          const audios = JSON.parse(entry.content);
+          const audios = JSON.parse(freshEntry.content);
           return (
             <View>
               {audios.map((audio: { url: string; duration: number }, index: number) => (
@@ -155,7 +157,7 @@ const ViewEntryScreen: React.FC = () => {
 
       case 'image':
         try {
-          const data = JSON.parse(entry.content);
+          const data = JSON.parse(freshEntry.content);
           const images = data.images || [];
           return (
             <View>
@@ -191,10 +193,10 @@ const ViewEntryScreen: React.FC = () => {
       case 'doodle':
         const doodleUrls = (() => {
           try {
-            const data = JSON.parse(entry.content);
-            return Array.isArray(data) ? data : [entry.content];
+            const data = JSON.parse(freshEntry.content);
+            return Array.isArray(data) ? data : [freshEntry.content];
           } catch {
-            return entry.content ? [entry.content] : [];
+            return freshEntry.content ? [freshEntry.content] : [];
           }
         })();
 
@@ -231,7 +233,7 @@ const ViewEntryScreen: React.FC = () => {
         );
 
       default:
-        return <Text style={styles.bodyContent}>{entry.content}</Text>;
+        return <Text style={styles.bodyContent}>{freshEntry.content}</Text>;
     }
   };
 
@@ -248,7 +250,7 @@ const ViewEntryScreen: React.FC = () => {
           />
           <Text style={styles.lockedTitle}>This capsule is locked</Text>
           <Text style={styles.lockedSubtitle}>
-            Opens on {formatDate(entry.unlockDate!)}
+            Opens on {formatDate(freshEntry.unlockDate!)}
           </Text>
           <Text style={styles.lockedFooter}>Come back then 🌼</Text>
         </View>
@@ -270,19 +272,19 @@ const ViewEntryScreen: React.FC = () => {
             <Ionicons name="lock-open-outline" size={16} color="#B8860B" />
             <View>
               <Text style={styles.bannerLabel}>This capsule has opened 🌼</Text>
-              <Text style={styles.bannerDate}>Written on {formatDate(entry.createdAt)}</Text>
+              <Text style={styles.bannerDate}>Written on {formatDate(freshEntry.createdAt)}</Text>
             </View>
           </View>
         )}
 
-        <Text style={styles.title}>{entry.title || "Untitled Entry"}</Text>
+        <Text style={styles.title}>{freshEntry.title || "Untitled Entry"}</Text>
         
         <View style={styles.metaRow}>
           <View style={styles.spaceTag}>
-            <Text style={styles.spaceTagText}>{entry.spaceName}</Text>
+            <Text style={styles.spaceTagText}>{freshEntry.spaceName}</Text>
           </View>
-          <Text style={styles.metaDate}>{formatDate(entry.createdAt)}</Text>
-          {entry.isEdited && (
+          <Text style={styles.metaDate}>{formatDate(freshEntry.createdAt)}</Text>
+          {freshEntry.isEdited && (
             <Text style={styles.editedText}>Edited</Text>
           )}
         </View>
