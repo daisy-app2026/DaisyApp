@@ -15,7 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuthStore } from '../../store/authStore';
-import en from '../../locales/en.json';
+import { useLanguageStore } from '../../store/languageStore';
 import { styles } from './CategoryScreen.styles';
 import EntryCard from '../shared/EntryCard/EntryCard';
 import CapsuleCard from '../shared/CapsuleCard/CapsuleCard';
@@ -31,6 +31,7 @@ type CategoryScreenNavigationProp = StackNavigationProp<DiaryStackParamList, 'Ca
 
 const CategoryScreen: React.FC = () => {
   const route = useRoute<CategoryScreenRouteProp>();
+  const { t: en } = useLanguageStore();
   const navigation = useNavigation<CategoryScreenNavigationProp>();
   const { spaceId, spaceName, spaceIcon, spaceIconBg, spaceIconBgLight } = route.params;
 

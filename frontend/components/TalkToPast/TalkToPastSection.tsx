@@ -18,7 +18,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { TalkToPastStackParamList } from '../../navigation/types';
-import en from '../../locales/en.json';
+import { useLanguageStore } from '../../store/languageStore';
 import { useAuthStore } from '../../store/authStore';
 import { createTalkToPastSession } from '../../services/talkToPastService';
 import { useTalkToPastStore } from '../../store/talkToPastStore';
@@ -179,11 +179,11 @@ const sections = [
     ],
     placeholders: [
       'They did, suddenly...',
-      'They stopped responding...',
-      'I tried to reach out...',
-      'Sad, angry, helpless...',
-      'I talked to friends...',
-      'Time and journaling...',
+      'They said we wanted different things...',
+      'I cried and begged them not to go...',
+      'Shocked and abandoned...',
+      'I talked to friends and focused on work...',
+      'Grieving fully when needed...',
       'The silence was hard...',
     ],
     buttonText: 'Continue →',
@@ -191,15 +191,9 @@ const sections = [
   },
   {
     number: 3,
-    title: 'What I Never Said',
-    subtitle: 'Speak to them directly. Use "you."',
-    description: null,
-    prompts: [
-      '"Something I should have told you is..."',
-      '"I appreciated you for..."',
-      '"I was hurt when..."',
-      '"I wish I had said..."',
-    ],
+    title: 'What Was Left Unsaid',
+    subtitle: 'This space holds what has never been shared.',
+    description: 'Tell them what you never got to say.',
     questions: [
       'Write what you never got to say...',
     ],
@@ -235,6 +229,7 @@ const sections = [
 
 const TalkToPastSection: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<TalkToPastStackParamList>>();
+  const { t: en } = useLanguageStore();
   const route = useRoute<RouteProp<TalkToPastStackParamList, 'TalkToPastSection'>>();
 
   const { sectionNumber } = route.params;

@@ -153,3 +153,56 @@ export const checkEmail = async (
     }
   }
 }
+
+// Get user language
+export const getLanguage = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = req.userId!
+    const userDoc = await db
+      .collection('users')
+      .doc(userId)
+      .get()
+    
+    const language = userDoc.data()?.language || 'en'
+    
+    res.status(200).json({ language })
+  } catch (error) {
+    res.status(200).json({ 
+      language: 'en' 
+    })
+  }
+}
+
+// Update user language
+export const updateLanguage = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = req.userId!
+    const { language } = req.body
+    
+    if (!['en', 'de', 'ar'].includes(language)) {
+      res.status(400).json({
+        error: 'Invalid language'
+      })
+      return
+    }
+    
+    await db
+      .collection('users')
+      .doc(userId)
+      .update({ language })
+    
+    res.status(200).json({ 
+      success: true 
+    })
+  } catch (error) {
+    res.status(500).json({
+      error: 'Server error'
+    })
+  }
+}

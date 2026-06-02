@@ -18,8 +18,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuthStore } from '../../store/authStore';
-import en from '../../locales/en.json';
+import { useLanguageStore } from '../../store/languageStore';
 import { styles } from './HomeScreen.styles';
+
 import SpaceCircle from '../shared/SpaceCircle/SpaceCircle';
 import EntryCard from '../shared/EntryCard/EntryCard';
 import CapsuleCard from '../shared/CapsuleCard/CapsuleCard';
@@ -62,6 +63,7 @@ import { useSpacesStore } from '../../store/spacesStore';
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<DiaryStackParamList, 'Home'>>();
+  const { t } = useLanguageStore();
   const { user } = useAuthStore();
 
   const { 
@@ -257,10 +259,10 @@ const HomeScreen: React.FC = () => {
 
   const greeting = useMemo(() => {
     const hour = new Date().getHours();
-    if (hour < 12) return en.home.greeting_morning;
-    if (hour < 17) return en.home.greeting_afternoon;
-    return en.home.greeting_evening;
-  }, []);
+    if (hour < 12) return t.home.greeting_morning;
+    if (hour < 17) return t.home.greeting_afternoon;
+    return t.home.greeting_evening;
+  }, [t]);
 
   const firstName = useMemo(() => {
     return user?.name?.split(' ')[0]?.split('_')[0] || 'there';
@@ -379,7 +381,7 @@ const HomeScreen: React.FC = () => {
                 )}
               </View>
               <View style={styles.headerCenter}>
-                <Text style={styles.headerTitle}>{en.home.title}</Text>
+                <Text style={styles.headerTitle}>{t.home.title}</Text>
               </View>
               <TouchableOpacity 
                 style={styles.headerRight}
@@ -399,13 +401,13 @@ const HomeScreen: React.FC = () => {
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
           <View style={styles.greetingCard}>
-            <Text style={styles.greetingTop}>{en.home.whatsOnMind}</Text>
-            <Text style={styles.greetingBottom}>{en.home.chooseSpace}</Text>
+            <Text style={styles.greetingTop}>{t.home.whatsOnMind}</Text>
+            <Text style={styles.greetingBottom}>{t.home.chooseSpace}</Text>
           </View>
 
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.spacesTitle}>{en.home.yourSpaces}</Text>
+              <Text style={styles.spacesTitle}>{t.home.yourSpaces}</Text>
             </View>
             
             <View style={styles.spacesContainer}>
@@ -437,7 +439,7 @@ const HomeScreen: React.FC = () => {
 
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>{en.home.recent}</Text>
+              <Text style={styles.sectionTitle}>{t.home.recent}</Text>
               <TouchableOpacity
                 onPress={() => navigation.navigate('Search')}
                 style={styles.searchBtn}
@@ -448,7 +450,7 @@ const HomeScreen: React.FC = () => {
                   color='#4A7C2A'
                 />
                 <Text style={styles.searchBtnText}>
-                  {en.category.search}
+                  {t.category.search}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -495,7 +497,7 @@ const HomeScreen: React.FC = () => {
           ) : (
               <View style={styles.emptyState}>
                 <Text style={styles.emptyEmoji}>🌼</Text>
-                <Text style={styles.emptyTitle}>{en.home.emptyTitle}</Text>
+                <Text style={styles.emptyTitle}>{t.home.emptyTitle}</Text>
                 <Text style={styles.emptySubtitle}>
                   Tap a space above to write your first entry 🌿
                 </Text>
@@ -587,8 +589,8 @@ const HomeScreen: React.FC = () => {
             onPress={() => setModalVisible(false)}
           >
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>{en.home.addSpace}</Text>
-              <Text style={styles.modalSubtitle}>{en.home.addSpaceSub}</Text>
+              <Text style={styles.modalTitle}>{t.home.addSpace}</Text>
+              <Text style={styles.modalSubtitle}>{t.home.addSpaceSub}</Text>
               
               <View style={styles.emojiRow}>
                 {ICON_OPTIONS.map((icon) => {
@@ -617,7 +619,7 @@ const HomeScreen: React.FC = () => {
 
               <TextInput
                 style={styles.input}
-                placeholder={en.home.spaceName}
+                placeholder={t.home.spaceName}
                 placeholderTextColor="#888"
                 value={newSpaceName}
                 onChangeText={setNewSpaceName}
@@ -626,10 +628,10 @@ const HomeScreen: React.FC = () => {
 
               <View style={styles.modalButtons}>
                 <TouchableOpacity onPress={() => setModalVisible(false)}>
-                  <Text style={styles.cancelButton}>{en.home.cancel}</Text>
+                  <Text style={styles.cancelButton}>{t.home.cancel}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.addButton} onPress={handleAddSpace}>
-                  <Text style={styles.addButtonText}>{en.home.addSpaceBtn}</Text>
+                  <Text style={styles.addButtonText}>{t.home.addSpaceBtn}</Text>
                 </TouchableOpacity>
               </View>
             </View>

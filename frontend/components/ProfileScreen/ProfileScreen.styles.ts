@@ -265,55 +265,56 @@ export const styles = StyleSheet.create({
   logoutText: {
     color: '#E85555',
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: width * 0.85,
+  languageSection: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 24,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.1,
-    shadowRadius: 20,
-    elevation: 5,
+    borderRadius: 14,
+    padding: 16,
+    shadowColor: '#2D5A1B',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 14,
+    elevation: 3,
   },
-  modalTitle: {
+  languageSectionTitle: {
     fontFamily: 'serif',
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1A2E0F',
-    marginBottom: 16,
-  },
-  languageList: {
-    maxHeight: 300,
-  },
-  languageRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0, 0, 0, 0.06)',
-  },
-  activeLanguageText: {
+    fontSize: 14,
     fontWeight: '700',
     color: '#2D5A1B',
+    marginBottom: 12,
   },
-  languageName: {
+  languageOptions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  languageOption: {
     flex: 1,
-    fontSize: 16,
-    color: '#1A2E0F',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FAFAF8',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.06)',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    gap: 6,
   },
-  comingSoon: {
-    fontSize: 11,
-    color: '#AAAAAA',
-    fontStyle: 'italic',
-    marginTop: 12,
-    textAlign: 'center',
+  languageOptionActive: {
+    backgroundColor: 'rgba(245, 220, 50, 0.15)',
+    borderColor: '#D4A514',
+  },
+  languageFlag: {
+    fontSize: 16,
+  },
+  languageLabel: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#555555',
+  },
+  languageLabelActive: {
+    fontWeight: '700',
+    color: '#7A5800',
   },
   disclaimerText: {
     fontSize: 13,

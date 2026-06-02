@@ -9,7 +9,7 @@ import {
   StatusBar,
 } from 'react-native';
 import { styles } from './SplashScreen.styles';
-import en from '../../locales/en.json';
+import { useLanguageStore } from '../../store/languageStore';
 
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -19,6 +19,8 @@ type SplashScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Splas
 
 const SplashScreen: React.FC = () => {
   const navigation = useNavigation<SplashScreenNavigationProp>();
+  const { t } = useLanguageStore();
+
 
   // Animation refs
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -62,10 +64,10 @@ const SplashScreen: React.FC = () => {
           </Animated.View>
 
           {/* App Name */}
-          <Text style={styles.appName}>{en.splash.appName}</Text>
+          <Text style={styles.appName}>{t.splash.appName}</Text>
 
           {/* Tagline */}
-          <Text style={styles.tagline}>{en.splash.tagline}</Text>
+          <Text style={styles.tagline}>{t.splash.tagline}</Text>
 
           {/* Buttons */}
           <View style={styles.buttonContainer}>
@@ -75,7 +77,7 @@ const SplashScreen: React.FC = () => {
               onPress={() => navigation.navigate('Signup')}
             >
               <Text style={styles.getStartedButtonText}>
-                {en.splash.getStarted}
+                {t.splash.getStarted}
               </Text>
             </TouchableOpacity>
 
@@ -85,7 +87,7 @@ const SplashScreen: React.FC = () => {
               onPress={() => navigation.navigate('Login')}
             >
               <Text style={styles.loginButtonText}>
-                {en.splash.haveAccount}
+                {t.splash.haveAccount}
               </Text>
             </TouchableOpacity>
           </View>

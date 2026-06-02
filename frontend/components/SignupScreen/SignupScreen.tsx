@@ -13,7 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { styles } from './SignupScreen.styles';
-import en from '../../locales/en.json';
+import { useLanguageStore } from '../../store/languageStore';
 import { signUpWithEmail } from '../../services/authService';
 import { useAuthStore } from '../../store/authStore';
 import { useGoogleAuth } from '../../hooks/useGoogleAuth';
@@ -24,7 +24,9 @@ import { AuthStackParamList } from '../../navigation/types';
 
 const SignupScreen: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<AuthStackParamList, 'Signup'>>();
+  const { t } = useLanguageStore();
   const [name, setName] = useState('');
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -124,12 +126,12 @@ const SignupScreen: React.FC = () => {
             >
               <Feather name="arrow-left" size={22} color="#2D5A1B" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>{en.signup.title}</Text>
+            <Text style={styles.headerTitle}>{t.signup.title}</Text>
           </View>
 
           <View style={styles.card}>
-            <Text style={styles.title}>{en.signup.welcome}</Text>
-            <Text style={styles.subtitle}>{en.signup.subtitle}</Text>
+            <Text style={styles.title}>{t.signup.welcome}</Text>
+            <Text style={styles.subtitle}>{t.signup.subtitle}</Text>
 
             <View style={[styles.inputContainer, nameError ? styles.errorInput : null]}>
               <View style={{ marginRight: 10 }}>
@@ -137,7 +139,7 @@ const SignupScreen: React.FC = () => {
               </View>
               <TextInput
                 style={styles.input}
-                placeholder={en.signup.namePlaceholder}
+                placeholder={t.signup.namePlaceholder}
                 placeholderTextColor="#888"
                 value={name}
                 onChangeText={(text) => {
@@ -166,7 +168,7 @@ const SignupScreen: React.FC = () => {
               </View>
               <TextInput
                 style={styles.input}
-                placeholder={en.signup.emailPlaceholder}
+                placeholder={t.signup.emailPlaceholder}
                 placeholderTextColor="#888"
                 keyboardType="email-address"
                 autoCapitalize="none"
@@ -197,7 +199,7 @@ const SignupScreen: React.FC = () => {
               </View>
               <TextInput
                 style={styles.input}
-                placeholder={en.signup.passwordPlaceholder}
+                placeholder={t.signup.passwordPlaceholder}
                 placeholderTextColor="#888"
                 secureTextEntry
                 value={password}
@@ -227,7 +229,7 @@ const SignupScreen: React.FC = () => {
               </View>
               <TextInput
                 style={styles.input}
-                placeholder={en.signup.confirmPlaceholder}
+                placeholder={t.signup.confirmPlaceholder}
                 placeholderTextColor="#888"
                 secureTextEntry
                 value={confirmPassword}
@@ -262,14 +264,14 @@ const SignupScreen: React.FC = () => {
                 <ActivityIndicator color="#FFFFFF" />
               ) : (
                 <Text style={styles.createButtonText}>
-                  {en.signup.createButton}
+                  {t.signup.createButton}
                 </Text>
               )}
             </TouchableOpacity>
 
             <View style={styles.dividerContainer}>
               <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>{en.signup.or}</Text>
+              <Text style={styles.dividerText}>{t.signup.or}</Text>
               <View style={styles.dividerLine} />
             </View>
 
@@ -282,14 +284,14 @@ const SignupScreen: React.FC = () => {
               <View style={{ marginRight: 10 }}>
                 <FontAwesome name="google" size={18} color="#2D5A1B" />
               </View>
-              <Text style={styles.googleButtonText}>{en.signup.googleSignup}</Text>
+              <Text style={styles.googleButtonText}>{t.signup.googleSignup}</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.bottomContainer}>
-            <Text style={styles.haveAccountText}>{en.signup.haveAccount} </Text>
+            <Text style={styles.haveAccountText}>{t.signup.haveAccount} </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')} activeOpacity={0.7}>
-              <Text style={styles.signInText}>{en.signup.signIn}</Text>
+              <Text style={styles.signInText}>{t.signup.signIn}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

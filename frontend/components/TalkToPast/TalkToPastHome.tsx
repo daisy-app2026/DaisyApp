@@ -15,7 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect, CommonActions } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { TalkToPastStackParamList } from '../../navigation/types';
-import en from '../../locales/en.json';
+import { useLanguageStore } from '../../store/languageStore';
 import { useAuthStore } from '../../store/authStore';
 import { getTalkToPastSessions, deleteTalkToPastSession, TalkToPastSession } from '../../services/talkToPastService';
 import { useTalkToPastStore } from '../../store/talkToPastStore';
@@ -25,6 +25,7 @@ import { getPersonIcon } from '../../utils/personIcon';
 
 const TalkToPastHome: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<TalkToPastStackParamList>>();
+  const { t: en } = useLanguageStore();
   const { user } = useAuthStore();
 
   const {

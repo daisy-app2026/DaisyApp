@@ -17,7 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAuthStore } from '../../store/authStore';
-import en from '../../locales/en.json';
+import { useLanguageStore } from '../../store/languageStore';
 import { styles } from './SearchScreen.styles';
 import { getAllEntries, Entry } from '../../services/entryService';
 import EntryCard from '../shared/EntryCard/EntryCard';
@@ -32,6 +32,7 @@ type SearchScreenNavigationProp = StackNavigationProp<DiaryStackParamList, 'Sear
 
 const SearchScreen: React.FC = () => {
   const navigation = useNavigation<SearchScreenNavigationProp>();
+  const { t: en } = useLanguageStore();
   const { user } = useAuthStore();
   const [query, setQuery] = useState('');
 

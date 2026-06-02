@@ -20,7 +20,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { TalkToPastStackParamList } from '../../navigation/types';
-import en from '../../locales/en.json';
+import { useLanguageStore } from '../../store/languageStore';
 import { useAuthStore } from '../../store/authStore';
 import {
   sendTalkToPastMessage,
@@ -56,6 +56,7 @@ const TypingIndicator: React.FC = () => {
 
 const TalkToPastChat: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<TalkToPastStackParamList>>();
+  const { t: en } = useLanguageStore();
   const route = useRoute<RouteProp<TalkToPastStackParamList, 'TalkToPastChat'>>();
 
   const { sessionId, personName, initialMessages } = route.params;

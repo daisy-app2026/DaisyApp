@@ -9,7 +9,9 @@ import {
   Modal,
   ActivityIndicator,
   StatusBar,
+  I18nManager,
 } from 'react-native';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -20,7 +22,8 @@ import { useEntriesStore } from '../../store/entriesStore';
 import { logOut, updateUserName } from '../../services/authService';
 import { getEntryStats } from '../../services/entryService';
 import axios from 'axios';
-import en from '../../locales/en.json';
+import { useLanguageStore } from '../../store/languageStore';
+import { getFreshToken } from '../../utils/getToken';
 import CustomModal from '../shared/CustomModal/CustomModal';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
@@ -36,7 +39,6 @@ const ProfileScreen: React.FC = () => {
   const { user, updateName, updatePhotoURL, logout: clearStore } = useAuthStore();
   const [editingName, setEditingName] = useState(false);
   const [newName, setNewName] = useState(user?.name || '');
-  const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [nameLoading, setNameLoading] = useState(false);
   const [photoLoading, setPhotoLoading] = useState(false);
   
@@ -59,7 +61,8 @@ const ProfileScreen: React.FC = () => {
     message: '',
   });
 
-  const t = en.profile;
+  const { language, setLanguage, t: translations } = useLanguageStore();
+  const t = translations.profile;
 
   useEffect(() => {
     loadStats();
@@ -163,12 +166,43 @@ const ProfileScreen: React.FC = () => {
     clearStore();
   };
 
+  const handleLanguageChange = async (lang: 'en' | 'de' | 'ar') => {
+    try {
+      setLanguage(lang);
+      
+      const targetRTL = lang === 'ar';
+      if (I18nManager.isRTL !== targetRTL) {
+        I18nManager.forceRTL(targetRTL);
+        I18nManager.allowRTL(targetRTL);
+        
+        const alertTitle = lang === 'ar' ? 'تغيير اللغة' : (lang === 'de' ? 'Sprache geändert' : 'Language Changed');
+        const alertMsg = lang === 'ar'
+          ? 'يرجى إعادة تشغيل التطبيق لتطبيق اتجاه اللغة العربية (RTL) بشكل صحيح.'
+          : (lang === 'de' ? 'Bitte starte die App neu, um das Layout anzupassen.' : 'Please restart the app to apply the layout changes properly.');
+        
+        showAlert(alertTitle, alertMsg);
+      }
+
+      const token = await getFreshToken();
+      await axios.put(
+        `${API_URL}/api/auth/update-language`,
+        { language: lang },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+    } catch (error) {
+      console.log('Language save error:', error);
+    }
+  };
+
+
   const languages = [
     { code: 'en', name: 'English', native: 'English' },
     { code: 'de', name: 'German', native: 'Deutsch' },
     { code: 'ar', name: 'Arabic', native: 'العربية' },
-    { code: 'fr', name: 'French', native: 'Français' },
-    { code: 'es', name: 'Spanish', native: 'Español' },
   ];
 
   const memberSince = user?.createdAt
@@ -309,13 +343,35 @@ const ProfileScreen: React.FC = () => {
             <Ionicons name="chevron-forward" size={18} color="#BBBBBB" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => setShowLanguageModal(true)}>
-            <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(45, 90, 27, 0.10)' }]}>
-              <Ionicons name="globe-outline" size={18} color="#2D5A1B" />
+          {/* Language Selection Card */}
+          <View style={styles.languageSection}>
+            <Text style={styles.languageSectionTitle}>{t.language}</Text>
+            <View style={styles.languageOptions}>
+              {languages.map((lang) => (
+                <TouchableOpacity
+                  key={lang.code}
+                  style={[
+                    styles.languageOption,
+                    language === lang.code && styles.languageOptionActive,
+                  ]}
+                  onPress={() => handleLanguageChange(lang.code as 'en' | 'de' | 'ar')}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.languageFlag}>
+                    {lang.code === 'en' ? '🇬🇧' : lang.code === 'de' ? '🇩🇪' : '🇸🇦'}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.languageLabel,
+                      language === lang.code && styles.languageLabelActive,
+                    ]}
+                  >
+                    {lang.native}
+                  </Text>
+                </TouchableOpacity>
+              ))}
             </View>
-            <Text style={styles.menuItemText}>{t.changeLanguage}</Text>
-            <Ionicons name="chevron-forward" size={18} color="#BBBBBB" />
-          </TouchableOpacity>
+          </View>
 
           <TouchableOpacity style={styles.menuItem} onPress={() => console.log('payment')}>
             <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(45, 90, 27, 0.10)' }]}>
@@ -343,35 +399,6 @@ const ProfileScreen: React.FC = () => {
         </View>
       </ScrollView>
 
-      {/* Language Modal */}
-      <Modal visible={showLanguageModal} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
-          <TouchableOpacity style={{ flex: 1, width: '100%' }} onPress={() => setShowLanguageModal(false)} />
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{t.chooseLanguage}</Text>
-            <View style={styles.languageList}>
-              {languages.map((lang) => (
-                <TouchableOpacity
-                  key={lang.code}
-                  style={styles.languageRow}
-                  onPress={() => setShowLanguageModal(false)}
-                >
-                  <Text style={[styles.languageName, lang.code === 'en' && styles.activeLanguageText]}>
-                    {lang.name} ({lang.native})
-                  </Text>
-                  {lang.code === 'en' ? (
-                    <Ionicons name="checkmark-circle" size={20} color="#2D5A1B" />
-                  ) : (
-                    <View style={{ width: 20, height: 20, borderRadius: 10, borderWidth: 1, borderColor: '#DDD' }} />
-                  )}
-                </TouchableOpacity>
-              ))}
-            </View>
-            <Text style={styles.comingSoon}>{t.comingSoon}</Text>
-          </View>
-          <TouchableOpacity style={{ flex: 1, width: '100%' }} onPress={() => setShowLanguageModal(false)} />
-        </View>
-      </Modal>
 
 
       {/* Logout Modal */}

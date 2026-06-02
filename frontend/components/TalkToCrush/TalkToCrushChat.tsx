@@ -20,7 +20,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { TalkToCrushStackParamList } from '../../navigation/types';
-import en from '../../locales/en.json';
+import { useLanguageStore } from '../../store/languageStore';
 import { useAuthStore } from '../../store/authStore';
 import {
   sendTalkToCrushMessage,
@@ -56,6 +56,7 @@ const TypingIndicator: React.FC = () => {
 
 const TalkToCrushChat: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<TalkToCrushStackParamList>>();
+  const { t: en } = useLanguageStore();
   const route = useRoute<RouteProp<TalkToCrushStackParamList, 'TalkToCrushChat'>>();
 
   const { sessionId, crushName, initialMessages } = route.params;

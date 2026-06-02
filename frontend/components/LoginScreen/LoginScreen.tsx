@@ -13,7 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { styles } from './LoginScreen.styles';
-import en from '../../locales/en.json';
+import { useLanguageStore } from '../../store/languageStore';
 import { signInWithEmail } from '../../services/authService';
 import { useAuthStore } from '../../store/authStore';
 import { useGoogleAuth } from '../../hooks/useGoogleAuth';
@@ -24,7 +24,9 @@ import { AuthStackParamList } from '../../navigation/types';
 
 const LoginScreen: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<AuthStackParamList, 'Login'>>();
+  const { t } = useLanguageStore();
   const [email, setEmail] = useState('');
+
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -108,12 +110,12 @@ const LoginScreen: React.FC = () => {
             >
               <Feather name="x" size={22} color="#2D5A1B" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>{en.login.title}</Text>
+            <Text style={styles.headerTitle}>{t.login.title}</Text>
           </View>
 
           <View style={styles.card}>
-            <Text style={styles.title}>{en.login.welcome}</Text>
-            <Text style={styles.subtitle}>{en.login.subtitle}</Text>
+            <Text style={styles.title}>{t.login.welcome}</Text>
+            <Text style={styles.subtitle}>{t.login.subtitle}</Text>
 
             <View style={[styles.inputContainer, emailError ? styles.errorInput : null]}>
               <View style={{ marginRight: 10 }}>
@@ -121,7 +123,7 @@ const LoginScreen: React.FC = () => {
               </View>
               <TextInput
                 style={styles.input}
-                placeholder={en.login.emailPlaceholder}
+                placeholder={t.login.emailPlaceholder}
                 placeholderTextColor="#888"
                 keyboardType="email-address"
                 autoCapitalize="none"
@@ -152,7 +154,7 @@ const LoginScreen: React.FC = () => {
               </View>
               <TextInput
                 style={styles.input}
-                placeholder={en.login.passwordPlaceholder}
+                placeholder={t.login.passwordPlaceholder}
                 placeholderTextColor="#888"
                 secureTextEntry={true}
                 value={password}
@@ -182,7 +184,7 @@ const LoginScreen: React.FC = () => {
               activeOpacity={0.7}
             >
               <Text style={styles.forgotPasswordText}>
-                {en.login.forgotPassword}
+                {t.login.forgotPassword}
               </Text>
             </TouchableOpacity>
 
@@ -209,14 +211,14 @@ const LoginScreen: React.FC = () => {
                 <ActivityIndicator color="#FFFFFF" />
               ) : (
                 <Text style={styles.continueButtonText}>
-                  {en.login.continue}
+                  {t.login.continue}
                 </Text>
               )}
             </TouchableOpacity>
 
             <View style={styles.dividerContainer}>
               <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>{en.login.or}</Text>
+              <Text style={styles.dividerText}>{t.login.or}</Text>
               <View style={styles.dividerLine} />
             </View>
 
@@ -229,14 +231,14 @@ const LoginScreen: React.FC = () => {
               <View style={{ marginRight: 10 }}>
                 <FontAwesome name="google" size={18} color="#2D5A1B" />
               </View>
-              <Text style={styles.googleButtonText}>{en.login.googleLogin}</Text>
+              <Text style={styles.googleButtonText}>{t.login.googleLogin}</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.bottomContainer}>
-            <Text style={styles.newHereText}>{en.login.newHere} </Text>
+            <Text style={styles.newHereText}>{t.login.newHere} </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Signup')} activeOpacity={0.7}>
-              <Text style={styles.createAccountText}>{en.login.createAccount}</Text>
+              <Text style={styles.createAccountText}>{t.login.createAccount}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

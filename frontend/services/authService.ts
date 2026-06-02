@@ -172,3 +172,30 @@ export const uploadProfilePhoto = async (
     throw error
   }
 }
+
+export const fetchUserLanguage = async (): Promise<string> => {
+  const token = await getFreshToken()
+  const response = await axios.get(
+    `${API_URL}/api/auth/language`,
+    {
+      headers: { 
+        Authorization: `Bearer ${token}` 
+      }
+    }
+  )
+  return response.data.language
+}
+
+export const updateUserLanguage = async (language: string): Promise<void> => {
+  const token = await getFreshToken()
+  await axios.put(
+    `${API_URL}/api/auth/update-language`,
+    { language },
+    {
+      headers: { 
+        Authorization: `Bearer ${token}` 
+      }
+    }
+  )
+}
+

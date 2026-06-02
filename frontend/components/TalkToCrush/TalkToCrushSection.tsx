@@ -18,7 +18,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { TalkToCrushStackParamList } from '../../navigation/types';
-import en from '../../locales/en.json';
+import { useLanguageStore } from '../../store/languageStore';
 import { useAuthStore } from '../../store/authStore';
 import { createTalkToCrushSession, testConnection } from '../../services/talkToCrushService';
 import { useTalkToCrushStore } from '../../store/talkToCrushStore';
@@ -26,6 +26,7 @@ import { styles } from './TalkToCrushSection.styles';
 
 const TalkToCrushSection: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<TalkToCrushStackParamList>>();
+  const { t: en } = useLanguageStore();
   const route = useRoute<RouteProp<TalkToCrushStackParamList, 'TalkToCrushSection'>>();
 
   const { sectionNumber } = route.params;

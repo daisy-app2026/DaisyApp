@@ -9,12 +9,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './DisclaimerScreen.styles';
-import en from '../../locales/en.json';
+import { useLanguageStore } from '../../store/languageStore';
 
 import { useNavigation } from '@react-navigation/native';
 
 const DisclaimerScreen: React.FC = () => {
   const navigation = useNavigation();
+  const { t: en } = useLanguageStore();
   const t = en.disclaimer;
 
   const InfoCard = ({ 

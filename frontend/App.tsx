@@ -24,6 +24,9 @@ import {
 import { fetchSpaces } from './services/spaceService'
 import { getTalkToPastSessions } from './services/talkToPastService'
 import { getTalkToCrushSessions } from './services/talkToCrushService'
+import { useLanguageStore, initLanguageStore } from './store/languageStore'
+import { getFreshToken } from './utils/getToken'
+
 
 export default function App() {
   const [isAuthLoading, setIsAuthLoading] = useState(true)
@@ -33,6 +36,7 @@ export default function App() {
   const { setSpaces } = useSpacesStore()
   const { setSessions: setTTPSessions } = useTalkToPastStore()
   const { setSessions: setTTCSessions } = useTalkToCrushStore()
+  const { setLanguage } = useLanguageStore()
 
   const { user, isAuthenticated, isLoading, setUser, logout } = useAuthStore()
 
@@ -79,6 +83,24 @@ export default function App() {
             setTTCSessions(sessions || [])
           }
         ),
+
+        // User language
+        getFreshToken().then(token =>
+          axios.get(
+            `${process.env.EXPO_PUBLIC_API_URL}/api/auth/language`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+          )
+        ).then(response => {
+          if (response.data?.language) {
+            setLanguage(response.data.language)
+          }
+        }).catch(err => {
+          console.log('Language preload error:', err)
+        }),
       ])
 
       // Max wait time 3 seconds
@@ -98,6 +120,7 @@ export default function App() {
   }
 
   useEffect(() => {
+    initLanguageStore()
     const unsubscribe = onAuthStateChanged(
       auth,
       async (firebaseUser) => {
@@ -123,6 +146,10 @@ export default function App() {
               token,
               photoURL: userData.photoURL || null,
             })
+
+            if (userData.language) {
+              setLanguage(userData.language)
+            }
           } catch (error) {
             console.log('Auto login error:', error)
             logout()

@@ -4,7 +4,9 @@ import {
   getUser,
   updateUserName,
   updateProfilePhoto,
-  checkEmail
+  checkEmail,
+  getLanguage,
+  updateLanguage
 } from '../controllers/authController';
 import { verifyToken } from '../middleware/verifyToken';
 
@@ -15,5 +17,7 @@ router.get('/user/:uid', verifyToken, getUser);
 router.put('/update-name', verifyToken, updateUserName);
 router.put('/update-photo', verifyToken, updateProfilePhoto);
 router.post('/check-email', checkEmail);
+router.get('/language', verifyToken, getLanguage);
+router.put('/update-language', verifyToken, updateLanguage);
 
 export default router;

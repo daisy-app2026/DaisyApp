@@ -15,7 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect, CommonActions } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { TalkToCrushStackParamList } from '../../navigation/types';
-import en from '../../locales/en.json';
+import { useLanguageStore } from '../../store/languageStore';
 import { useAuthStore } from '../../store/authStore';
 import { getTalkToCrushSessions, deleteTalkToCrushSession, TalkToCrushSession } from '../../services/talkToCrushService';
 import { useTalkToCrushStore } from '../../store/talkToCrushStore';
@@ -25,6 +25,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const TalkToCrushHome: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<TalkToCrushStackParamList>>();
+  const { t: en } = useLanguageStore();
   const { user } = useAuthStore();
 
   const {

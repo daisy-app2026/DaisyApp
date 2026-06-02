@@ -16,7 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import en from '../../locales/en.json';
+import { useLanguageStore } from '../../store/languageStore';
 import { styles } from './NewEntryScreen.styles';
 import { createEntry, updateEntry, Entry } from '../../services/entryService';
 import { useAuthStore } from '../../store/authStore';
@@ -39,6 +39,7 @@ type CapsuleDuration = '1mo' | '6mo' | '1yr' | 'custom';
 
 const NewEntryScreen: React.FC = () => {
   const route = useRoute<NewEntryScreenRouteProp>();
+  const { t: en } = useLanguageStore();
   const navigation = useNavigation<NewEntryScreenNavigationProp>();
   const { spaceId, spaceName, spaceIcon, editEntry } = route.params;
 
