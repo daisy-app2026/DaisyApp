@@ -13,6 +13,7 @@ import {
 } from '@react-navigation/bottom-tabs'
 import { View, ActivityIndicator, Easing } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient'
 import { useAuthStore } from '../store/authStore'
 import { getTalkToPastSessions } from '../services/talkToPastService'
 import { useTalkToPastStore } from '../store/talkToPastStore'
@@ -58,10 +59,41 @@ const AuthStack = createStackNavigator<AuthStackParamList>()
 const DiaryStack = createStackNavigator<DiaryStackParamList>()
 const Tab = createBottomTabNavigator<MainTabParamList>()
 
+const springTransitionSpec = {
+  open: {
+    animation: 'spring' as const,
+    config: {
+      stiffness: 1000,
+      damping: 80,
+      mass: 3,
+      overshootClamping: true,
+      restDisplacementThreshold: 0.01,
+      restSpeedThreshold: 0.01,
+    }
+  },
+  close: {
+    animation: 'spring' as const,
+    config: {
+      stiffness: 1000,
+      damping: 80,
+      mass: 3,
+      overshootClamping: true,
+      restDisplacementThreshold: 0.01,
+      restSpeedThreshold: 0.01,
+    }
+  }
+}
+
 // Auth Navigator
 const AuthNavigator = () => (
   <AuthStack.Navigator 
-    screenOptions={{ headerShown: false }}
+    screenOptions={{ 
+      headerShown: false,
+      gestureEnabled: true,
+      gestureDirection: 'horizontal',
+      transitionSpec: springTransitionSpec,
+      cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+    }}
   >
     <AuthStack.Screen 
       name='Splash' 
@@ -89,22 +121,7 @@ const DiaryNavigator = () => (
       headerShown: false,
       gestureEnabled: true,
       gestureDirection: 'horizontal',
-      transitionSpec: {
-        open: {
-          animation: 'timing',
-          config: {
-            duration: 200,
-            easing: Easing.out(Easing.ease),
-          }
-        },
-        close: {
-          animation: 'timing',
-          config: {
-            duration: 180,
-            easing: Easing.in(Easing.ease),
-          }
-        }
-      },
+      transitionSpec: springTransitionSpec,
       cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
     }}
   >
@@ -201,10 +218,10 @@ const TalkToPastNavigator = () => {
       key={navigatorKey}
       screenOptions={{
         headerShown: false,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        transitionSpec: springTransitionSpec,
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-        gestureEnabled: false,
-        presentation: 'card',
-        detachPreviousScreen: true,
       }}
       initialRouteName={initialRoute}
     >
@@ -288,8 +305,10 @@ const TalkToCrushNavigator = () => {
       key={navigatorKey}
       screenOptions={{
         headerShown: false,
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        transitionSpec: springTransitionSpec,
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       }}
       initialRouteName={initialRoute}
     >
@@ -314,160 +333,187 @@ const TalkToCrushNavigator = () => {
 }
 
 // Main Tab Navigator
+const customTabBarStyle = {
+  backgroundColor: 'transparent',
+  borderTopWidth: 0,
+  height: 82,
+  paddingBottom: 12,
+  paddingTop: 8,
+  elevation: 0,
+  shadowColor: '#F9E65C',
+  shadowOffset: { width: 0, height: -4 },
+  shadowOpacity: 0.4,
+  shadowRadius: 25,
+  borderTopLeftRadius: 24,
+  borderTopRightRadius: 24,
+  overflow: 'hidden' as const,
+};
+
+// Main Tab Navigator
 const MainNavigator = () => (
-  <Tab.Navigator
-    screenOptions={({ route }) => ({
-      headerShown: false,
-      tabBarStyle: {
-        backgroundColor: '#FFFFFF',
-        borderTopColor: 'rgba(255,255,255,0.92)',
-        borderTopWidth: 1,
-        paddingBottom: 16,
-        paddingTop: 8,
-        height: 72,
-        elevation: 8,
-        shadowColor: '#2D5A1B',
-        shadowOffset: { width: 0, height: -2 },
-        shadowOpacity: 0.06,
-        shadowRadius: 8,
-      },
-      tabBarActiveTintColor: '#2D5A1B',
-      tabBarInactiveTintColor: 'rgba(26,46,15,0.28)',
-      tabBarLabelStyle: {
-        fontSize: 10,
-        fontWeight: '500',
-        marginTop: 2,
-      },
-      tabBarIconStyle: {
-        marginTop: 4,
-      },
-      tabBarIcon: ({ focused, color }) => {
-        let iconName: any
-
-        if (route.name === 'DiaryTab') {
-          iconName = focused 
-            ? 'book' : 'book-outline'
-        } else if (
-          route.name === 'TalkToPastTab'
-        ) {
-          iconName = focused
-            ? 'chatbubble-ellipses'
-            : 'chatbubble-ellipses-outline'
-        } else if (
-          route.name === 'TalkToCrushTab'
-        ) {
-          iconName = focused 
-            ? 'heart' : 'heart-outline'
-        }
-
-        return (
-          <Ionicons 
-            name={iconName} 
-            size={24} 
-            color={color} 
+  <View style={{ flex: 1 }}>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarHideOnKeyboard: true,
+        lazy: false,
+        tabBarShowLabel: false,
+        tabBarStyle: customTabBarStyle,
+        tabBarBackground: () => (
+          <LinearGradient
+            colors={[
+              '#F8E769',
+              '#ECD446',
+              '#DDBA28'
+            ]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              top: 0,
+              bottom: 0,
+              borderTopLeftRadius: 24,
+              borderTopRightRadius: 24,
+            }}
           />
-        )
-      },
-    })}
-  >
-    <Tab.Screen
-      name='DiaryTab'
-      component={DiaryNavigator}
-      options={({ route }) => {
-        const routeName = getFocusedRouteNameFromRoute(route);
-        return {
-          tabBarLabel: 'Diary',
-          tabBarStyle: routeName === 'NewEntry'
-            ? { display: 'none' as const }
-            : {
-                backgroundColor: '#FFFFFF',
-                borderTopColor: 'rgba(255,255,255,0.92)',
-                borderTopWidth: 1,
-                paddingBottom: 16,
-                paddingTop: 8,
-                height: 72,
-                elevation: 8,
-                shadowColor: '#2D5A1B',
-                shadowOffset: { width: 0, height: -2 },
-                shadowOpacity: 0.06,
-                shadowRadius: 8,
-              }
-        };
-      }}
-    />
-    <Tab.Screen
-      name='TalkToPastTab'
-      component={TalkToPastNavigator}
-      options={({ route }) => {
-        const routeName = getFocusedRouteNameFromRoute(route);
-        const isChat = routeName === 'TalkToPastChat';
-        
-        return {
-          tabBarLabel: 'Talk to Past',
-          tabBarStyle: isChat ? {
-            display: 'none',
-            position: 'absolute',
-          } : {
-            backgroundColor: '#FFFFFF',
-            borderTopColor: 'rgba(255,255,255,0.92)',
-            borderTopWidth: 1,
-            paddingBottom: 16,
-            paddingTop: 8,
-            height: 72,
-            elevation: 8,
-            shadowColor: '#2D5A1B',
-            shadowOffset: { width: 0, height: -2 },
-            shadowOpacity: 0.06,
-            shadowRadius: 8,
+        ),
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: '700',
+          marginTop: 2,
+          color: '#1A3A0F',
+        },
+        tabBarActiveTintColor: '#1A3A0F',
+        tabBarInactiveTintColor: 'rgba(26,58,15,0.45)',
+        tabBarIconStyle: {
+          width: 36,
+          height: 36,
+        },
+        tabBarIcon: ({ focused }) => {
+          let iconName: any
+
+          if (route.name === 'DiaryTab') {
+            iconName = focused 
+              ? 'book' : 'book-outline'
+          } else if (
+            route.name === 'TalkToPastTab'
+          ) {
+            iconName = focused
+              ? 'time'
+              : 'time-outline'
+          } else if (
+            route.name === 'TalkToCrushTab'
+          ) {
+            iconName = focused 
+              ? 'heart' : 'heart-outline'
           }
-        };
-      }}
-      listeners={({ navigation }) => ({
-        tabPress: (e) => {
-          const isFocused = navigation.isFocused();
-          if (isFocused) {
-            e.preventDefault();
-          }
-        }
+
+          return (
+            <View style={{
+              width: 56,
+              height: 56,
+              borderRadius: 28,
+              backgroundColor: focused
+                ? '#FFFFFF'
+                : 'rgba(255,255,255,0.2)',
+              alignItems: 'center',
+              justifyContent: 'center',
+              shadowColor: focused
+                ? '#000000'
+                : 'transparent',
+              shadowOffset: focused
+                ? { width: 0, height: 8 }
+                : { width: 0, height: 0 },
+              shadowOpacity: focused
+                ? 0.12
+                : 0,
+              shadowRadius: focused
+                ? 20
+                : 0,
+              elevation: focused ? 8 : 0,
+              borderWidth: focused ? 0 : 1,
+              borderColor: focused
+                ? 'transparent'
+                : 'rgba(255,255,255,0.4)',
+            }}>
+              <Ionicons 
+                name={iconName} 
+                size={26} 
+                color={focused 
+                  ? '#D4A514' 
+                  : 'rgba(26,58,15,0.5)'
+                } 
+              />
+            </View>
+          )
+        },
       })}
-    />
-    <Tab.Screen
-      name='TalkToCrushTab'
-      component={TalkToCrushNavigator}
-      options={({ route }) => {
-        const routeName = getFocusedRouteNameFromRoute(route);
-        const isChat = routeName === 'TalkToCrushChat';
-        
-        return {
-          tabBarLabel: 'Talk to Crush',
-          tabBarStyle: isChat ? {
-            display: 'none',
-            position: 'absolute',
-          } : {
-            backgroundColor: '#FFFFFF',
-            borderTopColor: 'rgba(255,255,255,0.92)',
-            borderTopWidth: 1,
-            paddingBottom: 16,
-            paddingTop: 8,
-            height: 72,
-            elevation: 8,
-            shadowColor: '#2D5A1B',
-            shadowOffset: { width: 0, height: -2 },
-            shadowOpacity: 0.06,
-            shadowRadius: 8,
+    >
+      <Tab.Screen
+        name='DiaryTab'
+        component={DiaryNavigator}
+        options={({ route }) => {
+          const routeName = getFocusedRouteNameFromRoute(route);
+          return {
+            tabBarLabel: 'Diary',
+            tabBarStyle: routeName === 'NewEntry'
+              ? { display: 'none' as const }
+              : customTabBarStyle
+          };
+        }}
+      />
+      <Tab.Screen
+        name='TalkToPastTab'
+        component={TalkToPastNavigator}
+        options={({ route }) => {
+          const routeName = getFocusedRouteNameFromRoute(route);
+          const isChat = routeName === 'TalkToPastChat';
+          
+          return {
+            tabBarLabel: 'Past',
+            tabBarStyle: isChat ? {
+              display: 'none' as const,
+              position: 'absolute' as const,
+            } : customTabBarStyle
+          };
+        }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            const isFocused = navigation.isFocused();
+            if (isFocused) {
+              e.preventDefault();
+            }
           }
-        };
-      }}
-      listeners={({ navigation }) => ({
-        tabPress: (e) => {
-          const isFocused = navigation.isFocused();
-          if (isFocused) {
-            e.preventDefault();
+        })}
+      />
+      <Tab.Screen
+        name='TalkToCrushTab'
+        component={TalkToCrushNavigator}
+        options={({ route }) => {
+          const routeName = getFocusedRouteNameFromRoute(route);
+          const isChat = routeName === 'TalkToCrushChat';
+          
+          return {
+            tabBarLabel: 'Crush',
+            tabBarStyle: isChat ? {
+              display: 'none' as const,
+              position: 'absolute' as const,
+            } : customTabBarStyle
+          };
+        }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            const isFocused = navigation.isFocused();
+            if (isFocused) {
+              e.preventDefault();
+            }
           }
-        }
-      })}
-    />
-  </Tab.Navigator>
+        })}
+      />
+    </Tab.Navigator>
+  </View>
 )
 
 // Root Navigator

@@ -105,10 +105,23 @@ const EntryCard: React.FC<EntryCardProps> = ({
           </View>
         );
       case 'doodle':
+        console.log('Doodle content:', entry.content);
+        const doodleUrl = (() => {
+          try {
+            const parsed = JSON.parse(entry.content);
+            return Array.isArray(parsed) ? parsed[0] : entry.content;
+          } catch {
+            return entry.content;
+          }
+        })();
         return (
           <View style={styles.contentRow}>
-            <Image source={{ uri: entry.content }} style={styles.previewImage} resizeMode="cover" />
-            <Text style={styles.preview}>Doodle entry</Text>
+            {doodleUrl && (
+              <Image source={{ uri: doodleUrl }} style={styles.previewImage} resizeMode="cover" />
+            )}
+            <Text style={[styles.preview, { flex: 1 }]} numberOfLines={2}>
+              {'Doodle entry'}
+            </Text>
           </View>
         );
       default:

@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuthStore } from '../../store/authStore';
 import en from '../../locales/en.json';
 import { styles } from './CategoryScreen.styles';
@@ -97,31 +98,49 @@ const CategoryScreen: React.FC = () => {
         <StatusBar barStyle="dark-content" />
         
         {/* Header */}
-        <SafeAreaView edges={['top']} style={styles.headerSafeArea}>
-          <View style={styles.header}>
-            <TouchableOpacity 
-              style={styles.backButton} 
-              onPress={() => navigation.goBack()}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="arrow-back" size={22} color="#2D5A1B" />
-            </TouchableOpacity>
-            
-            <Text style={styles.headerTitle}>{spaceName}</Text>
-            
-            <TouchableOpacity 
-              style={styles.avatar} 
-              onPress={() => navigation.navigate('Profile')}
-              activeOpacity={0.7}
-            >
-              {user?.photoURL ? (
-                <Image source={{ uri: user.photoURL }} style={styles.avatar} />
-              ) : (
-                <Text style={styles.avatarText}>{avatarInitial}</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
+        <LinearGradient
+          colors={[
+            '#F9E65C',
+            '#F2DB4A', 
+            '#E3C437'
+          ]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.headerGradient}
+        >
+          {/* Curved highlight orb 1 */}
+          <View style={styles.headerOrb1} />
+          
+          {/* Curved highlight orb 2 */}
+          <View style={styles.headerOrb2} />
+          
+          {/* Actual header content */}
+          <SafeAreaView edges={['top']}>
+            <View style={styles.header}>
+              <TouchableOpacity 
+                style={styles.backButton} 
+                onPress={() => navigation.goBack()}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="arrow-back" size={22} color="#1A3A0F" />
+              </TouchableOpacity>
+              
+              <Text style={styles.headerTitle}>{spaceName}</Text>
+              
+              <TouchableOpacity 
+                style={styles.avatar} 
+                onPress={() => navigation.navigate('Profile')}
+                activeOpacity={0.7}
+              >
+                {user?.photoURL ? (
+                  <Image source={{ uri: user.photoURL }} style={styles.avatar} />
+                ) : (
+                  <Text style={styles.avatarText}>{avatarInitial}</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </SafeAreaView>
+        </LinearGradient>
 
         <ScrollView 
           showsVerticalScrollIndicator={false} 

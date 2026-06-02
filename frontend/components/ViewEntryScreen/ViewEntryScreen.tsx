@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Audio } from 'expo-av';
 import { styles } from './ViewEntryScreen.styles';
 import { Entry } from '../../services/entryService';
@@ -87,39 +88,52 @@ const ViewEntryScreen: React.FC = () => {
   };
 
   const renderHeader = () => (
-    <SafeAreaView edges={['top']} style={styles.headerSafeArea}>
-      <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backButton} 
-          onPress={() => navigation.goBack()}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="arrow-back" size={22} color="#2D5A1B" />
-        </TouchableOpacity>
-        
-        <Text style={styles.headerTitle}>{freshEntry.spaceName}</Text>
-        
-        {freshEntry.type !== 'doodle' && 
-         freshEntry.type !== 'audio' &&
-         !(freshEntry.isCapsule && 
-           freshEntry.editCount >= 1) ? (
+    <LinearGradient
+      colors={[
+        '#F9E65C',
+        '#F2DB4A',
+        '#E3C437'
+      ]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.headerGradient}
+    >
+      <View style={styles.headerOrb1} />
+      <View style={styles.headerOrb2} />
+      <SafeAreaView edges={['top']} style={styles.headerSafeArea}>
+        <View style={styles.header}>
           <TouchableOpacity 
-            style={styles.editButton} 
-            onPress={() => navigation.navigate('NewEntry', {
-              spaceId: freshEntry.spaceId,
-              spaceName: freshEntry.spaceName,
-              spaceIcon: 'bookmark-outline',
-              editEntry: freshEntry,
-            })}
+            style={styles.backButton} 
+            onPress={() => navigation.goBack()}
             activeOpacity={0.7}
           >
-            <Ionicons name="create-outline" size={20} color="#2D5A1B" />
+            <Ionicons name="arrow-back" size={22} color="#1A3A0F" />
           </TouchableOpacity>
-        ) : (
-          <View style={{ width: 36 }} />
-        )}
-      </View>
-    </SafeAreaView>
+          
+          <Text style={styles.headerTitle}>{freshEntry.spaceName}</Text>
+          
+          {freshEntry.type !== 'doodle' && 
+           freshEntry.type !== 'audio' &&
+           !(freshEntry.isCapsule && 
+             freshEntry.editCount >= 1) ? (
+            <TouchableOpacity 
+              style={styles.editButton} 
+              onPress={() => navigation.navigate('NewEntry', {
+                spaceId: freshEntry.spaceId,
+                spaceName: freshEntry.spaceName,
+                spaceIcon: 'bookmark-outline',
+                editEntry: freshEntry,
+              })}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="create-outline" size={20} color="#1A3A0F" />
+            </TouchableOpacity>
+          ) : (
+            <View style={{ width: 36 }} />
+          )}
+        </View>
+      </SafeAreaView>
+    </LinearGradient>
   );
 
   const renderContent = () => {

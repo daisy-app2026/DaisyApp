@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuthStore } from '../../store/authStore';
 import en from '../../locales/en.json';
 import { styles } from './HomeScreen.styles';
@@ -343,40 +344,58 @@ const HomeScreen: React.FC = () => {
         )}
         
         {/* Header */}
-        <SafeAreaView edges={['top']} style={styles.headerSafeArea}>
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <Text style={styles.greeting}>{greeting}</Text>
-              <Text 
-                style={[styles.userName, nameStyle]} 
-                numberOfLines={1} 
-                ellipsizeMode="tail"
-              >
-                {firstName}
-              </Text>
-              {streak > 1 && (
-                <Text style={{ fontSize: 11, color: '#2D5A1B', marginTop: 4 }}>
-                  🔥 {streak} day streak!
+        <LinearGradient
+          colors={[
+            '#F9E65C',
+            '#F2DB4A', 
+            '#E3C437'
+          ]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.headerGradient}
+        >
+          {/* Curved highlight orb 1 */}
+          <View style={styles.headerOrb1} />
+          
+          {/* Curved highlight orb 2 */}
+          <View style={styles.headerOrb2} />
+          
+          {/* Actual header content */}
+          <SafeAreaView edges={['top']}>
+            <View style={styles.header}>
+              <View style={styles.headerLeft}>
+                <Text style={styles.greeting}>{greeting}</Text>
+                <Text 
+                  style={[styles.userName, nameStyle]} 
+                  numberOfLines={1} 
+                  ellipsizeMode="tail"
+                >
+                  {firstName}
                 </Text>
-              )}
-            </View>
-            <View style={styles.headerCenter}>
-              <Text style={styles.headerTitle}>{en.home.title}</Text>
-            </View>
-            <TouchableOpacity 
-              style={styles.headerRight}
-              onPress={() => navigation.navigate('Profile')}
-            >
-              <View style={styles.avatar}>
-                {user?.photoURL ? (
-                  <Image source={{ uri: user.photoURL }} style={styles.avatarImage} />
-                ) : (
-                  <Text style={styles.avatarText}>{avatarInitial}</Text>
+                {streak > 1 && (
+                  <Text style={{ fontSize: 11, color: '#1A3A0F', marginTop: 4 }}>
+                    🔥 {streak} day streak!
+                  </Text>
                 )}
               </View>
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
+              <View style={styles.headerCenter}>
+                <Text style={styles.headerTitle}>{en.home.title}</Text>
+              </View>
+              <TouchableOpacity 
+                style={styles.headerRight}
+                onPress={() => navigation.navigate('Profile')}
+              >
+                <View style={styles.avatar}>
+                  {user?.photoURL ? (
+                    <Image source={{ uri: user.photoURL }} style={styles.avatarImage} />
+                  ) : (
+                    <Text style={styles.avatarText}>{avatarInitial}</Text>
+                  )}
+                </View>
+              </TouchableOpacity>
+            </View>
+          </SafeAreaView>
+        </LinearGradient>
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
           <View style={styles.greetingCard}>

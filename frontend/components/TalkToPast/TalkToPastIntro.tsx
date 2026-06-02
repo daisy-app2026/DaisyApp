@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { TalkToPastStackParamList } from '../../navigation/types';
@@ -75,32 +76,45 @@ const TalkToPastIntro: React.FC = () => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView edges={['top']} style={styles.headerSafeArea}>
-        <View style={styles.header}>
-          <View style={styles.headerLeft} />
-          <View style={styles.headerCenter}>
-            <Text style={styles.headerTitle}>{en.talkToPast.title}</Text>
+      <LinearGradient
+        colors={[
+          '#F9E65C',
+          '#F2DB4A',
+          '#E3C437'
+        ]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.headerGradient}
+      >
+        <View style={styles.headerOrb1} />
+        <View style={styles.headerOrb2} />
+        <SafeAreaView edges={['top']} style={styles.headerSafeArea}>
+          <View style={styles.header}>
+            <View style={styles.headerLeft} />
+            <View style={styles.headerCenter}>
+              <Text style={styles.headerTitle}>{en.talkToPast.title}</Text>
+            </View>
+            <View style={styles.headerRight}>
+              <TouchableOpacity
+                style={homeStyles.profileBtn}
+                onPress={handleProfilePress}
+                activeOpacity={0.8}
+              >
+                {user?.photoURL ? (
+                  <Image
+                    source={{ uri: user.photoURL }}
+                    style={homeStyles.profileImage}
+                  />
+                ) : (
+                  <Text style={homeStyles.profileInitial}>
+                    {user?.name?.charAt(0).toUpperCase() || 'U'}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.headerRight}>
-            <TouchableOpacity
-              style={homeStyles.profileBtn}
-              onPress={handleProfilePress}
-              activeOpacity={0.8}
-            >
-              {user?.photoURL ? (
-                <Image
-                  source={{ uri: user.photoURL }}
-                  style={homeStyles.profileImage}
-                />
-              ) : (
-                <Text style={homeStyles.profileInitial}>
-                  {user?.name?.charAt(0).toUpperCase() || 'U'}
-                </Text>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-      </SafeAreaView>
+        </SafeAreaView>
+      </LinearGradient>
 
       <ScrollView
         showsVerticalScrollIndicator={false}

@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { TalkToCrushStackParamList } from '../../navigation/types';
@@ -270,57 +271,70 @@ const TalkToCrushChat: React.FC = () => {
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
       
-      <SafeAreaView 
-        edges={['top']}
-        style={styles.topSafe}
+      <LinearGradient
+        colors={[
+          '#F9E65C',
+          '#F2DB4A',
+          '#E3C437'
+        ]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.headerGradient}
       >
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={handleBack}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="arrow-back" size={20} color="#1A2E0F" />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.headerCenter}>
-            <View style={[
-              styles.avatarCircle,
-              { 
-                backgroundColor: personIcon.bgColor,
-                borderColor: personIcon.color + '33',
-              }
-            ]}>
-              <Ionicons
-                name={personIcon.icon as any}
-                size={22}
-                color={personIcon.color}
-              />
+        <View style={styles.headerOrb1} />
+        <View style={styles.headerOrb2} />
+        <SafeAreaView 
+          edges={['top']}
+          style={styles.topSafe}
+        >
+          <View style={styles.header}>
+            <View style={styles.headerLeft}>
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={handleBack}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="arrow-back" size={20} color="#1A3A0F" />
+              </TouchableOpacity>
             </View>
-            <Text style={styles.personName}>{name}</Text>
-          </View>
-          <View style={styles.headerRight}>
-            {remaining > 0 ? (
-              <View style={styles.limitBadge}>
-                <Text style={styles.limitText}>
-                  {remaining} left
-                </Text>
+            <View style={styles.headerCenter}>
+              <View style={[
+                styles.avatarCircle,
+                { 
+                  backgroundColor: personIcon.bgColor,
+                  borderColor: personIcon.color + '33',
+                }
+              ]}>
+                <Ionicons
+                  name={personIcon.icon as any}
+                  size={22}
+                  color={personIcon.color}
+                />
               </View>
-            ) : (
-              <View style={styles.limitBadgeEmpty}>
-                <Text style={styles.limitTextEmpty}>
-                  No msgs left
-                </Text>
-              </View>
-            )}
+              <Text style={styles.personName}>{name}</Text>
+            </View>
+            <View style={styles.headerRight}>
+              {remaining > 0 ? (
+                <View style={styles.limitBadge}>
+                  <Text style={styles.limitText}>
+                    {remaining} left
+                  </Text>
+                </View>
+              ) : (
+                <View style={styles.limitBadgeEmpty}>
+                  <Text style={styles.limitTextEmpty}>
+                    No msgs left
+                  </Text>
+                </View>
+              )}
+            </View>
           </View>
-        </View>
-
-        <View style={styles.banner}>
-          <Text style={styles.bannerText}>{en.talkToCrush.guidedReflection}</Text>
-        </View>
-      </SafeAreaView>
+  
+          <View style={styles.banner}>
+            <Text style={styles.bannerText}>{en.talkToCrush.guidedReflection}</Text>
+          </View>
+        </SafeAreaView>
+      </LinearGradient>
 
       {isLoading ? (
         <View style={styles.loadingContainer}>

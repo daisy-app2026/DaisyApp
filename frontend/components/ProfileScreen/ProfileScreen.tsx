@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import { styles } from './ProfileScreen.styles';
 import { useAuthStore } from '../../store/authStore';
@@ -181,23 +182,43 @@ const ProfileScreen: React.FC = () => {
     });
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <View style={styles.safeArea}>
       <StatusBar
         barStyle="dark-content"
         backgroundColor="#FAFAF8"
       />
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="arrow-back" size={22} color="#2D5A1B" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>{t.title}</Text>
-        <View style={{ width: 36 }} />
-      </View>
+      <LinearGradient
+        colors={[
+          '#F9E65C',
+          '#F2DB4A', 
+          '#E3C437'
+        ]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.headerGradient}
+      >
+        {/* Curved highlight orb 1 */}
+        <View style={styles.headerOrb1} />
+        
+        {/* Curved highlight orb 2 */}
+        <View style={styles.headerOrb2} />
+        
+        {/* Actual header content */}
+        <SafeAreaView edges={['top']}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => navigation.goBack()}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="arrow-back" size={22} color="#1A3A0F" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>{t.title}</Text>
+            <View style={{ width: 36 }} />
+          </View>
+        </SafeAreaView>
+      </LinearGradient>
 
       <ScrollView contentContainerStyle={[styles.content, styles.mainContent]} showsVerticalScrollIndicator={false}>
         <View style={styles.profileCard}>
@@ -373,7 +394,7 @@ const ProfileScreen: React.FC = () => {
         onConfirm={() => setAlertConfig({ ...alertConfig, visible: false })}
         confirmText="OK"
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

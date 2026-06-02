@@ -3,6 +3,7 @@ import { db } from '../config/firebase';
 import { AuthRequest } from '../middleware/verifyToken';
 import { indexSessionAnswers } from '../services/pineconeService';
 import { generateChatResponse } from '../services/chatService';
+import { pineconeIndex } from '../config/pinecone';
 
 // Create new session
 export const createSession = async (
@@ -307,12 +308,41 @@ export const deleteSession = async (
       return
     }
 
+    // Delete Pinecone vectors
+    // for this session!
+    try {
+      await pineconeIndex.deleteMany({
+        filter: {
+          sessionId: {
+            $eq: sessionId
+          }
+        }
+      })
+      console.log(
+        'Pinecone vectors deleted!'
+      )
+    } catch (pineconeError) {
+      console.log(
+        'Pinecone delete error:',
+        pineconeError
+      )
+      // Continue even if
+      // Pinecone fails!
+    }
+
     await sessionRef.delete()
+
+    console.log(
+      'Session deleted:', sessionId
+    )
 
     res.status(200).json({ 
       success: true 
     })
   } catch (error) {
+    console.error(
+      'Delete session error:', error
+    )
     res.status(500).json({ 
       error: 'Server error' 
     })

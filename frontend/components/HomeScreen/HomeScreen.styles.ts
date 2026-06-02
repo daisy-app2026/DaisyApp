@@ -8,10 +8,32 @@ export const styles = StyleSheet.create({
     backgroundColor: '#FAFAF8',
   },
   // Header
-  headerSafeArea: {
-    backgroundColor: 'rgba(255,255,255,0.62)',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.82)',
+  headerGradient: {
+    position: 'relative',
+    overflow: 'hidden',
+    shadowColor: '#D4A514',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  headerOrb1: {
+    position: 'absolute',
+    top: -40,
+    right: -50,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+  },
+  headerOrb2: {
+    position: 'absolute',
+    top: 20,
+    left: -80,
+    width: 250,
+    height: 120,
+    borderRadius: 150,
+    backgroundColor: 'rgba(255,255,255,0.10)',
   },
   header: {
     flexDirection: 'row',
@@ -27,13 +49,13 @@ export const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 11,
-    color: '#AAAAAA',
+    color: 'rgba(26,58,15,0.65)',
     textTransform: 'lowercase',
   },
   userName: {
     fontFamily: 'serif',
     fontWeight: '700',
-    color: '#1A2E0F',
+    color: '#1A3A0F',
     marginTop: 2,
   },
   userNameSmall: {
@@ -53,7 +75,7 @@ export const styles = StyleSheet.create({
     fontFamily: 'serif',
     fontSize: 16,
     fontWeight: '700',
-    color: '#1A2E0F',
+    color: '#1A3A0F',
   },
   headerRight: {
     flex: 1,

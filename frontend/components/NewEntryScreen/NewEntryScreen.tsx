@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import en from '../../locales/en.json';
 import { styles } from './NewEntryScreen.styles';
@@ -573,34 +574,47 @@ const NewEntryScreen: React.FC = () => {
       <StatusBar barStyle="dark-content" />
       
       {/* Header */}
-      <SafeAreaView edges={['top']} style={styles.headerSafeArea}>
-        <View style={styles.header}>
-          <TouchableOpacity 
-            style={styles.backButton} 
-            onPress={handleBack}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="arrow-back" size={22} color="#2D5A1B" />
-          </TouchableOpacity>
-          
-          <Text style={styles.headerTitle}>
-            {editEntry ? 'Edit Entry' : en.newEntry.title}
-          </Text>
-          
-          <TouchableOpacity 
-            style={styles.saveButton} 
-            onPress={handleSave}
-            activeOpacity={0.7}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator size="small" color="#2D5A1B" />
-            ) : (
-              <Ionicons name="checkmark" size={20} color="#2D5A1B" />
-            )}
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+      <LinearGradient
+        colors={[
+          '#F9E65C',
+          '#F2DB4A',
+          '#E3C437'
+        ]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.headerGradient}
+      >
+        <View style={styles.headerOrb1} />
+        <View style={styles.headerOrb2} />
+        <SafeAreaView edges={['top']} style={styles.headerSafeArea}>
+          <View style={styles.header}>
+            <TouchableOpacity 
+              style={styles.backButton} 
+              onPress={handleBack}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="arrow-back" size={22} color="#1A3A0F" />
+            </TouchableOpacity>
+            
+            <Text style={styles.headerTitle}>
+              {editEntry ? 'Edit Entry' : en.newEntry.title}
+            </Text>
+            
+            <TouchableOpacity 
+              style={styles.saveButton} 
+              onPress={handleSave}
+              activeOpacity={0.7}
+              disabled={loading}
+            >
+              {loading ? (
+                <ActivityIndicator size="small" color="#1A3A0F" />
+              ) : (
+                <Ionicons name="checkmark" size={20} color="#1A3A0F" />
+              )}
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </LinearGradient>
 
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

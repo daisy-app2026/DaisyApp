@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { db } from '../config/firebase';
 import { AuthRequest } from '../middleware/verifyToken';
 import { indexSessionAnswers, searchContext } from '../services/pineconeService';
+import { pineconeIndex } from '../config/pinecone';
 import { getTalkToCrushSystemPrompt } from '../config/crushSystemPrompt';
 
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
@@ -397,12 +398,41 @@ export const deleteSession = async (
       return;
     }
 
+    // Delete Pinecone vectors
+    // for this session!
+    try {
+      await pineconeIndex.deleteMany({
+        filter: {
+          sessionId: {
+            $eq: sessionId
+          }
+        }
+      })
+      console.log(
+        'Pinecone vectors deleted!'
+      )
+    } catch (pineconeError) {
+      console.log(
+        'Pinecone delete error:',
+        pineconeError
+      )
+      // Continue even if
+      // Pinecone fails!
+    }
+
     await sessionRef.delete();
+
+    console.log(
+      'Session deleted:', sessionId
+    )
 
     res.status(200).json({ 
       success: true 
     });
   } catch (error) {
+    console.error(
+      'Delete session error:', error
+    )
     res.status(500).json({ 
       error: 'Server error' 
     });

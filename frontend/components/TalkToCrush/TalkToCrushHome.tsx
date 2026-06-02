@@ -21,6 +21,7 @@ import { getTalkToCrushSessions, deleteTalkToCrushSession, TalkToCrushSession } 
 import { useTalkToCrushStore } from '../../store/talkToCrushStore';
 import { styles } from './TalkToCrushHome.styles';
 import { getPersonIcon } from '../../utils/personIcon';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const TalkToCrushHome: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<TalkToCrushStackParamList>>();
@@ -106,32 +107,50 @@ const TalkToCrushHome: React.FC = () => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView edges={['top']} style={styles.headerSafeArea}>
-        <View style={styles.header}>
-          <View style={styles.headerLeft} />
-          <View style={styles.headerCenter}>
-            <Text style={styles.headerTitle}>{en.talkToCrush.homeTitle}</Text>
+      <LinearGradient
+        colors={[
+          '#F9E65C',
+          '#F2DB4A', 
+          '#E3C437'
+        ]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.headerGradient}
+      >
+        {/* Curved highlight orb 1 */}
+        <View style={styles.headerOrb1} />
+        
+        {/* Curved highlight orb 2 */}
+        <View style={styles.headerOrb2} />
+        
+        {/* Actual header content */}
+        <SafeAreaView edges={['top']}>
+          <View style={styles.header}>
+            <View style={styles.headerLeft} />
+            <View style={styles.headerCenter}>
+              <Text style={styles.headerTitle}>{en.talkToCrush.homeTitle}</Text>
+            </View>
+            <View style={styles.headerRight}>
+              <TouchableOpacity
+                style={styles.profileBtn}
+                onPress={handleProfilePress}
+                activeOpacity={0.8}
+              >
+                {user?.photoURL ? (
+                  <Image
+                    source={{ uri: user.photoURL }}
+                    style={styles.profileImage}
+                  />
+                ) : (
+                  <Text style={styles.profileInitial}>
+                    {user?.name?.charAt(0).toUpperCase() || 'U'}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.headerRight}>
-            <TouchableOpacity
-              style={styles.profileBtn}
-              onPress={handleProfilePress}
-              activeOpacity={0.8}
-            >
-              {user?.photoURL ? (
-                <Image
-                  source={{ uri: user.photoURL }}
-                  style={styles.profileImage}
-                />
-              ) : (
-                <Text style={styles.profileInitial}>
-                  {user?.name?.charAt(0).toUpperCase() || 'U'}
-                </Text>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-      </SafeAreaView>
+        </SafeAreaView>
+      </LinearGradient>
 
       {sessions.length === 0 ? (
         <View style={styles.emptyState}>

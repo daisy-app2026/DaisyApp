@@ -126,4 +126,16 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 8,
   },
+  doodlePreview: {
+    width: '100%',
+    height: 160,
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginTop: 10,
+    backgroundColor: 'rgba(45,90,27,0.05)',
+  },
+  doodleImage: {
+    width: '100%',
+    height: '100%',
+  },
 });

@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAuthStore } from '../../store/authStore';
 import en from '../../locales/en.json';
@@ -195,38 +196,56 @@ const SearchScreen: React.FC = () => {
       <StatusBar barStyle="dark-content" />
       
       {/* Header */}
-      <SafeAreaView edges={['top']} style={styles.headerSafeArea}>
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={22} color="#2D5A1B" />
-          </TouchableOpacity>
+      <LinearGradient
+        colors={[
+          '#F9E65C',
+          '#F2DB4A', 
+          '#E3C437'
+        ]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.headerGradient}
+      >
+        {/* Curved highlight orb 1 */}
+        <View style={styles.headerOrb1} />
+        
+        {/* Curved highlight orb 2 */}
+        <View style={styles.headerOrb2} />
+        
+        {/* Actual header content */}
+        <SafeAreaView edges={['top']}>
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+              <Ionicons name="arrow-back" size={22} color="#1A3A0F" />
+            </TouchableOpacity>
 
-          <View style={styles.searchContainer}>
-            <Ionicons name="search" size={18} color="#2D5A1B" style={{ marginRight: 8, opacity: 0.5 }} />
-            <TextInput
-              style={styles.searchInput}
-              placeholder={en.search.placeholder}
-              placeholderTextColor="#888"
-              value={query}
-              onChangeText={setQuery}
-              autoFocus
-            />
-            {query.length > 0 && (
-              <TouchableOpacity onPress={() => setQuery('')}>
-                <Ionicons name="close-circle" size={18} color="#888" />
-              </TouchableOpacity>
-            )}
+            <View style={styles.searchContainer}>
+              <Ionicons name="search" size={18} color="#1A3A0F" style={{ marginRight: 8, opacity: 0.5 }} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder={en.search.placeholder}
+                placeholderTextColor="#888"
+                value={query}
+                onChangeText={setQuery}
+                autoFocus
+              />
+              {query.length > 0 && (
+                <TouchableOpacity onPress={() => setQuery('')}>
+                  <Ionicons name="close-circle" size={18} color="#1A3A0F" />
+                </TouchableOpacity>
+              )}
+            </View>
+
+            <TouchableOpacity 
+              style={styles.filterButton} 
+              onPress={() => setShowFilter(true)}
+            >
+              <Ionicons name="options-outline" size={22} color="#1A3A0F" />
+              {isFilterActive && <View style={styles.activeFilterDot} />}
+            </TouchableOpacity>
           </View>
-
-          <TouchableOpacity 
-            style={styles.filterButton} 
-            onPress={() => setShowFilter(true)}
-          >
-            <Ionicons name="options-outline" size={22} color="#2D5A1B" />
-            {isFilterActive && <View style={styles.activeFilterDot} />}
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+        </SafeAreaView>
+      </LinearGradient>
 
       {/* Body */}
       <ScrollView 

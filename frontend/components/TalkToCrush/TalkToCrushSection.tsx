@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { TalkToCrushStackParamList } from '../../navigation/types';
@@ -288,25 +289,38 @@ Data: ${JSON.stringify(error?.response?.data) || 'None'}`
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView edges={['top']} style={styles.headerSafeArea}>
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={handleBack}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="arrow-back" size={20} color="#1A2E0F" />
-            </TouchableOpacity>
+      <LinearGradient
+        colors={[
+          '#F9E65C',
+          '#F2DB4A',
+          '#E3C437'
+        ]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.headerGradient}
+      >
+        <View style={styles.headerOrb1} />
+        <View style={styles.headerOrb2} />
+        <SafeAreaView edges={['top']} style={styles.headerSafeArea}>
+          <View style={styles.header}>
+            <View style={styles.headerLeft}>
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={handleBack}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="arrow-back" size={20} color="#1A3A0F" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.headerCenter}>
+              <Text style={styles.headerTitle}>{sectionMeta.title}</Text>
+            </View>
+            <View style={styles.headerRight}>
+              <Text style={styles.stepText}>{sectionMeta.headers}</Text>
+            </View>
           </View>
-          <View style={styles.headerCenter}>
-            <Text style={styles.headerTitle}>{sectionMeta.title}</Text>
-          </View>
-          <View style={styles.headerRight}>
-            <Text style={styles.stepText}>{sectionMeta.headers}</Text>
-          </View>
-        </View>
-      </SafeAreaView>
+        </SafeAreaView>
+      </LinearGradient>
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
