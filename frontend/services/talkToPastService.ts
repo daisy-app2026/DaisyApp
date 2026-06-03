@@ -2,6 +2,7 @@ import axios from 'axios';
 import { getFreshToken } from '../utils/getToken';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
+console.log('API URL being used:', API_URL);
 
 export interface TalkToPastSession {
   id: string;
