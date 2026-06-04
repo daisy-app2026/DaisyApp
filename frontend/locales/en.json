@@ -323,5 +323,12 @@
       "tooManyRequests": "Too many attempts. Try again later.",
       "generic": "Something went wrong. Try again."
     }
+  },
+  "legal": {
+    "signinAgree": "By signing in you agree to our",
+    "signupAgree": "By creating an account you agree to our",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "and": "and"
   }
 }

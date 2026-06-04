@@ -6,7 +6,8 @@ import {
   updateProfilePhoto,
   checkEmail,
   getLanguage,
-  updateLanguage
+  updateLanguage,
+  getAppConfig
 } from '../controllers/authController';
 import { verifyToken } from '../middleware/verifyToken';
 
@@ -19,5 +20,6 @@ router.put('/update-photo', verifyToken, updateProfilePhoto);
 router.post('/check-email', checkEmail);
 router.get('/language', verifyToken, getLanguage);
 router.put('/update-language', verifyToken, updateLanguage);
+router.get('/config', getAppConfig);
 
 export default router;

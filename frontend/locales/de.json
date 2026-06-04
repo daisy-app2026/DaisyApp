@@ -323,5 +323,12 @@
       "tooManyRequests": "Zu viele Versuche. Bitte später erneut versuchen.",
       "generic": "Etwas ist schiefgelaufen. Versuche es erneut."
     }
+  },
+  "legal": {
+    "signinAgree": "Mit deiner Anmeldung stimmst du unseren",
+    "signupAgree": "Mit der Erstellung eines Kontos stimmst du unseren",
+    "privacyPolicy": "Datenschutzbestimmungen",
+    "termsOfService": "Nutzungsbedingungen zu",
+    "and": "und"
   }
 }

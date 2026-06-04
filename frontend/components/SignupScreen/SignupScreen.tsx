@@ -9,8 +9,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useConfigStore } from '../../store/configStore';
 import { Feather, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { styles } from './SignupScreen.styles';
 import { useLanguageStore } from '../../store/languageStore';
@@ -25,6 +27,7 @@ import { AuthStackParamList } from '../../navigation/types';
 const SignupScreen: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<AuthStackParamList, 'Signup'>>();
   const { t } = useLanguageStore();
+  const { privacyPolicyUrl, termsOfServiceUrl } = useConfigStore();
   const [name, setName] = useState('');
 
   const [email, setEmail] = useState('');
@@ -268,6 +271,37 @@ const SignupScreen: React.FC = () => {
                 </Text>
               )}
             </TouchableOpacity>
+
+            <View style={styles.legalContainer}>
+              <Text style={styles.legalText}>
+                {t.legal?.signupAgree || "By creating an account you agree to our"}{' '}
+              </Text>
+              <View style={styles.legalLinks}>
+                <TouchableOpacity
+                  onPress={() =>
+                    privacyPolicyUrl &&
+                    Linking.openURL(privacyPolicyUrl)
+                  }
+                >
+                  <Text style={styles.legalLink}>
+                    {t.legal?.privacyPolicy || "Privacy Policy"}
+                  </Text>
+                </TouchableOpacity>
+                <Text style={styles.legalText}>
+                  {' '}{t.legal?.and || "and"}{' '}
+                </Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    termsOfServiceUrl &&
+                    Linking.openURL(termsOfServiceUrl)
+                  }
+                >
+                  <Text style={styles.legalLink}>
+                    {t.legal?.termsOfService || "Terms of Service"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
 
             <View style={styles.dividerContainer}>
               <View style={styles.dividerLine} />

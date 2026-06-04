@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { db, auth } from '../config/firebase';
 import { AuthRequest } from '../middleware/verifyToken';
+import { APP_CONFIG } from '../config/appConfig';
 
 export const registerUser = async (
   req: Request,
@@ -205,4 +206,14 @@ export const updateLanguage = async (
       error: 'Server error'
     })
   }
+}
+
+export const getAppConfig = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  res.status(200).json({
+    privacyPolicyUrl: APP_CONFIG.privacyPolicyUrl,
+    termsOfServiceUrl: APP_CONFIG.termsOfServiceUrl,
+  })
 }

@@ -134,4 +134,21 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
   },
+  legalContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 12,
+    gap: 8,
+  },
+  legalLink: {
+    fontSize: 12,
+    color: '#2D5A1B',
+    fontWeight: '600',
+    textDecorationLine: 'underline',
+  },
+  legalDivider: {
+    fontSize: 12,
+    color: '#888888',
+  },
 });

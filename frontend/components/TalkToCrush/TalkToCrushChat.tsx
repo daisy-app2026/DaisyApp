@@ -14,7 +14,7 @@ import {
   KeyboardEvent,
   Animated,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
@@ -62,6 +62,7 @@ const TalkToCrushChat: React.FC = () => {
   const { sessionId, crushName, initialMessages } = route.params;
   const name = crushName || 'My Crush';
   const { user } = useAuthStore();
+  const insets = useSafeAreaInsets();
 
   const personIcon = useMemo(() => getPersonIcon(name), [name]);
 
@@ -166,17 +167,16 @@ const TalkToCrushChat: React.FC = () => {
     return () => {
       parent?.setOptions({
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopColor: 'rgba(255,255,255,0.92)',
-          borderTopWidth: 1,
-          paddingBottom: 16,
-          paddingTop: 8,
-          height: 72,
-          elevation: 8,
-          shadowColor: '#2D5A1B',
-          shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.06,
-          shadowRadius: 8,
+          backgroundColor: 'transparent',
+          borderTopWidth: 0,
+          height: 64 + insets.bottom,
+          paddingBottom: insets.bottom > 0 ? insets.bottom : 8,
+          paddingTop: 6,
+          elevation: 0,
+          shadowColor: '#F9E65C',
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 20,
         }
       });
     };
@@ -357,43 +357,51 @@ const TalkToCrushChat: React.FC = () => {
       )}
 
       <Animated.View
-        style={[
-          styles.inputArea,
-          { marginBottom: keyboardHeight }
-        ]}
+        style={{ marginBottom: keyboardHeight }}
       >
-        <TextInput
-          style={styles.textInput}
-          value={inputText}
-          onChangeText={setInputText}
-          placeholder={remaining === 0 ? "Daily limit reached..." : en.talkToCrush.inputPlaceholder}
-          placeholderTextColor='#CCCCCC'
-          multiline={true}
-          underlineColorAndroid='transparent'
-          editable={!isSending && remaining > 0}
-        />
-        <TouchableOpacity
-          style={[
-            styles.sendBtn,
-            { backgroundColor: 
-              inputText.trim() && remaining > 0
-                ? '#2D5A1B'
-                : 'rgba(45,90,27,0.15)'
-            }
+        <LinearGradient
+          colors={[
+            '#F9E65C',
+            '#F2DB4A',
+            '#E3C437'
           ]}
-          onPress={handleSend}
-          disabled={!inputText.trim() || isSending || remaining === 0}
-          activeOpacity={0.8}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.inputArea}
         >
-          <Ionicons
-            name='arrow-forward'
-            size={20}
-            color={inputText.trim() && remaining > 0
-              ? 'white' 
-              : 'rgba(45,90,27,0.4)'
-            }
+          <TextInput
+            style={styles.textInput}
+            value={inputText}
+            onChangeText={setInputText}
+            placeholder={remaining === 0 ? "Daily limit reached..." : en.talkToCrush.inputPlaceholder}
+            placeholderTextColor='#CCCCCC'
+            multiline={true}
+            underlineColorAndroid='transparent'
+            editable={!isSending && remaining > 0}
           />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.sendBtn,
+              { backgroundColor: 
+                inputText.trim() && remaining > 0
+                  ? '#1A3A0F'
+                  : 'rgba(45,90,27,0.15)'
+              }
+            ]}
+            onPress={handleSend}
+            disabled={!inputText.trim() || isSending || remaining === 0}
+            activeOpacity={0.8}
+          >
+            <Ionicons
+              name='arrow-forward'
+              size={20}
+              color={inputText.trim() && remaining > 0
+                ? 'white' 
+                : 'rgba(45,90,27,0.4)'
+              }
+            />
+          </TouchableOpacity>
+        </LinearGradient>
       </Animated.View>
       {remaining === 0 && (
         <SafeAreaView edges={['bottom']} style={styles.limitReached}>

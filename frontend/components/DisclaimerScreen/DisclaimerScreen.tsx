@@ -5,8 +5,10 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useConfigStore } from '../../store/configStore';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from './DisclaimerScreen.styles';
 import { useLanguageStore } from '../../store/languageStore';
@@ -17,6 +19,7 @@ const DisclaimerScreen: React.FC = () => {
   const navigation = useNavigation();
   const { t: en } = useLanguageStore();
   const t = en.disclaimer;
+  const { privacyPolicyUrl, termsOfServiceUrl } = useConfigStore();
 
   const InfoCard = ({ 
     emoji, 
@@ -105,6 +108,32 @@ const DisclaimerScreen: React.FC = () => {
         >
           <Text style={styles.agreeButtonText}>{t.agree}</Text>
         </TouchableOpacity>
+
+        <View style={styles.legalContainer}>
+          <TouchableOpacity
+            onPress={() =>
+              privacyPolicyUrl &&
+              Linking.openURL(privacyPolicyUrl)
+            }
+          >
+            <Text style={styles.legalLink}>
+              {en.legal?.privacyPolicy || "Privacy Policy"}
+            </Text>
+          </TouchableOpacity>
+          <Text style={styles.legalDivider}>
+            |
+          </Text>
+          <TouchableOpacity
+            onPress={() =>
+              termsOfServiceUrl &&
+              Linking.openURL(termsOfServiceUrl)
+            }
+          >
+            <Text style={styles.legalLink}>
+              {en.legal?.termsOfService || "Terms of Service"}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </View>
   );

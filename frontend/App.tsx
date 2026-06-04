@@ -11,8 +11,11 @@ import {
 import { 
   SafeAreaProvider 
 } from 'react-native-safe-area-context'
+import * as SplashScreen from 'expo-splash-screen'
+import { useConfigStore } from './store/configStore'
 
-import LoadingSplash from './components/LoadingSplash/LoadingSplash'
+// Keep native splash screen visible while app is loading
+SplashScreen.preventAutoHideAsync().catch(console.warn)
 import { useEntriesStore } from './store/entriesStore'
 import { useSpacesStore } from './store/spacesStore'
 import { useTalkToPastStore } from './store/talkToPastStore'
@@ -37,8 +40,15 @@ export default function App() {
   const { setSessions: setTTPSessions } = useTalkToPastStore()
   const { setSessions: setTTCSessions } = useTalkToCrushStore()
   const { setLanguage } = useLanguageStore()
+  const { setConfig } = useConfigStore()
 
   const { user, isAuthenticated, isLoading, setUser, logout } = useAuthStore()
+
+  useEffect(() => {
+    if (!isAuthLoading && appReady) {
+      SplashScreen.hideAsync().catch(console.warn)
+    }
+  }, [isAuthLoading, appReady])
 
   const preloadData = async () => {
     if (!isAuthenticated || !user) {
@@ -101,6 +111,13 @@ export default function App() {
         }).catch(err => {
           console.log('Language preload error:', err)
         }),
+
+        // Config
+        axios.get(
+          `${process.env.EXPO_PUBLIC_API_URL}/api/auth/config`
+        ).then(res => {
+          setConfig(res.data)
+        }).catch(() => {}),
       ])
 
       // Max wait time 3 seconds
@@ -121,6 +138,13 @@ export default function App() {
 
   useEffect(() => {
     initLanguageStore()
+    // Preload config for unauthenticated screens
+    axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/api/auth/config`
+    ).then(res => {
+      setConfig(res.data)
+    }).catch(() => {})
+
     const unsubscribe = onAuthStateChanged(
       auth,
       async (firebaseUser) => {
@@ -171,38 +195,19 @@ export default function App() {
     }
   }, [isAuthenticated, user, isAuthLoading, isLoading])
 
-  if (isAuthLoading) {
+  if (!appReady || isAuthLoading) {
     return (
       <View style={{
         flex: 1,
-        backgroundColor: '#FAFAF8',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-        <ActivityIndicator
-          size='large'
-          color='#2D5A1B'
-        />
-        <Text style={{
-          marginTop: 12,
-          fontSize: 13,
-          color: '#888888',
-        }}>
-          Loading Daisy...
-        </Text>
-      </View>
+        backgroundColor: '#1A3A0F'
+      }} />
     )
   }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        {/* Show splash while loading! */}
-        {isAuthenticated && !appReady ? (
-          <LoadingSplash />
-        ) : (
-          <AppNavigator />
-        )}
+        <AppNavigator />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   )

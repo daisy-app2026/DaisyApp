@@ -12,6 +12,7 @@ import {
   createBottomTabNavigator 
 } from '@react-navigation/bottom-tabs'
 import { View, ActivityIndicator, Easing } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useAuthStore } from '../store/authStore'
@@ -333,52 +334,49 @@ const TalkToCrushNavigator = () => {
 }
 
 // Main Tab Navigator
-const customTabBarStyle = {
-  backgroundColor: 'transparent',
-  borderTopWidth: 0,
-  height: 82,
-  paddingBottom: 12,
-  paddingTop: 8,
-  elevation: 0,
-  shadowColor: '#F9E65C',
-  shadowOffset: { width: 0, height: -4 },
-  shadowOpacity: 0.4,
-  shadowRadius: 25,
-  borderTopLeftRadius: 24,
-  borderTopRightRadius: 24,
-  overflow: 'hidden' as const,
-};
+const MainNavigator = () => {
+  const insets = useSafeAreaInsets();
 
-// Main Tab Navigator
-const MainNavigator = () => (
-  <View style={{ flex: 1 }}>
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarHideOnKeyboard: true,
-        lazy: false,
-        tabBarShowLabel: false,
-        tabBarStyle: customTabBarStyle,
-        tabBarBackground: () => (
-          <LinearGradient
-            colors={[
-              '#F8E769',
-              '#ECD446',
-              '#DDBA28'
-            ]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              bottom: 0,
-              borderTopLeftRadius: 24,
-              borderTopRightRadius: 24,
-            }}
-          />
-        ),
+  const dynamicTabBarStyle = {
+    backgroundColor: 'transparent',
+    borderTopWidth: 0,
+    height: 64 + insets.bottom,
+    paddingBottom: insets.bottom > 0 ? insets.bottom : 8,
+    paddingTop: 6,
+    elevation: 0,
+    shadowColor: '#F9E65C',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+  };
+
+  return (
+    <View style={{ flex: 1 }}>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarHideOnKeyboard: true,
+          lazy: false,
+          tabBarShowLabel: false,
+          tabBarStyle: dynamicTabBarStyle,
+          tabBarBackground: () => (
+            <LinearGradient
+              colors={[
+                '#F8E769',
+                '#ECD446',
+                '#DDBA28'
+              ]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+              }}
+            />
+          ),
         tabBarLabelStyle: {
           fontSize: 11,
           fontWeight: '700',
@@ -412,9 +410,9 @@ const MainNavigator = () => (
 
           return (
             <View style={{
-              width: 56,
-              height: 56,
-              borderRadius: 28,
+              width: 48,
+              height: 48,
+              borderRadius: 24,
               backgroundColor: focused
                 ? '#FFFFFF'
                 : 'rgba(255,255,255,0.2)',
@@ -440,9 +438,9 @@ const MainNavigator = () => (
             }}>
               <Ionicons 
                 name={iconName} 
-                size={26} 
+                size={22} 
                 color={focused 
-                  ? '#D4A514' 
+                  ? '#1A3A0F' 
                   : 'rgba(26,58,15,0.5)'
                 } 
               />
@@ -460,7 +458,7 @@ const MainNavigator = () => (
             tabBarLabel: 'Diary',
             tabBarStyle: routeName === 'NewEntry'
               ? { display: 'none' as const }
-              : customTabBarStyle
+              : dynamicTabBarStyle
           };
         }}
       />
@@ -476,7 +474,7 @@ const MainNavigator = () => (
             tabBarStyle: isChat ? {
               display: 'none' as const,
               position: 'absolute' as const,
-            } : customTabBarStyle
+            } : dynamicTabBarStyle
           };
         }}
         listeners={({ navigation }) => ({
@@ -500,7 +498,7 @@ const MainNavigator = () => (
             tabBarStyle: isChat ? {
               display: 'none' as const,
               position: 'absolute' as const,
-            } : customTabBarStyle
+            } : dynamicTabBarStyle
           };
         }}
         listeners={({ navigation }) => ({
@@ -514,19 +512,22 @@ const MainNavigator = () => (
       />
     </Tab.Navigator>
   </View>
-)
+  )
+}
 
 // Root Navigator
 const AppNavigator = () => {
   const { isAuthenticated } = useAuthStore()
 
   return (
-    <NavigationContainer>
-      {isAuthenticated 
-        ? <MainNavigator /> 
-        : <AuthNavigator />
-      }
-    </NavigationContainer>
+    <View style={{ flex: 1, backgroundColor: '#ECD446' }}>
+      <NavigationContainer>
+        {isAuthenticated 
+          ? <MainNavigator /> 
+          : <AuthNavigator />
+        }
+      </NavigationContainer>
+    </View>
   )
 }
 

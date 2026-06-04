@@ -185,4 +185,26 @@ export const styles = StyleSheet.create({
     borderColor: '#E85555',
     borderWidth: 1.5,
   },
+  legalContainer: {
+    alignItems: 'center',
+    marginTop: 16,
+    paddingHorizontal: 20,
+  },
+  legalLinks: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  legalText: {
+    fontSize: 11,
+    color: '#888888',
+    textAlign: 'center',
+  },
+  legalLink: {
+    fontSize: 11,
+    color: '#2D5A1B',
+    fontWeight: '600',
+    textDecorationLine: 'underline',
+  },
 });

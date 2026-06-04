@@ -210,7 +210,7 @@ export const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    backgroundColor: 'rgba(45,90,27,0.06)',
+    backgroundColor: 'rgba(255,255,255,0.6)',
     borderRadius: 22,
     paddingVertical: 10,
     paddingHorizontal: 16,
@@ -227,7 +227,7 @@ export const styles = StyleSheet.create({
     marginBottom: 2,
   },
   sendBtnActive: {
-    backgroundColor: '#2D5A1B',
+    backgroundColor: '#1A3A0F',
   },
   sendBtnInactive: {
     backgroundColor: 'rgba(45,90,27,0.15)',
@@ -239,9 +239,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   inputArea: {
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(45,90,27,0.08)',
+    borderTopWidth: 0,
     paddingHorizontal: 12,
     paddingTop: 10,
     paddingBottom: 16,
