@@ -13,6 +13,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.set('trust proxy', 1);
+
 app.use(cors());
 app.use(express.json());
 
@@ -20,22 +22,18 @@ app.use(express.json());
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 500,
-  message: {
-    error: 'Too many requests, please try again later.'
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
+  validate: {
+    xForwardedForHeader: false
+  }
 });
 
 // AI endpoints strict limit
 const aiLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 50,
-  message: {
-    error: 'Too many AI requests, please slow down.'
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
+  validate: {
+    xForwardedForHeader: false
+  }
 });
 
 // Apply limits
