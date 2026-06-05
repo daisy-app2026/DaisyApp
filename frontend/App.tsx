@@ -29,6 +29,7 @@ import { getTalkToPastSessions } from './services/talkToPastService'
 import { getTalkToCrushSessions } from './services/talkToCrushService'
 import { useLanguageStore, initLanguageStore } from './store/languageStore'
 import { getFreshToken } from './utils/getToken'
+import { registerForPushNotifications } from './services/notificationService'
 
 
 export default function App() {
@@ -55,6 +56,17 @@ export default function App() {
       setAppReady(true)
       return
     }
+
+    // Register push notifications!
+    registerForPushNotifications()
+      .then(token => {
+        if (token) {
+          console.log(
+            'Push registered:', token
+          )
+        }
+      })
+      .catch(console.log)
 
     try {
       // Load EVERYTHING in parallel!

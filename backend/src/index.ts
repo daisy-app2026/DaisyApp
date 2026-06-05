@@ -7,6 +7,7 @@ import spacesRoutes from './routes/spaces';
 import entriesRoutes from './routes/entries';
 import talkToPastRoutes from './routes/talkToPast';
 import talkToCrushRoutes from './routes/talkToCrush';
+import notificationRoutes from './routes/notifications';
 
 dotenv.config();
 
@@ -71,6 +72,7 @@ app.use('/api/spaces', spacesRoutes);
 app.use('/api/entries', entriesRoutes);
 app.use('/api/talk-to-past', talkToPastRoutes);
 app.use('/api/talk-to-crush', talkToCrushRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.listen(PORT, () => {
   console.log(

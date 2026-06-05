@@ -1,6 +1,7 @@
 import { Response } from 'express'
 import admin, { db } from '../config/firebase'
 import { AuthRequest } from '../middleware/verifyToken'
+import { sendCapsuleNotification } from '../services/notificationService'
 
 const updateStreak = async (userId: string) => {
   const userRef = db
@@ -377,6 +378,15 @@ export const getUnlockedCapsules = async (
            e.unlockDate <= now &&
            !e.notificationShown
     )
+
+    if (unlockedCapsules.length > 0) {
+      await sendCapsuleNotification(userId);
+      for (const capsule of unlockedCapsules) {
+        await db.collection('entries').doc(capsule.id).update({
+          notificationShown: true
+        });
+      }
+    }
 
     res.status(200).json({
       success: true,

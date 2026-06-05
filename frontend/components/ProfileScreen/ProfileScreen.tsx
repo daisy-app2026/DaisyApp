@@ -335,13 +335,6 @@ const ProfileScreen: React.FC = () => {
 
         {/* Menu Items */}
         <View style={styles.menuContainer}>
-          <TouchableOpacity style={styles.menuItem} onPress={() => console.log('notifications')}>
-            <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(245, 220, 50, 0.15)' }]}>
-              <Ionicons name="notifications-outline" size={18} color="#B8860B" />
-            </View>
-            <Text style={styles.menuItemText}>{t.notifications}</Text>
-            <Ionicons name="chevron-forward" size={18} color="#BBBBBB" />
-          </TouchableOpacity>
 
           {/* Language Selection Card */}
           <View style={styles.languageSection}>
@@ -373,6 +366,7 @@ const ProfileScreen: React.FC = () => {
             </View>
           </View>
 
+          {/* Payment - Coming Soon
           <TouchableOpacity style={styles.menuItem} onPress={() => console.log('payment')}>
             <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(45, 90, 27, 0.10)' }]}>
               <Ionicons name="card-outline" size={18} color="#2D5A1B" />
@@ -380,6 +374,7 @@ const ProfileScreen: React.FC = () => {
             <Text style={styles.menuItemText}>{t.payment}</Text>
             <Ionicons name="chevron-forward" size={18} color="#BBBBBB" />
           </TouchableOpacity>
+          */}
 
           <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Disclaimer')}>
             <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(45, 90, 27, 0.10)' }]}>
