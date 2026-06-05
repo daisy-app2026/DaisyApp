@@ -13,12 +13,13 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL
 const registerToBackend = async (
   uid: string,
   email: string,
-  name: string
+  name: string,
+  photoURL?: string | null
 ) => {
   try {
     await axios.post(
       `${API_URL}/api/auth/register`, 
-      { uid, email, name }
+      { uid, email, name, photoURL: photoURL || '' }
     )
   } catch (error) {
     console.log('Backend register error:', error)
@@ -36,7 +37,7 @@ export const signUpWithEmail = async (
     )
   const user = userCredential.user
   const token = await user.getIdToken()
-  await registerToBackend(user.uid, email, name)
+  await registerToBackend(user.uid, email, name, user.photoURL)
   return { user, token }
 }
 
@@ -92,7 +93,8 @@ export const signInWithGoogleCredential = async (
   await registerToBackend(
     user.uid,
     user.email || '',
-    user.displayName || ''
+    user.displayName || '',
+    user.photoURL
   )
   return { user, token }
 }

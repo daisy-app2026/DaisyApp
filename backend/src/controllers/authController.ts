@@ -8,7 +8,7 @@ export const registerUser = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { uid, email, name } = req.body;
+    const { uid, email, name, photoURL } = req.body;
 
     if (!uid || !email) {
       res.status(400).json({ 
@@ -25,6 +25,7 @@ export const registerUser = async (
         uid,
         email,
         name: name || '',
+        photoURL: photoURL || '',
         createdAt: new Date().toISOString(),
         streak: 0,
         lastEntryDate: null,
