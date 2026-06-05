@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useFocusEffect, CommonActions } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { TalkToPastStackParamList } from '../../navigation/types';
 import { useLanguageStore } from '../../store/languageStore';
@@ -60,14 +60,7 @@ const TalkToPastHome: React.FC = () => {
   );
 
   const handleProfilePress = useCallback(() => {
-    navigation.dispatch(
-      CommonActions.navigate({
-        name: 'DiaryTab',
-        params: {
-          screen: 'Profile',
-        },
-      })
-    );
+    navigation.navigate('Profile');
   }, [navigation]);
 
   const handleStartNew = useCallback(() => {

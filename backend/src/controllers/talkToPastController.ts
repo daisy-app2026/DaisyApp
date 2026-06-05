@@ -1,8 +1,9 @@
 import { Response } from 'express';
 import { db } from '../config/firebase';
 import { AuthRequest } from '../middleware/verifyToken';
-import { indexSessionAnswers } from '../services/pineconeService';
+import { indexSessionAnswers, searchContext } from '../services/pineconeService';
 import { generateChatResponse } from '../services/chatService';
+import { getTalkToPastSystemPrompt } from '../config/systemPrompt';
 import { pineconeIndex } from '../config/pinecone';
 
 // Create new session
@@ -232,13 +233,25 @@ export const sendMessage = async (
       })
     );
 
+    // Get context from Pinecone
+    const contextResults = await searchContext(userId, message);
+
+    const contextString = 
+      contextResults.length > 0
+        ? '\n\nRELEVANT CONTEXT:\n' + contextResults.join('\n')
+        : '';
+
+    // Build system prompt
+    const systemPrompt =
+      getTalkToPastSystemPrompt(
+        session.personName,
+        session.answers
+      ) + contextString;
+
     // Generate AI response
     const aiResponse = await generateChatResponse(
-      userId,
-      session.personName,
-      session.answers,
       messageHistory,
-      message
+      systemPrompt
     );
 
     const userMsg = {

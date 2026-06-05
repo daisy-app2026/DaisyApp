@@ -242,6 +242,10 @@ const TalkToPastNavigator = () => {
         name='TalkToPastChat'
         component={TalkToPastChat}
       />
+      <TalkToPastStack.Screen
+        name='Profile'
+        component={ProfileScreen}
+      />
     </TalkToPastStack.Navigator>
   )
 }
@@ -328,6 +332,10 @@ const TalkToCrushNavigator = () => {
       <TalkToCrushStack.Screen
         name='TalkToCrushChat'
         component={TalkToCrushChat}
+      />
+      <TalkToCrushStack.Screen
+        name='Profile'
+        component={ProfileScreen}
       />
     </TalkToCrushStack.Navigator>
   )

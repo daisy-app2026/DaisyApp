@@ -4,15 +4,7 @@ import { AuthRequest } from '../middleware/verifyToken';
 import { indexSessionAnswers, searchContext } from '../services/pineconeService';
 import { pineconeIndex } from '../config/pinecone';
 import { getTalkToCrushSystemPrompt } from '../config/crushSystemPrompt';
-
-const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
-
-const MODELS = [
-  'openrouter/free',
-  'meta-llama/llama-3.3-70b-instruct:free',
-  'qwen/qwen3-235b-a22b:free',
-  'openai/gpt-oss-20b:free',
-];
+import { generateChatResponse } from '../services/chatService';
 
 interface SessionMessage {
   id: string;
@@ -25,89 +17,6 @@ interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
 }
-
-// Helper to generate crush chat response
-const generateCrushResponse = async (
-  userId: string,
-  crushName: string,
-  answers: Record<string, any>,
-  messages: ChatMessage[],
-  userMessage: string
-): Promise<string> => {
-  const contextResults = await searchContext(userId, userMessage, 5);
-  const contextString = contextResults.length > 0
-    ? `\nRELEVANT CONTEXT FROM USER'S DIARY AND ANSWERS:\n${contextResults.join('\n')}\n`
-    : '';
-
-  const systemPrompt = getTalkToCrushSystemPrompt(crushName, answers) + contextString;
-
-  const chatMessages = [
-    ...messages.slice(-30),
-    { role: 'user', content: userMessage } as ChatMessage
-  ];
-
-  let lastError: Error | null = null;
-  for (const model of MODELS) {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
-
-    try {
-      console.log(`Trying model (Crush): ${model}`);
-      const response = await fetch(
-        `${OPENROUTER_BASE_URL}/chat/completions`,
-        {
-          method: 'POST',
-          signal: controller.signal,
-          headers: {
-            'Authorization': `Bearer ${process.env.ANTHROPIC_API_KEY}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://daisy-app.com',
-            'X-Title': 'Daisy App',
-          },
-          body: JSON.stringify({
-            model,
-            messages: [
-              { role: 'system', content: systemPrompt } as ChatMessage,
-              ...chatMessages
-            ],
-            max_tokens: 200,
-            temperature: 0.8,
-          })
-        }
-      );
-
-      clearTimeout(timeoutId);
-      const data = await response.json() as {
-        choices?: {
-          message?: { content?: string };
-          text?: string;
-        }[];
-        content?: { text?: string }[];
-      };
-      console.log('Full API response (Crush):', JSON.stringify(data, null, 2));
-
-      const content = data.choices?.[0]?.message?.content;
-      if (!content) {
-        const altContent = 
-          data.choices?.[0]?.text ||
-          data.content?.[0]?.text ||
-          null;
-
-        if (altContent) return altContent;
-        continue;
-      }
-
-      return content;
-    } catch (err) {
-      clearTimeout(timeoutId);
-      console.error(`Failed with model ${model}:`, err);
-      lastError = err instanceof Error ? err : new Error(String(err));
-      continue;
-    }
-  }
-
-  throw lastError || new Error('All models failed');
-};
 
 // Create new session
 export const createSession = async (
@@ -322,13 +231,25 @@ export const sendMessage = async (
       })
     );
 
+    // Get context from Pinecone
+    const contextResults = await searchContext(userId, message);
+
+    const contextString = 
+      contextResults.length > 0
+        ? '\n\nRELEVANT CONTEXT:\n' + contextResults.join('\n')
+        : '';
+
+    // Build system prompt
+    const systemPrompt =
+      getTalkToCrushSystemPrompt(
+        session.crushName,
+        session.answers
+      ) + contextString;
+
     // Generate AI response
-    const aiResponse = await generateCrushResponse(
-      userId,
-      session.crushName,
-      session.answers,
+    const aiResponse = await generateChatResponse(
       messageHistory,
-      message
+      systemPrompt
     );
 
     const userMsg = {

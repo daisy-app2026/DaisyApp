@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation, CommonActions } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { TalkToCrushStackParamList } from '../../navigation/types';
 import { useLanguageStore } from '../../store/languageStore';
@@ -44,14 +44,7 @@ const TalkToCrushIntro: React.FC = () => {
   const { user } = useAuthStore();
 
   const handleProfilePress = useCallback(() => {
-    navigation.dispatch(
-      CommonActions.navigate({
-        name: 'DiaryTab',
-        params: {
-          screen: 'Profile'
-        }
-      })
-    );
+    navigation.navigate('Profile');
   }, [navigation]);
 
   const handleBegin = useCallback(() => {

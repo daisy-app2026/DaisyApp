@@ -49,6 +49,7 @@ export type TalkToPastStackParamList = {
       timestamp: string
     }[]
   }
+  Profile: undefined
 }
 
 export type TalkToCrushStackParamList = {
@@ -70,6 +71,7 @@ export type TalkToCrushStackParamList = {
       timestamp: string
     }[]
   }
+  Profile: undefined
 }
 
 export type MainTabParamList = {
