@@ -12,11 +12,24 @@ import notificationRoutes from './routes/notifications';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
 app.set('trust proxy', 1);
 
-app.use(cors());
+const PORT = process.env.PORT || 3000;
+
+app.use(cors({
+  origin: '*',
+  methods: [
+    'GET', 'POST',
+    'PUT', 'DELETE',
+    'OPTIONS'
+  ],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'x-admin-secret'
+  ],
+  credentials: false
+}));
 app.use(express.json());
 
 // Global rate limit
@@ -25,7 +38,9 @@ const globalLimiter = rateLimit({
   max: 500,
   validate: {
     xForwardedForHeader: false
-  }
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 // AI endpoints strict limit
@@ -34,7 +49,9 @@ const aiLimiter = rateLimit({
   max: 50,
   validate: {
     xForwardedForHeader: false
-  }
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 // Apply limits
