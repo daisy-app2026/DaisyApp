@@ -39,15 +39,18 @@ export const createSession = async (
       return;
     }
 
-    const existingSessions = await db
+    const sessionsSnapshot = await db
       .collection('talkToCrushSessions')
       .where('userId', '==', userId)
       .get();
 
-    if (existingSessions.size >= 2) {
+    const activeCount = sessionsSnapshot.docs.filter(
+      (doc) => !doc.data().isDeleted && !doc.data().deleted
+    ).length;
+
+    if (activeCount >= 2) {
       res.status(403).json({
-        error: 'CHAT_LIMIT_REACHED',
-        message: 'Maximum 2 chats allowed'
+        error: 'Chat limit reached'
       });
       return;
     }

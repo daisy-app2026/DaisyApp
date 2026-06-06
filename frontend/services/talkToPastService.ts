@@ -33,7 +33,8 @@ export const createTalkToPastSession = async (
     {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      timeout: 30000
     }
   );
   return response.data.session;
@@ -47,7 +48,8 @@ export const getTalkToPastSessions = async (): Promise<TalkToPastSession[]> => {
     {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      timeout: 30000
     }
   );
   return response.data.sessions;
@@ -63,7 +65,8 @@ export const getTalkToPastSession = async (
     {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      timeout: 30000
     }
   );
   return response.data.session;
@@ -84,7 +87,8 @@ export const sendTalkToPastMessage = async (
     {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      timeout: 30000
     }
   );
   return {
@@ -103,7 +107,8 @@ export const deleteTalkToPastSession = async (
     {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      timeout: 30000
     }
   );
 };

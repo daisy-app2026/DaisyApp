@@ -23,7 +23,10 @@ export interface TalkToCrushMessage {
 export const testConnection = async () => {
   try {
     const response = await axios.get(
-      `${API_URL}/health`
+      `${API_URL}/health`,
+      {
+        timeout: 30000
+      }
     )
     console.log('Connection OK:', 
       response.data)
@@ -50,7 +53,8 @@ export const createTalkToCrushSession = async (
     {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      timeout: 30000
     }
   );
   return response.data.session;
@@ -64,7 +68,8 @@ export const getTalkToCrushSessions = async (): Promise<TalkToCrushSession[]> =>
     {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      timeout: 30000
     }
   );
   return response.data.sessions;
@@ -80,7 +85,8 @@ export const getTalkToCrushSession = async (
     {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      timeout: 30000
     }
   );
   return response.data.session;
@@ -101,7 +107,8 @@ export const sendTalkToCrushMessage = async (
     {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      timeout: 30000
     }
   );
   return {
@@ -120,7 +127,8 @@ export const deleteTalkToCrushSession = async (
     {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      timeout: 30000
     }
   );
 };
