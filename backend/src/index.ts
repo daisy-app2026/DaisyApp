@@ -22,18 +22,6 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use((req, res, next) => {
-  res.setHeader(
-    'Content-Type',
-    'application/json; charset=utf-8'
-  )
-  res.setHeader(
-    'Transfer-Encoding',
-    'identity'
-  )
-  next()
-})
-
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
