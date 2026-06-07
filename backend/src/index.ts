@@ -14,6 +14,26 @@ dotenv.config();
 const app = express();
 app.set('trust proxy', 1);
 
+// Disable compression for 
+// React Native compatibility!
+app.use((req, res, next) => {
+  req.headers['accept-encoding'] = 
+    'identity'
+  next()
+})
+
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Type',
+    'application/json; charset=utf-8'
+  )
+  res.setHeader(
+    'Transfer-Encoding',
+    'identity'
+  )
+  next()
+})
+
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
