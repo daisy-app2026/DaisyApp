@@ -18,7 +18,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useLanguageStore } from '../../store/languageStore';
 import { styles } from './NewEntryScreen.styles';
-import { createEntry, updateEntry, Entry } from '../../services/entryService';
+import { createEntry, updateEntry, Entry, getRecentEntries, getEntryStats } from '../../services/entryService';
 import { useAuthStore } from '../../store/authStore';
 import AudioRecorder from './AudioRecorder';
 import ImageUploader from './ImageUploader';
@@ -325,6 +325,20 @@ const NewEntryScreen: React.FC = () => {
       return;
     }
 
+    const loadRecentEntries = async () => {
+      const entries = await getRecentEntries();
+      useEntriesStore.getState().setRecentEntries(entries);
+    };
+
+    const loadStats = async () => {
+      const stats = await getEntryStats();
+      useEntriesStore.getState().setStats({
+        totalEntries: stats.entries,
+        totalCapsules: stats.capsules,
+        currentStreak: stats.streak
+      });
+    };
+
     try {
       setLoading(true);
       isSavingRef.current = true;
@@ -358,12 +372,21 @@ const NewEntryScreen: React.FC = () => {
         }
       }
 
-      let updatedEntry: Entry | null = null;
       if (editEntry) {
-        updatedEntry = await updateEntry(editEntry.id, {
+        const updatedEntry = await updateEntry(editEntry.id, {
           title,
           content: finalContent,
         });
+
+        // Navigate IMMEDIATELY! ✅
+        navigation.pop(1);
+
+        // Refresh in BACKGROUND!
+        setTimeout(() => {
+          useEntriesStore.getState().updateEntryInCache(updatedEntry);
+          loadRecentEntries().catch(() => {});
+          loadStats().catch(() => {});
+        }, 300);
       } else {
         await createEntry({
           title,
@@ -375,23 +398,27 @@ const NewEntryScreen: React.FC = () => {
           capsuleDuration: isCapsule ? capsuleDuration : null,
           unlockDate,
         });
-      }
 
-      if (editEntry && updatedEntry) {
-        // Update store
-        useEntriesStore.getState().updateEntryInCache(updatedEntry);
-
-        // Navigate back with updated data
-        navigation.pop(1);
-      } else {
-        useEntriesStore.getState().invalidateCache();
-        useEntriesStore.getState().invalidateSpaceCache(spaceId);
+        // Navigate IMMEDIATELY! ✅
         navigation.goBack();
+
+        // Refresh in BACKGROUND!
+        setTimeout(() => {
+          useEntriesStore.getState().invalidateCache();
+          useEntriesStore.getState().invalidateSpaceCache(spaceId);
+          loadRecentEntries().catch(() => {});
+          loadStats().catch(() => {});
+        }, 300);
       }
     } catch (error) {
       isSavingRef.current = false;
       console.error('Save error:', error);
-      showAlert('Error', 'Could not save entry. Try again!');
+      // Only show error if CREATE/UPDATE itself failed!
+      // NOT if refetch failed!
+      const err = error as { response?: { status?: number }; request?: unknown };
+      if (err.response?.status || err.request) {
+        showAlert('Error', 'Could not save entry. Try again!');
+      }
     } finally {
       setLoading(false);
     }

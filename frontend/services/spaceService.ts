@@ -10,7 +10,8 @@ export const fetchSpaces = async () => {
     {
       headers: { 
         Authorization: `Bearer ${token}` 
-      }
+      },
+      timeout: 30000
     }
   );
   return response.data.spaces;
@@ -29,7 +30,8 @@ export const addCustomSpace = async (
     {
       headers: { 
         Authorization: `Bearer ${token}` 
-      }
+      },
+      timeout: 30000
     }
   );
   return response.data.space;
@@ -46,7 +48,8 @@ export const removeSpace = async (
       headers: { 
         Authorization: `Bearer ${token}` 
       },
-      data: { spaceId, isDefault }
+      data: { spaceId, isDefault },
+      timeout: 30000
     }
   );
 };

@@ -39,7 +39,8 @@ export const createEntry = async (
     {
       headers: { 
         Authorization: `Bearer ${token}` 
-      }
+      },
+      timeout: 30000
     }
   );
   return response.data.entry;
@@ -54,7 +55,8 @@ export const getEntriesBySpace = async (
     {
       headers: { 
         Authorization: `Bearer ${token}` 
-      }
+      },
+      timeout: 30000
     }
   );
   return response.data.entries;
@@ -67,7 +69,8 @@ export const getRecentEntries = async (): Promise<Entry[]> => {
     {
       headers: { 
         Authorization: `Bearer ${token}` 
-      }
+      },
+      timeout: 30000
     }
   );
   return response.data.entries;
@@ -84,7 +87,8 @@ export const updateEntry = async (
     {
       headers: { 
         Authorization: `Bearer ${token}` 
-      }
+      },
+      timeout: 30000
     }
   );
   return response.data.entry;
@@ -99,7 +103,8 @@ export const deleteEntry = async (
     {
       headers: { 
         Authorization: `Bearer ${token}` 
-      }
+      },
+      timeout: 30000
     }
   );
 };
@@ -111,7 +116,8 @@ export const getEntryStats = async (): Promise<{ entries: number; capsules: numb
     {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      timeout: 30000
     }
   );
   return response.data.stats;
@@ -124,7 +130,8 @@ export const getUnlockedCapsules = async (): Promise<Entry[]> => {
     {
       headers: { 
         Authorization: `Bearer ${token}` 
-      }
+      },
+      timeout: 30000
     }
   );
   return response.data.unlockedCapsules;
@@ -140,7 +147,8 @@ export const markNotificationShown = async (
     {
       headers: { 
         Authorization: `Bearer ${token}` 
-      }
+      },
+      timeout: 30000
     }
   );
 };
@@ -152,7 +160,8 @@ export const getAllEntries = async (): Promise<Entry[]> => {
     {
       headers: { 
         Authorization: `Bearer ${token}` 
-      }
+      },
+      timeout: 30000
     }
   );
   return response.data.entries;

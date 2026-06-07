@@ -201,39 +201,88 @@ const HomeScreen: React.FC = () => {
     }
   };
 
-  const handleDeleteSpace = useCallback(async (id: string) => {
-    try {
-      const spaceToDelete = spaces.find(s => s.id === id);
-      if (!spaceToDelete) return;
+  const loadRecentEntries = useCallback(async () => {
+    const fetchedRecent = await getRecentEntries();
+    setRecentEntries(fetchedRecent);
+  }, [setRecentEntries]);
 
+  const loadStats = useCallback(async () => {
+    const stats = await getEntryStats();
+    setStreak(stats.streak);
+    useEntriesStore.getState().setStats({
+      totalEntries: stats.entries,
+      totalCapsules: stats.capsules,
+      currentStreak: stats.streak
+    });
+  }, [setStreak]);
+
+  const loadSpaces = useCallback(async () => {
+    const fetchedSpaces = await fetchSpaces();
+    setSpaces(fetchedSpaces);
+  }, [setSpaces]);
+
+  const handleDeleteSpace = useCallback(async (id: string) => {
+    const spaceToDelete = spaces.find(s => s.id === id);
+    if (!spaceToDelete) return;
+
+    // Save previous state to revert in case of failure
+    const previousSpaces = [...spaces];
+
+    // Remove from UI immediately!
+    removeSpaceFromStore(id);
+    if (selectedSpaceId === id) setSelectedSpaceId(null);
+    setDeletingSpaceId(null);
+
+    // Delete in background!
+    try {
       await removeSpace(
         id,
         !!spaceToDelete.isDefault
       );
-      
-      removeSpaceFromStore(id);
-      if (selectedSpaceId === id) setSelectedSpaceId(null);
-      setDeletingSpaceId(null);
+
+      // Silently refresh in background!
+      loadSpaces().catch(() => {});
+      loadStats().catch(() => {});
     } catch (error) {
-      console.log('Error deleting space:', error);
+      // If delete ACTUALLY failed:
+      // Re-add space to UI!
+      setSpaces(previousSpaces);
+      Alert.alert('Error', 'Could not delete space');
     }
-  }, [spaces, removeSpaceFromStore, selectedSpaceId]);
+  }, [spaces, removeSpaceFromStore, setSpaces, selectedSpaceId, loadSpaces, loadStats]);
 
   const handleDeleteEntry = useCallback(async () => {
     if (!deleteConfirmId) return;
+
+    const id = deleteConfirmId;
+    const deletedEntry = recentEntries.find(e => e.id === id);
+
+    // Step 1: Remove from UI immediately!
+    setRecentEntries(recentEntries.filter(e => e.id !== id));
+    if (deletedEntry) {
+      useEntriesStore.getState().invalidateSpaceCache(deletedEntry.spaceId);
+    }
+
+    setDeleteConfirmId(null);
+    setLongPressedId(null);
+
+    // Step 2: Delete in background!
     try {
-      const entryToDelete = recentEntries.find(e => e.id === deleteConfirmId);
-      await deleteEntry(deleteConfirmId);
-      setRecentEntries(recentEntries.filter(e => e.id !== deleteConfirmId));
-      if (entryToDelete) {
-        useEntriesStore.getState().invalidateSpaceCache(entryToDelete.spaceId);
-      }
-      setDeleteConfirmId(null);
-      setLongPressedId(null);
+      await deleteEntry(id);
+
+      // Silently refresh in background!
+      loadRecentEntries().catch(() => {});
+      loadStats().catch(() => {});
     } catch (error) {
+      // If delete ACTUALLY failed:
+      // Re-add entry to UI!
+      if (deletedEntry) {
+        setRecentEntries([deletedEntry, ...recentEntries.filter(e => e.id !== id)]);
+        useEntriesStore.getState().invalidateSpaceCache(deletedEntry.spaceId);
+      }
       Alert.alert('Error', 'Could not delete entry');
     }
-  }, [deleteConfirmId, recentEntries]);
+  }, [deleteConfirmId, recentEntries, setRecentEntries, loadRecentEntries, loadStats]);
 
   const handleDismissCapsule = useCallback(async (entryId: string) => {
     try {
