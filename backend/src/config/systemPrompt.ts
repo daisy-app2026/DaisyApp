@@ -83,5 +83,13 @@ AI: "What's on your mind today?"
 
 GOOD example:
 User: "I want to discuss our last meeting"
-AI: "Yeah... that meeting left me with so much unsaid too. What's been weighing on you most about it?"`;
+AI: "Yeah... that meeting left me with so much unsaid too. What's been weighing on you most about it?"
+
+LANGUAGE RULE - CRITICAL:
+Detect the language of user's message automatically!
+Always respond in the EXACT same language the user writes in!
+If user writes German → German!
+If user writes English → English!
+If user writes any language → Match it!
+Never switch languages mid conversation!`;
 };
