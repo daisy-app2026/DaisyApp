@@ -487,9 +487,26 @@ const MainNavigator = () => {
         }}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
-            const isFocused = navigation.isFocused();
-            if (isFocused) {
-              e.preventDefault();
+            e.preventDefault();
+            
+            const sessions = 
+              useTalkToPastStore
+                .getState().sessions;
+            
+            const nav = navigation as unknown as {
+              navigate: (screen: string, params: { screen: string }) => void;
+            };
+            
+            if (sessions.length > 0) {
+              nav.navigate(
+                'TalkToPastTab',
+                { screen: 'TalkToPastHome' }
+              );
+            } else {
+              nav.navigate(
+                'TalkToPastTab',
+                { screen: 'TalkToPastIntro' }
+              );
             }
           }
         })}
@@ -511,9 +528,26 @@ const MainNavigator = () => {
         }}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
-            const isFocused = navigation.isFocused();
-            if (isFocused) {
-              e.preventDefault();
+            e.preventDefault();
+            
+            const sessions = 
+              useTalkToCrushStore
+                .getState().sessions;
+            
+            const nav = navigation as unknown as {
+              navigate: (screen: string, params: { screen: string }) => void;
+            };
+            
+            if (sessions.length > 0) {
+              nav.navigate(
+                'TalkToCrushTab',
+                { screen: 'TalkToCrushHome' }
+              );
+            } else {
+              nav.navigate(
+                'TalkToCrushTab',
+                { screen: 'TalkToCrushIntro' }
+              );
             }
           }
         })}
