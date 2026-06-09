@@ -244,11 +244,11 @@ export const sendMessage = async (
         ? '\n\nRELEVANT CONTEXT:\n' + contextResults.join('\n')
         : '';
 
-    // Build system prompt
+    // Build system prompt with all section answers properly passed
     const systemPrompt =
       getTalkToPastSystemPrompt(
         session.personName,
-        session.answers
+        session.answers || {}
       ) + contextString;
 
     // Generate AI response

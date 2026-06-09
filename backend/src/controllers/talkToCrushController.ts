@@ -242,11 +242,11 @@ export const sendMessage = async (
         ? '\n\nRELEVANT CONTEXT:\n' + contextResults.join('\n')
         : '';
 
-    // Build system prompt
+    // Build system prompt with all crush answers properly passed
     const systemPrompt =
       getTalkToCrushSystemPrompt(
         session.crushName,
-        session.answers
+        session.answers || {}
       ) + contextString;
 
     // Generate AI response

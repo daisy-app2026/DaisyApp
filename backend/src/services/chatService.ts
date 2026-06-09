@@ -48,7 +48,7 @@ export const generateChatResponse = async (
         },
         ...messages
       ],
-      max_tokens: 150,
+      max_tokens: 250,
       temperature: 0.85,
     });
 
