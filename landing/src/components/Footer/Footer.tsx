@@ -14,7 +14,7 @@ export default function Footer() {
       {/* Brand & Tagline area */}
       <div className={styles.leftCol}>
         <Link to="/" className={styles.footerLogo} onClick={handleScrollToTop}>
-          <img src="/assets/logo.png" alt="Daisy App Logo" className={styles.logoImg} />
+          <img src="/assets/logo.png" alt="Daisy App Logo" className={styles.logoImg} loading="lazy" style={{ objectFit: 'cover' }} />
           <span className={styles.logoText}>Daisy</span>
         </Link>
         <p className={styles.tagline}>

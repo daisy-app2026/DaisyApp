@@ -122,6 +122,8 @@ export default function Features() {
                   src={tabs[activeTab].image} 
                   alt={`${tabs[activeTab].title} Interface mockup`} 
                   className={styles.screenshotImg} 
+                  loading="lazy"
+                  style={{ objectFit: 'cover' }}
                 />
               ) : (
                 <div className={styles.screenshotPlaceholder}>

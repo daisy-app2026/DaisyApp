@@ -37,8 +37,10 @@ export default function About() {
           {LINKS.founderPhoto ? (
             <img 
               src={LINKS.founderPhoto} 
-              alt="Meriem Tafsi, Founder of Daisy" 
+              alt="Meriem Tafsi, Psychologist & Founder of Daisy" 
               className={styles.founderPhoto} 
+              loading="lazy"
+              style={{ objectFit: 'cover' }}
             />
           ) : (
             <div className={styles.founderPhotoPlaceholder}>

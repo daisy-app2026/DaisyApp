@@ -11,16 +11,16 @@ export const LINKS = {
   apkDownload: '#',
   
   // Cloudinary founder profile image (currently pointing to our pre-generated asset!)
-  founderPhoto: '/assets/founder.png',
+  founderPhoto: 'https://drive.google.com/uc?export=view&id=1G6bkZxAT9k8ZS7rs2A_Jr-C-Hg93vAER',
   
   // Cloudinary digital diary screen mockup
-  diaryScreenshot: '/assets/diary.png',
+  diaryScreenshot: 'https://drive.google.com/uc?export=view&id=14adtqgXtM5uFC0XUvtbzRVwUnu1Fg99X',
   
   // Cloudinary Talk to Past chat mockup
-  talkToPastScreenshot: '/assets/talk_past.png',
+  talkToPastScreenshot: 'https://drive.google.com/uc?export=view&id=1G6bkZxAT9k8ZS7rs2A_Jr-C-Hg93vAER',
   
   // Cloudinary Talk to Crush chat mockup
-  talkToCrushScreenshot: '/assets/talk_crush.png',
+  talkToCrushScreenshot: 'https://drive.google.com/uc?export=view&id=1-yLhUXBcNvC0zD23y63rM4EiI9NnvTfo',
   
   // Cloudinary/YouTube demonstration video
   demoVideo: '',
