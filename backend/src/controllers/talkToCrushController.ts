@@ -234,6 +234,15 @@ export const sendMessage = async (
       })
     );
 
+    // Add latest user message!
+    messageHistory.push({
+      role: 'user' as const,
+      content: message
+    });
+
+    // Max 20 messages to save tokens!
+    const limitedHistory = messageHistory.slice(-20);
+
     // Get context from Pinecone
     const contextResults = await searchContext(userId, message);
 
@@ -251,7 +260,7 @@ export const sendMessage = async (
 
     // Generate AI response
     const aiResponse = await generateChatResponse(
-      messageHistory,
+      limitedHistory,
       systemPrompt
     );
 
