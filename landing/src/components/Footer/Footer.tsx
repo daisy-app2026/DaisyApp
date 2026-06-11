@@ -34,11 +34,11 @@ export default function Footer() {
             Terms of Service
           </Link>
         </li>
-        <li>
+        {/* <li>
           <Link to="/contact" className={styles.footerLink} onClick={handleScrollToTop}>
             Contact Us
           </Link>
-        </li>
+        </li> */}
       </ul>
 
       {/* Copyright */}

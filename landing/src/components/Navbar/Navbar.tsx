@@ -79,11 +79,11 @@ export default function Navbar() {
               About
             </a>
           </li>
-          <li>
+          {/* <li>
             <Link to="/contact" className={styles.navLink}>
               Contact
             </Link>
-          </li>
+          </li> */}
         </ul>
 
         <div className={styles.rightSide}>
@@ -137,11 +137,11 @@ export default function Navbar() {
                   About
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <Link to="/contact" className={styles.mobileNavLink}>
                   Contact
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <a href="#download" className={styles.downloadBtn} style={{ display: 'inline-flex', marginTop: '20px' }} onClick={(e) => handleNavClick(e, 'download')}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={styles.downloadIcon}>
