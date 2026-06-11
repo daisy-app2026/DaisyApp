@@ -201,6 +201,7 @@ export default function App() {
     }
   }, [isAuthenticated, user, isAuthLoading, isLoading])
 
+  // Show LoadingSplash immediately on app start to prevent any black screen flash
   if (!appReady || isAuthLoading) {
     return <LoadingSplash />
   }

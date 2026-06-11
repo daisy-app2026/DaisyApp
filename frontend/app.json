@@ -8,9 +8,6 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "splash": {
-      "backgroundColor": "#000000"
-    },
     "androidStatusBar": {
       "backgroundColor": "#1A3A0F",
       "barStyle": "light-content"
