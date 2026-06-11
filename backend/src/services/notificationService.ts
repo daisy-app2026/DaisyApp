@@ -1,4 +1,7 @@
-import admin, { db } from '../config/firebase';
+import { db } from '../config/firebase';
+import { Expo, ExpoPushMessage } from 'expo-server-sdk';
+
+const expo = new Expo();
 
 // Send to single user
 export const sendPushNotification = async (
@@ -8,27 +11,26 @@ export const sendPushNotification = async (
   data?: Record<string, string>
 ): Promise<void> => {
   try {
-    await admin.messaging().send({
-      token,
-      notification: { title, body },
+    if (!Expo.isExpoPushToken(token)) {
+      console.log('Invalid Expo token:', token);
+      return;
+    }
+
+    const message: ExpoPushMessage = {
+      to: token,
+      sound: 'default',
+      title,
+      body,
       data: data || {},
-      android: {
-        priority: 'high',
-        notification: {
-          sound: 'default',
-          clickAction: 'FLUTTER_NOTIFICATION_CLICK'
-        }
-      },
-      apns: {
-        payload: {
-          aps: {
-            sound: 'default',
-            badge: 1,
-          }
-        }
-      }
-    });
-    console.log('Notification sent!');
+    };
+
+    const chunks = expo.chunkPushNotifications([message]);
+    
+    for (const chunk of chunks) {
+      await expo.sendPushNotificationsAsync(chunk);
+    }
+    
+    console.log('Notification sent! ✅');
   } catch (error) {
     console.log('Notification error:', error);
   }
@@ -46,30 +48,31 @@ export const sendToAllUsers = async (
       .where('pushToken', '!=', null)
       .get();
 
-    const tokens: string[] = [];
+    const messages: ExpoPushMessage[] = [];
+
     usersSnapshot.forEach(doc => {
       const token = doc.data().pushToken;
-      if (token) tokens.push(token);
+      if (token && Expo.isExpoPushToken(token)) {
+        messages.push({
+          to: token,
+          sound: 'default',
+          title,
+          body,
+          data: data || {},
+        });
+      }
     });
 
-    console.log(`Sending to ${tokens.length} users!`);
+    console.log(`Sending to ${messages.length} users!`);
 
-    // Send in batches of 500!
-    const batchSize = 500;
-    for (let i = 0; i < tokens.length; i += batchSize) {
-      const batch = tokens.slice(i, i + batchSize);
-      
-      await admin.messaging().sendEachForMulticast({
-        tokens: batch,
-        notification: { title, body },
-        data: data || {},
-        android: {
-          priority: 'high',
-        }
-      });
+    const chunks = expo.chunkPushNotifications(messages);
+    
+    for (const chunk of chunks) {
+      const receipts = await expo.sendPushNotificationsAsync(chunk);
+      console.log('Receipts:', receipts);
     }
 
-    console.log('All notifications sent!');
+    console.log('All sent! ✅');
   } catch (error) {
     console.error('Send all error:', error);
   }
@@ -84,12 +87,13 @@ export const sendCapsuleNotification = async (userId: string): Promise<void> => 
       .get();
     
     const token = userDoc.data()?.pushToken;
+    
     if (!token) return;
 
     await sendPushNotification(
       token,
       '🌼 Memory Capsule Unlocked!',
-      'Your memory capsule is ready to open. Tap to see what you wrote!',
+      'Your memory capsule is ready!',
       { type: 'capsule' }
     );
   } catch (error) {
