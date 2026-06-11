@@ -11,16 +11,16 @@ export const LINKS = {
   apkDownload: '#',
   
   // Cloudinary founder profile image (currently pointing to our pre-generated asset!)
-  founderPhoto: 'https://drive.google.com/uc?export=view&id=1G6bkZxAT9k8ZS7rs2A_Jr-C-Hg93vAER',
+  founderPhoto: 'https://res.cloudinary.com/diylru5iv/image/upload/v1781181073/589901796_17842435368640534_1995779922354039761_n_xypxne.jpg',
   
   // Cloudinary digital diary screen mockup
-  diaryScreenshot: 'https://drive.google.com/uc?export=view&id=14adtqgXtM5uFC0XUvtbzRVwUnu1Fg99X',
+  diaryScreenshot: 'https://res.cloudinary.com/diylru5iv/image/upload/v1781181099/never_lose_a_feeling_mp1djc.png',
   
   // Cloudinary Talk to Past chat mockup
-  talkToPastScreenshot: 'https://drive.google.com/uc?export=view&id=1G6bkZxAT9k8ZS7rs2A_Jr-C-Hg93vAER',
+  talkToPastScreenshot: 'https://res.cloudinary.com/diylru5iv/image/upload/v1781181099/feel_closure_in_minutes_fgvtwt.png',
   
   // Cloudinary Talk to Crush chat mockup
-  talkToCrushScreenshot: 'https://drive.google.com/uc?export=view&id=1-yLhUXBcNvC0zD23y63rM4EiI9NnvTfo',
+  talkToCrushScreenshot: 'https://res.cloudinary.com/diylru5iv/image/upload/v1781181098/record_and_release_emotions_kgwsjc.png',
   
   // Cloudinary/YouTube demonstration video
   demoVideo: '',
