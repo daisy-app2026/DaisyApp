@@ -1,7 +1,14 @@
 import { db } from '../config/firebase';
-import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 
-const expo = new Expo();
+let expoInstance: any;
+
+const getExpo = async () => {
+  if (!expoInstance) {
+    const { Expo: ExpoSDK } = await import('expo-server-sdk');
+    expoInstance = new ExpoSDK();
+  }
+  return expoInstance;
+};
 
 // Send to single user
 export const sendPushNotification = async (
@@ -11,12 +18,15 @@ export const sendPushNotification = async (
   data?: Record<string, string>
 ): Promise<void> => {
   try {
-    if (!Expo.isExpoPushToken(token)) {
+    const { Expo: ExpoSDK } = await import('expo-server-sdk');
+    if (!ExpoSDK.isExpoPushToken(token)) {
       console.log('Invalid Expo token:', token);
       return;
     }
 
-    const message: ExpoPushMessage = {
+    const expo = await getExpo();
+
+    const message = {
       to: token,
       sound: 'default',
       title,
@@ -43,16 +53,17 @@ export const sendToAllUsers = async (
   data?: Record<string, string>
 ): Promise<void> => {
   try {
+    const { Expo: ExpoSDK } = await import('expo-server-sdk');
     const usersSnapshot = await db
       .collection('users')
       .where('pushToken', '!=', null)
       .get();
 
-    const messages: ExpoPushMessage[] = [];
+    const messages: any[] = [];
 
     usersSnapshot.forEach(doc => {
       const token = doc.data().pushToken;
-      if (token && Expo.isExpoPushToken(token)) {
+      if (token && ExpoSDK.isExpoPushToken(token)) {
         messages.push({
           to: token,
           sound: 'default',
@@ -65,6 +76,7 @@ export const sendToAllUsers = async (
 
     console.log(`Sending to ${messages.length} users!`);
 
+    const expo = await getExpo();
     const chunks = expo.chunkPushNotifications(messages);
     
     for (const chunk of chunks) {
