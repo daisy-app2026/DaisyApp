@@ -2,6 +2,82 @@ import { Response } from 'express'
 import admin, { db } from '../config/firebase'
 import { AuthRequest } from '../middleware/verifyToken'
 import { sendCapsuleNotification } from '../services/notificationService'
+import { v2 as cloudinary } from 'cloudinary'
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+})
+
+// Helper to extract public ID
+const getCloudinaryPublicId = (url: string): string => {
+  try {
+    const parts = url.split('/')
+    const uploadIndex = parts.indexOf('upload')
+    const pathAfterUpload = parts.slice(uploadIndex + 2)
+    const filename = pathAfterUpload.join('/')
+    return filename.split('.')[0]
+  } catch {
+    return ''
+  }
+}
+
+// Delete Cloudinary files
+const deleteEntryMedia = async (content: unknown): Promise<void> => {
+  try {
+    if (!content || typeof content !== 'string') return
+    
+    let urls: string[] = []
+    
+    try {
+      const parsed = JSON.parse(content)
+      if (Array.isArray(parsed)) {
+        parsed.forEach((item: unknown) => {
+          if (typeof item === 'string') {
+            urls.push(item)
+          } else if (
+            item &&
+            typeof item === 'object' &&
+            'url' in item &&
+            typeof (item as { url: unknown }).url === 'string'
+          ) {
+            urls.push((item as { url: string }).url)
+          }
+        })
+      } else if (parsed && typeof parsed === 'object') {
+        if ('images' in parsed && Array.isArray(parsed.images)) {
+          parsed.images.forEach((item: unknown) => {
+            if (typeof item === 'string') {
+              urls.push(item)
+            }
+          })
+        }
+      }
+    } catch {
+      urls = [content]
+    }
+    
+    for (const url of urls) {
+      if (
+        url &&
+        typeof url === 'string' &&
+        url.includes('cloudinary.com')
+      ) {
+        const publicId = getCloudinaryPublicId(url)
+        
+        if (publicId) {
+          await cloudinary.uploader.destroy(publicId, {
+            resource_type: 'auto'
+          })
+          console.log('Cloudinary deleted:', publicId)
+        }
+      }
+    }
+  } catch (error) {
+    console.log('Cloudinary delete error:', error)
+  }
+}
 
 const updateStreak = async (userId: string) => {
   const userRef = db
@@ -280,13 +356,21 @@ export const deleteEntry = async (
       return
     }
 
-    if (entryDoc.data()!.userId !== userId) {
+    const entryData = entryDoc.data()
+
+    if (entryData?.userId !== userId) {
       res.status(403).json({
         error: 'Unauthorized'
       })
       return
     }
 
+    // Delete media from Cloudinary!
+    if (entryData?.content) {
+      await deleteEntryMedia(entryData.content)
+    }
+
+    // Then delete Firestore entry!
     await entryRef.delete()
 
     const { deleteEntryFromPinecone } = 
