@@ -11,11 +11,9 @@ import {
 import { 
   SafeAreaProvider 
 } from 'react-native-safe-area-context'
-import * as SplashScreen from 'expo-splash-screen'
 import { useConfigStore } from './store/configStore'
+import LoadingSplash from './components/LoadingSplash/LoadingSplash'
 
-// Keep native splash screen visible while app is loading
-SplashScreen.preventAutoHideAsync().catch(console.warn)
 import { useEntriesStore } from './store/entriesStore'
 import { useSpacesStore } from './store/spacesStore'
 import { useTalkToPastStore } from './store/talkToPastStore'
@@ -45,11 +43,7 @@ export default function App() {
 
   const { user, isAuthenticated, isLoading, setUser, logout } = useAuthStore()
 
-  useEffect(() => {
-    if (!isAuthLoading && appReady) {
-      SplashScreen.hideAsync().catch(console.warn)
-    }
-  }, [isAuthLoading, appReady])
+
 
   const preloadData = async () => {
     if (!isAuthenticated || !user) {
@@ -208,12 +202,7 @@ export default function App() {
   }, [isAuthenticated, user, isAuthLoading, isLoading])
 
   if (!appReady || isAuthLoading) {
-    return (
-      <View style={{
-        flex: 1,
-        backgroundColor: '#1A3A0F'
-      }} />
-    )
+    return <LoadingSplash />
   }
 
   return (
