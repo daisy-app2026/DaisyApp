@@ -8,7 +8,7 @@ export const LINKS = {
   playStore: '#',
   
   // Cloudinary APK direct download URL
-  apkDownload: '#',
+  apkDownload: 'https://expo.dev/accounts/daisyapp2026/projects/daisy-app/builds/52efb374-9f92-42ca-b5e9-e1941978bca9',
   
   // Cloudinary founder profile image (currently pointing to our pre-generated asset!)
   founderPhoto: 'https://res.cloudinary.com/diylru5iv/image/upload/v1781181073/589901796_17842435368640534_1995779922354039761_n_xypxne.jpg',
