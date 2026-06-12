@@ -1,54 +1,54 @@
-import * as Google from 'expo-auth-session/providers/google'
-import * as WebBrowser from 'expo-web-browser'
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin'
 import { useEffect } from 'react'
-import { signInWithGoogleCredential } 
+import { signInWithGoogle } 
   from '../services/authService'
-import { useAuthStore } from '../store/authStore'
 
-WebBrowser.maybeCompleteAuthSession()
+// Configure once!
+GoogleSignin.configure({
+  webClientId: process.env
+    .EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+  offlineAccess: true,
+})
 
-export const useGoogleAuth = (
-  onSuccess: () => void
-) => {
-  const { setUser, setLoading } = useAuthStore()
+export const useGoogleAuth = () => {
+  const handleGoogleSignIn = 
+    async () => {
+      try {
+        await GoogleSignin
+          .hasPlayServices()
+        
+        const userInfo = 
+          await GoogleSignin.signIn()
+        
+        const idToken = 
+          userInfo.data?.idToken
+        
+        if (!idToken) {
+          throw new Error(
+            'No ID token!'
+          )
+        }
 
-  const [request, response, promptAsync] = 
-    Google.useAuthRequest({
-      webClientId: process.env
-        .EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-      iosClientId: process.env
-        .EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
-      androidClientId: process.env
-        .EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID,
-    })
-
-  useEffect(() => {
-    if (response?.type === 'success') {
-      const { id_token } = response.params
-      handleGoogleSignIn(id_token)
+        // Sign in with Firebase!
+        await signInWithGoogle(idToken)
+        
+      } catch (error: any) {
+        if (
+          error.code === 
+          statusCodes.SIGN_IN_CANCELLED
+        ) {
+          console.log('User cancelled!')
+        } else {
+          console.log(
+            'Google sign in error:',
+            error
+          )
+        }
+      }
     }
-  }, [response])
 
-  const handleGoogleSignIn = async (
-    idToken: string
-  ) => {
-    try {
-      setLoading(true)
-      const { user, token } = 
-        await signInWithGoogleCredential(idToken)
-      setUser({
-        uid: user.uid,
-        email: user.email,
-        name: user.displayName,
-        token,
-      })
-      onSuccess()
-    } catch (error) {
-      console.log('Google sign in error:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  return { request, promptAsync }
+  return { handleGoogleSignIn }
 }

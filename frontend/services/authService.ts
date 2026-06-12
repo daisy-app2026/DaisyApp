@@ -81,7 +81,7 @@ export const signInWithEmail = async (
   }
 }
 
-export const signInWithGoogleCredential = async (
+export const signInWithGoogle = async (
   idToken: string
 ) => {
   const credential = 
