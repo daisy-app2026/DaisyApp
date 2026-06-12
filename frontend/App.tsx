@@ -27,6 +27,10 @@ import { getTalkToCrushSessions } from './services/talkToCrushService'
 import { useLanguageStore, initLanguageStore } from './store/languageStore'
 import { getFreshToken } from './utils/getToken'
 import { registerForPushNotifications } from './services/notificationService'
+import * as SplashScreen from 'expo-splash-screen'
+
+SplashScreen.preventAutoHideAsync()
+  .catch(console.warn)
 
 
 export default function App() {
@@ -199,6 +203,13 @@ export default function App() {
       setAppReady(true)
     }
   }, [isAuthenticated, user, isAuthLoading, isLoading])
+
+  useEffect(() => {
+    if (!isAuthLoading && appReady) {
+      SplashScreen.hideAsync()
+        .catch(console.warn)
+    }
+  }, [isAuthLoading, appReady])
 
   // Show LoadingSplash immediately on app start to prevent any black screen flash
   if (!appReady || isAuthLoading) {
