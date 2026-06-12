@@ -26,6 +26,29 @@ const registerToBackend = async (
   }
 }
 
+export const registerUser = async (data: {
+  uid: string
+  email: string
+  name: string
+  photoURL?: string | null
+}) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/api/auth/register`,
+      {
+        uid: data.uid,
+        email: data.email,
+        name: data.name,
+        photoURL: data.photoURL || ''
+      }
+    )
+    return response.data?.user
+  } catch (error) {
+    console.log('Backend register error:', error)
+    return null
+  }
+}
+
 export const signUpWithEmail = async (
   email: string,
   password: string,

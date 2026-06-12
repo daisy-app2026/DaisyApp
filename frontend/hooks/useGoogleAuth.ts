@@ -1,54 +1,77 @@
+import { useCallback, useState } from 'react'
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin'
-import { useEffect } from 'react'
-import { signInWithGoogle } 
-  from '../services/authService'
+import { 
+  GoogleAuthProvider,
+  signInWithCredential
+} from 'firebase/auth'
+import { auth } from '../config/firebase'
+import { registerUser } from '../services/authService'
 
-// Configure once!
+// Configure Google Sign In!
 GoogleSignin.configure({
-  webClientId: process.env
-    .EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
   offlineAccess: true,
 })
 
 export const useGoogleAuth = () => {
-  const handleGoogleSignIn = 
-    async () => {
-      try {
-        await GoogleSignin
-          .hasPlayServices()
-        
-        const userInfo = 
-          await GoogleSignin.signIn()
-        
-        const idToken = 
-          userInfo.data?.idToken
-        
-        if (!idToken) {
-          throw new Error(
-            'No ID token!'
-          )
-        }
+  const [loading, setLoading] = useState(false)
 
-        // Sign in with Firebase!
-        await signInWithGoogle(idToken)
-        
-      } catch (error: any) {
-        if (
-          error.code === 
-          statusCodes.SIGN_IN_CANCELLED
-        ) {
-          console.log('User cancelled!')
-        } else {
-          console.log(
-            'Google sign in error:',
-            error
-          )
-        }
+  const signInWithGoogle = useCallback(async () => {
+    try {
+      setLoading(true)
+
+      // Check Play Services!
+      await GoogleSignin.hasPlayServices({
+        showPlayServicesUpdateDialog: true
+      })
+
+      // Show account picker! ✅
+      const signInResult = await GoogleSignin.signIn()
+
+      // Get ID token!
+      const idToken = signInResult.data?.idToken
+
+      if (!idToken) {
+        throw new Error('No ID token!')
       }
-    }
 
-  return { handleGoogleSignIn }
+      // Firebase credential!
+      const credential = GoogleAuthProvider.credential(idToken)
+
+      // Sign in to Firebase!
+      const result = await signInWithCredential(auth, credential)
+
+      const user = result.user
+
+      // Register in backend!
+      await registerUser({
+        uid: user.uid,
+        email: user.email || '',
+        name: user.displayName || '',
+        photoURL: user.photoURL || '',
+      })
+
+    } catch (error) {
+      const err = error as { code?: string; message?: string }
+      if (err.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log('User cancelled!')
+      } else if (err.code === statusCodes.IN_PROGRESS) {
+        console.log('Already in progress!')
+      } else if (err.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        console.log('Play services not available!')
+      } else {
+        console.log('Google sign in error:', error)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  return { 
+    signInWithGoogle,
+    loading 
+  }
 }

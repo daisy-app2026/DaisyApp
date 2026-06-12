@@ -38,7 +38,7 @@ const LoginScreen: React.FC = () => {
   const [generalError, setGeneralError] = useState('');
 
   const { setUser } = useAuthStore();
-  const { handleGoogleSignIn } = useGoogleAuth();
+  const { signInWithGoogle, loading: googleLoading } = useGoogleAuth();
 
   const validateForm = () => {
     let isValid = true;
@@ -259,7 +259,8 @@ const LoginScreen: React.FC = () => {
             <TouchableOpacity
               style={styles.googleButton}
               activeOpacity={0.75}
-              onPress={() => handleGoogleSignIn()}
+              onPress={signInWithGoogle}
+              disabled={googleLoading}
             >
               <View style={{ marginRight: 10 }}>
                 <FontAwesome name="google" size={18} color="#2D5A1B" />
