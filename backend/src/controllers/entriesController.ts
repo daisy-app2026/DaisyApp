@@ -444,7 +444,9 @@ export const getUnlockedCapsules = async (
 ): Promise<void> => {
   try {
     const userId = req.userId!
-    const now = new Date().toISOString()
+    const today = new Date()
+      .toISOString()
+      .split('T')[0]
 
     const snapshot = await db
       .collection('entries')
@@ -456,11 +458,21 @@ export const getUnlockedCapsules = async (
       .map(doc => doc.data())
 
     // Find capsules that just unlocked 
-    // (unlockDate <= now) and haven't shown notification
+    // (unlockDate <= today) and haven't shown notification
     const unlockedCapsules = entries.filter(
-      e => e.unlockDate && 
-           e.unlockDate <= now &&
-           !e.notificationShown
+      e => {
+        if (!e.unlockDate) return false
+        if (e.notificationShown) 
+          return false
+        
+        // Handle both formats:
+        // Old: "2026-06-12T18:22:00.000Z"
+        // New: "2026-06-12"
+        const unlockDay = e.unlockDate
+          .split('T')[0]
+        
+        return unlockDay <= today
+      }
     )
 
     if (unlockedCapsules.length > 0) {

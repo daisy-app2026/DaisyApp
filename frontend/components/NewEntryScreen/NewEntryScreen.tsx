@@ -235,7 +235,7 @@ const NewEntryScreen: React.FC = () => {
 
   const getUnlockDate = (): string => {
     if (capsuleDuration === 'custom') {
-      return customDate.toISOString();
+      return customDate.toISOString().split('T')[0];
     }
     const date = new Date();
     if (capsuleDuration === '1mo') {
@@ -245,11 +245,23 @@ const NewEntryScreen: React.FC = () => {
     } else if (capsuleDuration === '1yr') {
       date.setFullYear(date.getFullYear() + 1);
     }
-    return date.toISOString();
+    return date.toISOString().split('T')[0];
   };
 
   const calculateDisplayUnlockDate = () => {
     const dateStr = getUnlockDate();
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      const date = new Date(year, month, day);
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+    }
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', {
       month: 'short',
