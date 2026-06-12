@@ -7,7 +7,7 @@ export const LINKS = {
   // Play Store Download URL
   playStore: '#',
   
-  // Cloudinary APK direct download URL
+  // APK direct download URL
   apkDownload: 'https://expo.dev/accounts/daisyapp2026/projects/daisy-app/builds/52efb374-9f92-42ca-b5e9-e1941978bca9',
   
   // Cloudinary founder profile image (currently pointing to our pre-generated asset!)
