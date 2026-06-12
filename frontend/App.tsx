@@ -12,7 +12,6 @@ import {
   SafeAreaProvider 
 } from 'react-native-safe-area-context'
 import { useConfigStore } from './store/configStore'
-import LoadingSplash from './components/LoadingSplash/LoadingSplash'
 
 import { useEntriesStore } from './store/entriesStore'
 import { useSpacesStore } from './store/spacesStore'
@@ -203,7 +202,7 @@ export default function App() {
 
   // Show LoadingSplash immediately on app start to prevent any black screen flash
   if (!appReady || isAuthLoading) {
-    return <LoadingSplash />
+    return null
   }
 
   return (
