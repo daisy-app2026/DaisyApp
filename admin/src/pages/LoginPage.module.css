@@ -43,8 +43,8 @@
   margin-bottom: 1rem;
 }
 
-.logoEmoji {
-  font-size: 3.5rem;
+.logoIcon {
+  color: var(--primary);
   margin-bottom: 0.5rem;
   animation: spin 6s ease-in-out infinite;
 }

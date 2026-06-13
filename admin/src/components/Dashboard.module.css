@@ -186,9 +186,9 @@
   padding: 1.25rem;
 }
 
-.infoEmoji {
-  font-size: 1.5rem;
-  line-height: 1;
+.infoIcon {
+  color: #854D0E;
+  flex-shrink: 0;
 }
 
 .infoText {
@@ -225,7 +225,8 @@
 }
 
 .errorIcon {
-  font-size: 3rem;
+  color: var(--danger);
+  flex-shrink: 0;
 }
 
 .errorText {

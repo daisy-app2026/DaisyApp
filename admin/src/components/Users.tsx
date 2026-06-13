@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getUsers, deleteUser } from '../services/api';
+import { RotateCw, Trash2, Zap, AlertTriangle } from 'lucide-react';
 import styles from './Users.module.css';
 
 interface User {
@@ -86,7 +87,7 @@ const Users: React.FC = () => {
   if (error) {
     return (
       <div className={styles.errorContainer}>
-        <span className={styles.errorIcon}>⚠️</span>
+        <AlertTriangle size={48} className={styles.errorIcon} />
         <p className={styles.errorText}>{error}</p>
         <button onClick={fetchUsers} className={styles.retryButton}>Retry</button>
       </div>
@@ -101,7 +102,7 @@ const Users: React.FC = () => {
           <p className={styles.subtext}>View streaks, creation dates, and manage active accounts.</p>
         </div>
         <button onClick={fetchUsers} className={styles.refreshButton}>
-          🔄 Refresh
+          <RotateCw size={14} /> Refresh
         </button>
       </div>
 
@@ -140,7 +141,7 @@ const Users: React.FC = () => {
                     <td>{formatDate(user.createdAt)}</td>
                     <td>
                       <span className={styles.streakBadge}>
-                        🔥 {user.streak}
+                        <Zap size={14} /> {user.streak}
                       </span>
                     </td>
                     <td>
@@ -152,7 +153,7 @@ const Users: React.FC = () => {
                         className={styles.deleteButton}
                         title="Delete User Account"
                       >
-                        🗑️ Delete
+                        <Trash2 size={14} /> Delete
                       </button>
                     </td>
                   </tr>
@@ -167,7 +168,10 @@ const Users: React.FC = () => {
       {showConfirmModal && userToDelete && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <h3 className={styles.modalTitle}>Confirm User Deletion</h3>
+            <h3 className={styles.modalTitle}>
+              <AlertTriangle size={20} style={{ verticalAlign: 'middle', marginRight: '6px' }} />
+              Confirm User Deletion
+            </h3>
             <p className={styles.modalText}>
               Are you sure you want to permanently delete user <strong>{userToDelete.name || userToDelete.email}</strong>?
               This will remove their profile from the database and invalidate their authentication tokens.

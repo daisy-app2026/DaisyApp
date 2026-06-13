@@ -151,6 +151,9 @@
 }
 
 .deleteButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
   padding: 0.375rem 0.75rem;
   border: 1px solid #FCA5A5;
   color: var(--danger);
@@ -295,7 +298,8 @@
 }
 
 .errorIcon {
-  font-size: 3rem;
+  color: var(--danger);
+  flex-shrink: 0;
 }
 
 .errorText {

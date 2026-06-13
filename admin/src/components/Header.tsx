@@ -1,4 +1,5 @@
 import React from 'react';
+import { LogOut } from 'lucide-react';
 import styles from './Header.module.css';
 
 interface HeaderProps {
@@ -20,7 +21,7 @@ const Header: React.FC<HeaderProps> = ({ title, onLogout }) => {
         </div>
 
         <button onClick={onLogout} className={styles.logoutButton}>
-          <span className={styles.logoutIcon}>🚪</span>
+          <LogOut size={16} className={styles.logoutIcon} />
           Logout
         </button>
       </div>

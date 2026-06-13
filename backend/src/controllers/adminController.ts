@@ -41,11 +41,14 @@ export const getStats = async (
     ]);
 
     // Active today
-    const today = new Date().toISOString().split('T')[0];
-    
+    const now = new Date();
+    const past24Hours = new Date(
+      now.getTime() - 24 * 60 * 60 * 1000
+    ).toISOString();
+
     const activeToday = usersSnapshot.docs.filter(doc => {
       const data = doc.data();
-      return data.lastSeen?.startsWith(today);
+      return data.lastSeen && data.lastSeen >= past24Hours;
     }).length;
 
     res.status(200).json({

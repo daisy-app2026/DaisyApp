@@ -139,7 +139,8 @@
 }
 
 .errorIcon {
-  font-size: 3rem;
+  color: var(--danger);
+  flex-shrink: 0;
 }
 
 .errorText {

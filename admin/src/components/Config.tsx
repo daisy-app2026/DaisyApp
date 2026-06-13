@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getConfig, updateConfig } from '../services/api';
+import { CheckCircle, AlertTriangle } from 'lucide-react';
 import styles from './Config.module.css';
 
 const Config: React.FC = () => {
@@ -77,14 +78,14 @@ const Config: React.FC = () => {
       <div className={styles.card}>
         {error && !saving && (
           <div className={styles.errorBanner}>
-            <span className={styles.bannerIcon}>⚠️</span>
+            <AlertTriangle size={18} className={styles.bannerIcon} />
             <p className={styles.bannerText}>{error}</p>
           </div>
         )}
 
         {success && (
           <div className={styles.successBanner}>
-            <span className={styles.bannerIcon}>✅</span>
+            <CheckCircle size={18} className={styles.bannerIcon} />
             <p className={styles.bannerText}>{success}</p>
           </div>
         )}

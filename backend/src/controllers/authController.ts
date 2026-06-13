@@ -65,9 +65,19 @@ export const getUser = async (
       return;
     }
 
+    // Update lastSeen field!
+    await userRef.update({
+      lastSeen: new Date().toISOString()
+    });
+
+    const updatedData = {
+      ...userDoc.data(),
+      lastSeen: new Date().toISOString()
+    };
+
     res.status(200).json({ 
       success: true, 
-      user: userDoc.data() 
+      user: updatedData 
     });
   } catch (error) {
     res.status(500).json({ 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAnalytics } from '../services/api';
+import { RotateCw, AlertTriangle, TrendingUp, BarChart2, Calculator } from 'lucide-react';
 import {
   LineChart,
   Line,
@@ -71,7 +72,7 @@ const Analytics: React.FC = () => {
   if (error) {
     return (
       <div className={styles.errorContainer}>
-        <span className={styles.errorIcon}>⚠️</span>
+        <AlertTriangle size={48} className={styles.errorIcon} />
         <p className={styles.errorText}>{error}</p>
         <button onClick={fetchAnalytics} className={styles.retryButton}>Retry</button>
       </div>
@@ -88,7 +89,7 @@ const Analytics: React.FC = () => {
           <p className={styles.subtext}>Monitor user journal entry volumes over the past 7 days.</p>
         </div>
         <button onClick={fetchAnalytics} className={styles.refreshButton}>
-          🔄 Refresh
+          <RotateCw size={14} /> Refresh
         </button>
       </div>
 
@@ -148,7 +149,10 @@ const Analytics: React.FC = () => {
 
       <div className={styles.summaryGrid}>
         <div className={styles.summaryCard}>
-          <span className={styles.summaryBadge}>📈 Peak Day</span>
+          <span className={styles.summaryBadge}>
+            <TrendingUp size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+            Peak Day
+          </span>
           <p className={styles.summaryValue}>
             {peak.entries} entries
           </p>
@@ -158,7 +162,10 @@ const Analytics: React.FC = () => {
         </div>
         
         <div className={styles.summaryCard}>
-          <span className={styles.summaryBadge}>📊 Weekly Sum</span>
+          <span className={styles.summaryBadge}>
+            <BarChart2 size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+            Weekly Sum
+          </span>
           <p className={styles.summaryValue}>
             {getWeeklySum()} entries
           </p>
@@ -166,7 +173,10 @@ const Analytics: React.FC = () => {
         </div>
 
         <div className={styles.summaryCard}>
-          <span className={styles.summaryBadge}>🧮 Daily Average</span>
+          <span className={styles.summaryBadge}>
+            <Calculator size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+            Daily Average
+          </span>
           <p className={styles.summaryValue}>
             {getDailyAverage().toFixed(1)} entries
           </p>

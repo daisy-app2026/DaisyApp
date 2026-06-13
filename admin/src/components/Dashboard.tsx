@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getStats } from '../services/api';
+import { Users, Activity, BookOpen, Clock, Heart, RotateCw, Lightbulb, AlertTriangle } from 'lucide-react';
 import styles from './Dashboard.module.css';
 
 interface StatsData {
@@ -45,7 +46,7 @@ const Dashboard: React.FC = () => {
   if (error) {
     return (
       <div className={styles.errorContainer}>
-        <span className={styles.errorIcon}>⚠️</span>
+        <AlertTriangle size={48} className={styles.errorIcon} />
         <p className={styles.errorText}>{error}</p>
         <button onClick={fetchStats} className={styles.retryButton}>Retry</button>
       </div>
@@ -56,55 +57,35 @@ const Dashboard: React.FC = () => {
     {
       title: 'Total Registered Users',
       value: stats?.totalUsers ?? 0,
-      icon: (
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" className={styles.iconSvg}>
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-      ),
+      icon: <Users className={styles.iconSvg} />,
       description: 'Total accounts in auth database',
       colorClass: styles.cardUsers
     },
     {
       title: 'Active Today',
       value: stats?.activeToday ?? 0,
-      icon: (
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" className={styles.iconSvg}>
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-      ),
+      icon: <Activity className={styles.iconSvg} />,
       description: 'Users seen in the past 24 hours',
       colorClass: styles.cardActive
     },
     {
       title: 'Journal Entries',
       value: stats?.totalEntries ?? 0,
-      icon: (
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" className={styles.iconSvg}>
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-        </svg>
-      ),
+      icon: <BookOpen className={styles.iconSvg} />,
       description: 'Total journal entries logged',
       colorClass: styles.cardEntries
     },
     {
       title: 'Talk to Past Sessions',
       value: stats?.totalPastSessions ?? 0,
-      icon: (
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" className={styles.iconSvg}>
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
+      icon: <Clock className={styles.iconSvg} />,
       description: 'Conversations with past self/relationships',
       colorClass: styles.cardPast
     },
     {
       title: 'Talk to Crush Sessions',
       value: stats?.totalCrushSessions ?? 0,
-      icon: (
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" className={styles.iconSvg}>
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-        </svg>
-      ),
+      icon: <Heart className={styles.iconSvg} />,
       description: 'Relationship guidance simulator logs',
       colorClass: styles.cardCrush
     }
@@ -118,7 +99,7 @@ const Dashboard: React.FC = () => {
           <p className={styles.subtext}>Here is the current operational status of the Daisy application.</p>
         </div>
         <button onClick={fetchStats} className={styles.refreshButton} title="Refresh Statistics">
-          🔄 Refresh
+          <RotateCw size={14} /> Refresh
         </button>
       </div>
 
@@ -143,7 +124,7 @@ const Dashboard: React.FC = () => {
         <h3 className={styles.actionsHeading}>System Quick Actions</h3>
         <div className={styles.actionButtons}>
           <div className={styles.infoBox}>
-            <span className={styles.infoEmoji}>💡</span>
+            <Lightbulb size={24} className={styles.infoIcon} />
             <p className={styles.infoText}>Daisy database snapshots are refreshed instantly. Use the sidebar to broadcast push notifications to active users, check usage analytics for the past 7 days, or adjust application-wide terms and policies.</p>
           </div>
         </div>

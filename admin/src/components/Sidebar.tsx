@@ -1,5 +1,6 @@
 import React from 'react';
 import { TabType } from '../pages/DashboardPage';
+import { LayoutDashboard, Users, Bell, BarChart2, Settings, Leaf } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
 interface SidebarProps {
@@ -9,17 +10,17 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
   const menuItems = [
-    { id: 'stats' as TabType, label: 'Dashboard', icon: '📊' },
-    { id: 'users' as TabType, label: 'Users', icon: '👥' },
-    { id: 'notifications' as TabType, label: 'Notifications', icon: '🔔' },
-    { id: 'analytics' as TabType, label: 'Analytics', icon: '📈' },
-    { id: 'config' as TabType, label: 'Config', icon: '⚙️' },
+    { id: 'stats' as TabType, label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
+    { id: 'users' as TabType, label: 'Users', icon: <Users size={20} /> },
+    { id: 'notifications' as TabType, label: 'Notifications', icon: <Bell size={20} /> },
+    { id: 'analytics' as TabType, label: 'Analytics', icon: <BarChart2 size={20} /> },
+    { id: 'config' as TabType, label: 'Config', icon: <Settings size={20} /> },
   ];
 
   return (
     <aside className={styles.sidebar}>
       <div className={styles.logoContainer}>
-        <span className={styles.logoEmoji}>🌼</span>
+        <Leaf size={28} className={styles.logoIcon} />
         <span className={styles.logoText}>Daisy Admin</span>
       </div>
 

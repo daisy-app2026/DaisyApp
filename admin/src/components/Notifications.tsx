@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { sendNotification } from '../services/api';
+import { CheckCircle, AlertTriangle } from 'lucide-react';
 import styles from './Notifications.module.css';
 
 const Notifications: React.FC = () => {
@@ -53,7 +54,7 @@ const Notifications: React.FC = () => {
               type="text"
               id="title"
               className={styles.input}
-              placeholder="e.g. New Feature Alert! 🌟"
+              placeholder="e.g. New Feature Alert!"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               disabled={loading}
@@ -94,14 +95,14 @@ const Notifications: React.FC = () => {
 
         {successMsg && (
           <div className={styles.successBanner}>
-            <span className={styles.bannerIcon}>✅</span>
+            <CheckCircle size={18} className={styles.bannerIcon} />
             <p className={styles.bannerText}>{successMsg}</p>
           </div>
         )}
 
         {errorMsg && (
           <div className={styles.errorBanner}>
-            <span className={styles.bannerIcon}>⚠️</span>
+            <AlertTriangle size={18} className={styles.bannerIcon} />
             <p className={styles.bannerText}>{errorMsg}</p>
           </div>
         )}

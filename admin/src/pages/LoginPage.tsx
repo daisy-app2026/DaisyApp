@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Leaf, AlertTriangle } from 'lucide-react';
 import styles from './LoginPage.module.css';
 
 interface LoginPageProps {
@@ -26,7 +27,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.logoContainer}>
-          <span className={styles.logoEmoji}>🌼</span>
+          <Leaf size={40} className={styles.logoIcon} />
           <h1 className={styles.logoText}>Daisy Admin</h1>
         </div>
         <p className={styles.subtitle}>Enter Admin Secret Key to access the control panel.</p>
@@ -52,7 +53,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
         {error && (
           <div className={styles.errorBanner}>
-            <span>⚠️</span> {error}
+            <AlertTriangle size={18} className={styles.errorIcon} /> {error}
           </div>
         )}
       </div>
