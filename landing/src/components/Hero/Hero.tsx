@@ -48,10 +48,10 @@ export default function Hero() {
         </motion.h1>
 
         {/* 3. VIDEO (right after title!) */}
-        <motion.div className={styles.videoWrapper} variants={childVariants}>
+        {/* <motion.div className={styles.videoWrapper} variants={childVariants}>
           <div className={styles.videoGlow}></div>
           <div className={styles.videoContainer}>
-            {/* TODO: Replace demoVideo with actual link! */}
+  
             <div 
               className={styles.videoPlaceholder}
               onClick={() => {
@@ -70,7 +70,7 @@ export default function Hero() {
               <span className={styles.videoLabel}>Watch How It Works</span>
             </div>
           </div>
-        </motion.div>
+        </motion.div> */}
 
         {/* 4. Subtitle text BELOW video! */}
         <motion.p className={styles.heroSubtitle} variants={childVariants}>
