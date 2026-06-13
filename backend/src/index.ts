@@ -9,8 +9,12 @@ import talkToPastRoutes from './routes/talkToPast';
 import talkToCrushRoutes from './routes/talkToCrush';
 import notificationRoutes from './routes/notifications';
 import adminRoutes from './routes/admin';
+import { loadConfigFromFirestore } from './config/appConfig';
 
 dotenv.config();
+
+// Load Firestore config on startup
+loadConfigFromFirestore();
 
 const app = express();
 app.set('trust proxy', 1);

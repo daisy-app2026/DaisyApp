@@ -188,10 +188,25 @@ export const updateConfig = async (
       termsOfServiceUrl 
     } = req.body;
 
-    APP_CONFIG.privacyPolicyUrl = privacyPolicyUrl;
-    APP_CONFIG.termsOfServiceUrl = termsOfServiceUrl;
-    
-    res.status(200).json({ 
+    // Update in-memory!
+    if (privacyPolicyUrl) {
+      APP_CONFIG.privacyPolicyUrl = privacyPolicyUrl;
+    }
+    if (termsOfServiceUrl) {
+      APP_CONFIG.termsOfServiceUrl = termsOfServiceUrl;
+    }
+
+    // Save to Firestore! ✅
+    await db
+      .collection('config')
+      .doc('appConfig')
+      .set({
+        privacyPolicyUrl: APP_CONFIG.privacyPolicyUrl,
+        termsOfServiceUrl: APP_CONFIG.termsOfServiceUrl,
+        updatedAt: new Date().toISOString(),
+      });
+
+    res.status(200).json({
       success: true,
       config: {
         privacyPolicyUrl: APP_CONFIG.privacyPolicyUrl,
@@ -199,8 +214,8 @@ export const updateConfig = async (
       }
     });
   } catch (error) {
-    res.status(500).json({ 
-      error: 'Server error' 
+    res.status(500).json({
+      error: 'Server error'
     });
   }
 };

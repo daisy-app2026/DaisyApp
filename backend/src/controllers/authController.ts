@@ -26,6 +26,7 @@ export const registerUser = async (
         email,
         name: name || '',
         photoURL: photoURL || '',
+        pushToken: null,
         createdAt: new Date().toISOString(),
         streak: 0,
         lastEntryDate: null,
