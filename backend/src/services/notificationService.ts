@@ -1,10 +1,10 @@
+import axios from 'axios';
 import { db } from '../config/firebase';
-import * as admin from 'firebase-admin';
 
-// Dynamic import for ESM compatibility!
-const getExpoSDK = async () => {
-  const { Expo } = await import('expo-server-sdk');
-  return Expo;
+const EXPO_PUSH_URL = 'https://exp.host/--/api/v2/push/send';
+
+const isExpoPushToken = (token: string): boolean => {
+  return token.startsWith('ExponentPushToken[');
 };
 
 export const sendPushNotification = async (
@@ -14,26 +14,28 @@ export const sendPushNotification = async (
   data?: Record<string, string>
 ): Promise<void> => {
   try {
-    const Expo = await getExpoSDK();
-    const expo = new Expo();
-
-    if (!Expo.isExpoPushToken(token)) {
-      console.log('Invalid Expo token:', token);
+    if (!isExpoPushToken(token)) {
+      console.log('Invalid token:', token);
       return;
     }
 
-    const chunks = expo.chunkPushNotifications([{
-      to: token,
-      sound: 'default',
-      title,
-      body,
-      data: data || {},
-    }]);
-
-    for (const chunk of chunks) {
-      const receipts = await expo.sendPushNotificationsAsync(chunk);
-      console.log('Receipts:', receipts);
-    }
+    await axios.post(
+      EXPO_PUSH_URL,
+      {
+        to: token,
+        sound: 'default',
+        title,
+        body,
+        data: data || {},
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Accept-Encoding': 'gzip, deflate',
+        }
+      }
+    );
 
     console.log('Notification sent! ✅');
   } catch (error) {
@@ -47,19 +49,16 @@ export const sendToAllUsers = async (
   data?: Record<string, string>
 ): Promise<void> => {
   try {
-    const Expo = await getExpoSDK();
-    const expo = new Expo();
-
     const usersSnapshot = await db
       .collection('users')
       .where('pushToken', '!=', null)
       .get();
 
-    const messages: any[] = [];
+    const messages: object[] = [];
 
     usersSnapshot.forEach(doc => {
       const token = doc.data().pushToken;
-      if (token && Expo.isExpoPushToken(token)) {
+      if (token && isExpoPushToken(token)) {
         messages.push({
           to: token,
           sound: 'default',
@@ -73,15 +72,28 @@ export const sendToAllUsers = async (
     console.log(`Sending to ${messages.length} users!`);
 
     if (messages.length === 0) {
-      console.log('No valid tokens found!');
+      console.log('No valid tokens!');
       return;
     }
 
-    const chunks = expo.chunkPushNotifications(messages);
+    // Send in batches of 100!
+    const batchSize = 100;
+    for (let i = 0; i < messages.length; i += batchSize) {
+      const batch = messages.slice(i, i + batchSize);
 
-    for (const chunk of chunks) {
-      const receipts = await expo.sendPushNotificationsAsync(chunk);
-      console.log('Chunk receipts:', receipts);
+      const response = await axios.post(
+        EXPO_PUSH_URL,
+        batch,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Accept-Encoding': 'gzip, deflate',
+          }
+        }
+      );
+
+      console.log('Batch sent:', response.data);
     }
 
     console.log(`✅ Sent to ${messages.length} users!`);
@@ -104,7 +116,7 @@ export const sendCapsuleNotification = async (userId: string): Promise<void> => 
     await sendPushNotification(
       token,
       '🌼 Memory Capsule Unlocked!',
-      'Your memory capsule is ready to open!',
+      'Your memory capsule is ready!',
       { type: 'capsule' }
     );
   } catch (error) {
