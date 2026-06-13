@@ -1,16 +1,12 @@
 import { db } from '../config/firebase';
+import * as admin from 'firebase-admin';
 
-let expoInstance: any;
-
-const getExpo = async () => {
-  if (!expoInstance) {
-    const { Expo: ExpoSDK } = await import('expo-server-sdk');
-    expoInstance = new ExpoSDK();
-  }
-  return expoInstance;
+// Dynamic import for ESM compatibility!
+const getExpoSDK = async () => {
+  const { Expo } = await import('expo-server-sdk');
+  return Expo;
 };
 
-// Send to single user
 export const sendPushNotification = async (
   token: string,
   title: string,
@@ -18,42 +14,42 @@ export const sendPushNotification = async (
   data?: Record<string, string>
 ): Promise<void> => {
   try {
-    const { Expo: ExpoSDK } = await import('expo-server-sdk');
-    if (!ExpoSDK.isExpoPushToken(token)) {
+    const Expo = await getExpoSDK();
+    const expo = new Expo();
+
+    if (!Expo.isExpoPushToken(token)) {
       console.log('Invalid Expo token:', token);
       return;
     }
 
-    const expo = await getExpo();
-
-    const message = {
+    const chunks = expo.chunkPushNotifications([{
       to: token,
       sound: 'default',
       title,
       body,
       data: data || {},
-    };
+    }]);
 
-    const chunks = expo.chunkPushNotifications([message]);
-    
     for (const chunk of chunks) {
-      await expo.sendPushNotificationsAsync(chunk);
+      const receipts = await expo.sendPushNotificationsAsync(chunk);
+      console.log('Receipts:', receipts);
     }
-    
+
     console.log('Notification sent! ✅');
   } catch (error) {
     console.log('Notification error:', error);
   }
 };
 
-// Send to ALL users
 export const sendToAllUsers = async (
   title: string,
   body: string,
   data?: Record<string, string>
 ): Promise<void> => {
   try {
-    const { Expo: ExpoSDK } = await import('expo-server-sdk');
+    const Expo = await getExpoSDK();
+    const expo = new Expo();
+
     const usersSnapshot = await db
       .collection('users')
       .where('pushToken', '!=', null)
@@ -63,7 +59,7 @@ export const sendToAllUsers = async (
 
     usersSnapshot.forEach(doc => {
       const token = doc.data().pushToken;
-      if (token && ExpoSDK.isExpoPushToken(token)) {
+      if (token && Expo.isExpoPushToken(token)) {
         messages.push({
           to: token,
           sound: 'default',
@@ -76,36 +72,39 @@ export const sendToAllUsers = async (
 
     console.log(`Sending to ${messages.length} users!`);
 
-    const expo = await getExpo();
-    const chunks = expo.chunkPushNotifications(messages);
-    
-    for (const chunk of chunks) {
-      const receipts = await expo.sendPushNotificationsAsync(chunk);
-      console.log('Receipts:', receipts);
+    if (messages.length === 0) {
+      console.log('No valid tokens found!');
+      return;
     }
 
-    console.log('All sent! ✅');
+    const chunks = expo.chunkPushNotifications(messages);
+
+    for (const chunk of chunks) {
+      const receipts = await expo.sendPushNotificationsAsync(chunk);
+      console.log('Chunk receipts:', receipts);
+    }
+
+    console.log(`✅ Sent to ${messages.length} users!`);
   } catch (error) {
     console.error('Send all error:', error);
   }
 };
 
-// Send capsule notification
 export const sendCapsuleNotification = async (userId: string): Promise<void> => {
   try {
     const userDoc = await db
       .collection('users')
       .doc(userId)
       .get();
-    
+
     const token = userDoc.data()?.pushToken;
-    
+
     if (!token) return;
 
     await sendPushNotification(
       token,
       '🌼 Memory Capsule Unlocked!',
-      'Your memory capsule is ready!',
+      'Your memory capsule is ready to open!',
       { type: 'capsule' }
     );
   } catch (error) {
@@ -113,7 +112,6 @@ export const sendCapsuleNotification = async (userId: string): Promise<void> => 
   }
 };
 
-// Save user push token
 export const savePushToken = async (
   userId: string,
   token: string

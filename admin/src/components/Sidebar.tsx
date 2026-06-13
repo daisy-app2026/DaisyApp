@@ -1,6 +1,6 @@
 import React from 'react';
 import { TabType } from '../pages/DashboardPage';
-import { LayoutDashboard, Users, Bell, BarChart2, Settings, Leaf } from 'lucide-react';
+import { LayoutDashboard, Users, Bell, BarChart2, Settings } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
 interface SidebarProps {
@@ -20,7 +20,16 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
   return (
     <aside className={styles.sidebar}>
       <div className={styles.logoContainer}>
-        <Leaf size={28} className={styles.logoIcon} />
+        <img 
+          src="/assets/logo.png"
+          alt="Daisy"
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '8px',
+            objectFit: 'contain',
+          }}
+        />
         <span className={styles.logoText}>Daisy Admin</span>
       </div>
 
