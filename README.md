@@ -508,20 +508,6 @@ taskkill /f /pid <PID>
 | UptimeRobot | Free | Server monitoring |
 | **Total** | **~$22-27/month** | |
 
----
-
-## Phase 2 Roadmap
-
-- iOS App Store submission + APNs setup
-- Payment integration (subscription plans for extended chat limits)
-- Push notification scheduler (daily reminders)
-- Arabic RTL full support
-- Schlagfertigkeit feature (German comeback lines by Meriem)
-- Enhanced admin analytics dashboard
-- Backend content API (`GET /api/content/:lang`) — move locales off APK
-- User onboarding screens
-
----
 
 ## Notes for Developers
 
