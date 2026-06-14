@@ -24,60 +24,92 @@ const getCloudinaryPublicId = (url: string): string => {
 }
 
 // Delete Cloudinary files
-const deleteEntryMedia = async (content: unknown): Promise<void> => {
+const deleteEntryMedia = async (
+  content: unknown
+): Promise<void> => {
   try {
-    if (!content || typeof content !== 'string') return
-    
-    let urls: string[] = []
-    
-    try {
-      const parsed = JSON.parse(content)
-      if (Array.isArray(parsed)) {
-        parsed.forEach((item: unknown) => {
-          if (typeof item === 'string') {
-            urls.push(item)
-          } else if (
-            item &&
-            typeof item === 'object' &&
-            'url' in item &&
-            typeof (item as { url: unknown }).url === 'string'
-          ) {
-            urls.push((item as { url: string }).url)
-          }
-        })
-      } else if (parsed && typeof parsed === 'object') {
-        if ('images' in parsed && Array.isArray(parsed.images)) {
-          parsed.images.forEach((item: unknown) => {
-            if (typeof item === 'string') {
-              urls.push(item)
-            }
-          })
+    if (!content) return
+
+    // Extract URLs from any format!
+    const urls: string[] = []
+
+    if (typeof content === 'string') {
+      try {
+        const parsed = JSON.parse(content)
+        if (Array.isArray(parsed)) {
+          urls.push(...parsed)
+        } else {
+          urls.push(content)
         }
+      } catch {
+        urls.push(content)
       }
-    } catch {
-      urls = [content]
+    } else if (Array.isArray(content)) {
+      urls.push(...content)
     }
-    
+
+    // Delete each URL from Cloudinary!
     for (const url of urls) {
       if (
-        url &&
-        typeof url === 'string' &&
-        url.includes('cloudinary.com')
-      ) {
-        const publicId = getCloudinaryPublicId(url)
-        
-        if (publicId) {
-          await cloudinary.uploader.destroy(publicId, {
-            resource_type: 'auto'
-          })
-          console.log('Cloudinary deleted:', publicId)
+        !url ||
+        typeof url !== 'string' ||
+        !url.includes('cloudinary.com')
+      ) continue
+
+      // Extract public ID from URL!
+      const parts = url.split('/')
+      const uploadIndex = 
+        parts.indexOf('upload')
+      if (uploadIndex === -1) continue
+
+      const pathAfterUpload = 
+        parts.slice(uploadIndex + 2)
+      const publicId = 
+        pathAfterUpload
+          .join('/')
+          .split('.')[0]
+
+      if (!publicId) continue
+
+      // Try image first, then video, then raw!
+      const resourceTypes = [
+        'image', 'video', 'raw'
+      ]
+
+      for (const resourceType of resourceTypes) {
+        try {
+          await cloudinary.uploader.destroy(
+            publicId,
+            { resource_type: resourceType }
+          )
+          console.log(
+            `Cloudinary deleted (${resourceType}):`,
+            publicId
+          )
+          break // Success! Stop trying!
+        } catch (err: any) {
+          if (
+            err?.http_code === 404 ||
+            err?.result === 'not found'
+          ) {
+            continue // Try next type!
+          }
+          // Not a type error, skip!
+          console.log(
+            'Cloudinary delete error:',
+            err?.message
+          )
+          break
         }
       }
     }
   } catch (error) {
-    console.log('Cloudinary delete error:', error)
+    console.log(
+      'deleteEntryMedia error:', error
+    )
   }
 }
+
 
 const updateStreak = async (userId: string) => {
   const userRef = db
