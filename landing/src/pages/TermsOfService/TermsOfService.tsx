@@ -78,7 +78,7 @@ export default function TermsOfService() {
         </p>
       </div>
 
-      <div className={styles.policySection}>
+      {/* <div className={styles.policySection}>
         <h2 className={styles.policySectionTitle}>8. Contact Us</h2>
         <p className={styles.policyText}>
           For feedback, legal clarification, or general inquiries regarding these Terms, please connect with us:
@@ -87,7 +87,7 @@ export default function TermsOfService() {
           <br />
           <strong>Location:</strong> Germany
         </p>
-      </div>
+      </div> */}
     </motion.div>
   );
 }
