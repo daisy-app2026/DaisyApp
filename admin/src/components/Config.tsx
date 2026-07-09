@@ -97,7 +97,7 @@ const Config: React.FC = () => {
               type="url"
               id="privacyPolicy"
               className={styles.input}
-              placeholder="https://example.com/privacy"
+              placeholder="https://www.meriemtafsi.com/privacy"
               value={privacyPolicyUrl}
               onChange={(e) => setPrivacyPolicyUrl(e.target.value)}
               disabled={saving}
@@ -112,7 +112,7 @@ const Config: React.FC = () => {
               type="url"
               id="termsOfService"
               className={styles.input}
-              placeholder="https://example.com/terms"
+              placeholder="https://www.meriemtafsi.com/terms"
               value={termsOfServiceUrl}
               onChange={(e) => setTermsOfServiceUrl(e.target.value)}
               disabled={saving}

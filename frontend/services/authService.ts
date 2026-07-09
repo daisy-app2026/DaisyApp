@@ -7,6 +7,7 @@ import {
 } from '@firebase/auth'
 import { auth } from '../config/firebase'
 import axios from 'axios'
+import { GoogleSignin } from '@react-native-google-signin/google-signin'
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL
 
@@ -123,6 +124,11 @@ export const signInWithGoogle = async (
 }
 
 export const logOut = async () => {
+  try {
+    await GoogleSignin.signOut()
+  } catch (error) {
+    console.log('Google signOut error (safe to ignore if not signed in):', error)
+  }
   await signOut(auth)
 }
 

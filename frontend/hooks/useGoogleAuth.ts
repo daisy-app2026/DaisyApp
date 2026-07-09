@@ -9,11 +9,14 @@ import {
 } from 'firebase/auth'
 import { auth } from '../config/firebase'
 import { registerUser } from '../services/authService'
+import { Alert } from 'react-native'
 
 // Configure Google Sign In!
 GoogleSignin.configure({
   webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
   offlineAccess: true,
+  forceCodeForRefreshToken: true,
+  accountName: '',
 })
 
 export const useGoogleAuth = () => {
@@ -27,6 +30,13 @@ export const useGoogleAuth = () => {
       await GoogleSignin.hasPlayServices({
         showPlayServicesUpdateDialog: true
       })
+
+      // Clear any cached session so the account picker always shows
+      try {
+        await GoogleSignin.signOut()
+      } catch {
+        // ignore — user might not have had a session
+      }
 
       // Show account picker! ✅
       const signInResult = await GoogleSignin.signIn()
@@ -64,6 +74,7 @@ export const useGoogleAuth = () => {
         console.log('Play services not available!')
       } else {
         console.log('Google sign in error:', error)
+        Alert.alert('Sign in failed', 'Could not sign in with Google. Please try again.')
       }
     } finally {
       setLoading(false)

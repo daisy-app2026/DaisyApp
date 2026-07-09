@@ -478,7 +478,7 @@ const MainNavigator = () => {
           const isChat = routeName === 'TalkToPastChat';
           
           return {
-            tabBarLabel: 'Past',
+            tabBarLabel: 'Closure',
             tabBarStyle: isChat ? {
               display: 'none' as const,
               position: 'absolute' as const,

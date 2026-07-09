@@ -1,8 +1,8 @@
 import { db } from './firebase';
 
 export const APP_CONFIG = {
-  privacyPolicyUrl: 'https://daisyapp.com/privacy',
-  termsOfServiceUrl: 'https://daisyapp.com/terms',
+  privacyPolicyUrl: 'https://www.meriemtafsi.com/privacy',
+  termsOfServiceUrl: 'https://www.meriemtafsi.com/terms',
 };
 
 // Load from Firestore on startup!

@@ -198,7 +198,7 @@ export const updateLanguage = async (
     const userId = req.userId!
     const { language } = req.body
     
-    if (!['en', 'de', 'ar'].includes(language)) {
+    if (!['en', 'de', 'ar', 'fr'].includes(language)) {
       res.status(400).json({
         error: 'Invalid language'
       })

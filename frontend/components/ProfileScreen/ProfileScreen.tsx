@@ -22,7 +22,7 @@ import { useEntriesStore } from '../../store/entriesStore';
 import { logOut, updateUserName } from '../../services/authService';
 import { getEntryStats } from '../../services/entryService';
 import axios from 'axios';
-import { useLanguageStore } from '../../store/languageStore';
+import { useLanguageStore, Language } from '../../store/languageStore';
 import { getFreshToken } from '../../utils/getToken';
 import CustomModal from '../shared/CustomModal/CustomModal';
 
@@ -166,7 +166,7 @@ const ProfileScreen: React.FC = () => {
     clearStore();
   };
 
-  const handleLanguageChange = async (lang: 'en' | 'de' | 'ar') => {
+  const handleLanguageChange = async (lang: Language) => {
     try {
       setLanguage(lang);
       
@@ -175,10 +175,10 @@ const ProfileScreen: React.FC = () => {
         I18nManager.forceRTL(targetRTL);
         I18nManager.allowRTL(targetRTL);
         
-        const alertTitle = lang === 'ar' ? 'تغيير اللغة' : (lang === 'de' ? 'Sprache geändert' : 'Language Changed');
+        const alertTitle = lang === 'ar' ? 'تغيير اللغة' : (lang === 'de' ? 'Sprache geändert' : (lang === 'fr' ? 'Langue changée' : 'Language Changed'));
         const alertMsg = lang === 'ar'
           ? 'يرجى إعادة تشغيل التطبيق لتطبيق اتجاه اللغة العربية (RTL) بشكل صحيح.'
-          : (lang === 'de' ? 'Bitte starte die App neu, um das Layout anzupassen.' : 'Please restart the app to apply the layout changes properly.');
+          : (lang === 'de' ? 'Bitte starte die App neu, um das Layout anzupassen.' : (lang === 'fr' ? 'Veuillez redémarrer l\'application pour appliquer correctement les changements de mise en page.' : 'Please restart the app to apply the layout changes properly.'));
         
         showAlert(alertTitle, alertMsg);
       }
@@ -203,6 +203,7 @@ const ProfileScreen: React.FC = () => {
     { code: 'en', name: 'English', native: 'English' },
     { code: 'de', name: 'German', native: 'Deutsch' },
     { code: 'ar', name: 'Arabic', native: 'العربية' },
+    { code: 'fr', name: 'French', native: 'Français' },
   ];
 
   const memberSince = user?.createdAt
@@ -347,11 +348,11 @@ const ProfileScreen: React.FC = () => {
                     styles.languageOption,
                     language === lang.code && styles.languageOptionActive,
                   ]}
-                  onPress={() => handleLanguageChange(lang.code as 'en' | 'de' | 'ar')}
+                  onPress={() => handleLanguageChange(lang.code as Language)}
                   activeOpacity={0.7}
                 >
                   <Text style={styles.languageFlag}>
-                    {lang.code === 'en' ? '🇬🇧' : lang.code === 'de' ? '🇩🇪' : '🇸🇦'}
+                    {lang.code === 'en' ? '🇬🇧' : lang.code === 'de' ? '🇩🇪' : lang.code === 'fr' ? '🇫🇷' : '🇸🇦'}
                   </Text>
                   <Text
                     style={[

@@ -3,8 +3,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import en from '../locales/en.json'
 import de from '../locales/de.json'
 import ar from '../locales/ar.json'
+import fr from '../locales/fr.json'
 
-export type Language = 'en' | 'de' | 'ar'
+export type Language = 'en' | 'de' | 'ar' | 'fr'
 
 interface LanguageStore {
   language: Language
@@ -18,6 +19,8 @@ const getTranslations = (lang: Language) => {
       return de
     case 'ar':
       return ar
+    case 'fr':
+      return fr
     default:
       return en
   }
@@ -40,7 +43,7 @@ export const useLanguageStore = create<LanguageStore>((set) => ({
 export const initLanguageStore = async () => {
   try {
     const savedLang = await AsyncStorage.getItem('daisy_language')
-    if (savedLang && ['en', 'de', 'ar'].includes(savedLang)) {
+    if (savedLang && ['en', 'de', 'ar', 'fr'].includes(savedLang)) {
       useLanguageStore.getState().setLanguage(savedLang as Language)
     }
   } catch (error) {
