@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { db, auth } from '../config/firebase';
 import { APP_CONFIG } from '../config/appConfig';
+import { cascadeDeleteUserData } from '../services/accountDeletionService';
 
 const ADMIN_SECRET = 
   process.env.ADMIN_SECRET || 
@@ -110,17 +111,14 @@ export const deleteUser = async (
       return;
     }
 
-    // Delete Firebase Auth user
-    await auth.deleteUser(uid);
-    
-    // Delete Firestore user doc
-    await db.collection('users')
-      .doc(uid).delete();
+    const summary = await cascadeDeleteUserData(uid);
 
     res.status(200).json({ 
-      success: true 
+      success: true,
+      summary
     });
   } catch (error) {
+    console.error('admin deleteUser controller error:', error);
     res.status(500).json({ 
       error: 'Server error' 
     });

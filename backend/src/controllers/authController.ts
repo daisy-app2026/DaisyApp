@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { db, auth } from '../config/firebase';
 import { AuthRequest } from '../middleware/verifyToken';
 import { APP_CONFIG } from '../config/appConfig';
+import { cascadeDeleteUserData } from '../services/accountDeletionService';
 
 export const registerUser = async (
   req: Request,
@@ -229,3 +230,22 @@ export const getAppConfig = async (
     termsOfServiceUrl: APP_CONFIG.termsOfServiceUrl,
   })
 }
+
+export const deleteMyAccount = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = req.userId!;
+    const summary = await cascadeDeleteUserData(userId);
+    res.status(200).json({
+      success: true,
+      summary,
+    });
+  } catch (error) {
+    console.error('deleteMyAccount controller error:', error);
+    res.status(500).json({
+      error: 'Server error',
+    });
+  }
+};

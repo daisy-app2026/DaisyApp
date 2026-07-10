@@ -451,7 +451,6 @@ const HomeScreen: React.FC = () => {
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
           <View style={styles.greetingCard}>
             <Text style={styles.greetingTop}>{t.home.whatsOnMind}</Text>
-            <Text style={styles.greetingBottom}>{t.home.chooseSpace}</Text>
           </View>
 
           <View style={styles.section}>

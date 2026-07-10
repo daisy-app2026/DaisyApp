@@ -24,7 +24,7 @@ const getCloudinaryPublicId = (url: string): string => {
 }
 
 // Delete Cloudinary files
-const deleteEntryMedia = async (
+export const deleteEntryMedia = async (
   content: unknown
 ): Promise<void> => {
   try {

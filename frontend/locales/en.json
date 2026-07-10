@@ -37,7 +37,7 @@
     "greeting_afternoon": "Good afternoon",
     "greeting_evening": "Good evening",
     "title": "My Diary",
-    "whatsOnMind": "This therapeutic journal is for you if you love using AI as your venting space or gossip bestie",
+    "whatsOnMind": "This therapeutic journal is for you if you love using AI as your venting space or gossip bestie 🌼",
     "chooseSpace": "Choose your space",
     "yourSpaces": "Your Spaces",
     "recent": "Recent",
@@ -105,7 +105,11 @@
     "disclaimerSigned": "— Meriem Tafsi, Psychologist",
     "iUnderstand": "I Understand",
     "editName": "Edit name",
-    "saveName": "Save"
+    "saveName": "Save",
+    "deleteAccount": "Delete My Account",
+    "deleteAccountTitle": "Delete Account?",
+    "deleteAccountMessage": "Are you absolutely sure? This action is irreversible. All of your journal entries, chat reflection history, and account settings will be permanently deleted and cannot be recovered.",
+    "deleteAccountConfirm": "Yes, Delete Everything"
   },
   "disclaimer": {
     "title": "Disclaimer",

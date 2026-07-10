@@ -230,3 +230,15 @@ export const updateUserLanguage = async (language: string): Promise<void> => {
   )
 }
 
+export const deleteMyAccount = async (): Promise<void> => {
+  const token = await getFreshToken()
+  await axios.delete(
+    `${API_URL}/api/auth/account`,
+    {
+      headers: { 
+        Authorization: `Bearer ${token}` 
+      }
+    }
+  )
+}
+

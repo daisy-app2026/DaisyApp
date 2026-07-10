@@ -7,7 +7,8 @@ import {
   checkEmail,
   getLanguage,
   updateLanguage,
-  getAppConfig
+  getAppConfig,
+  deleteMyAccount
 } from '../controllers/authController';
 import { verifyToken } from '../middleware/verifyToken';
 
@@ -21,5 +22,6 @@ router.post('/check-email', checkEmail);
 router.get('/language', verifyToken, getLanguage);
 router.put('/update-language', verifyToken, updateLanguage);
 router.get('/config', getAppConfig);
+router.delete('/account', verifyToken, deleteMyAccount);
 
 export default router;

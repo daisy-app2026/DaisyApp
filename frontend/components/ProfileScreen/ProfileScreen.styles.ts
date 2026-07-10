@@ -283,12 +283,15 @@ export const styles = StyleSheet.create({
     marginBottom: 12,
   },
   languageOptions: {
+  },
+  languageScrollContent: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 8,
+    gap: 10,
+    paddingHorizontal: 4,
   },
   languageOption: {
-    flex: 1,
+    minWidth: 100,
+    paddingHorizontal: 14,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -297,7 +300,6 @@ export const styles = StyleSheet.create({
     borderColor: 'rgba(0, 0, 0, 0.06)',
     borderRadius: 10,
     paddingVertical: 10,
-    paddingHorizontal: 8,
     gap: 6,
   },
   languageOptionActive: {

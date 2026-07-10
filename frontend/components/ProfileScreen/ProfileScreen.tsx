@@ -19,7 +19,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { styles } from './ProfileScreen.styles';
 import { useAuthStore } from '../../store/authStore';
 import { useEntriesStore } from '../../store/entriesStore';
-import { logOut, updateUserName } from '../../services/authService';
+import { logOut, updateUserName, deleteMyAccount } from '../../services/authService';
 import { getEntryStats } from '../../services/entryService';
 import axios from 'axios';
 import { useLanguageStore, Language } from '../../store/languageStore';
@@ -51,6 +51,8 @@ const ProfileScreen: React.FC = () => {
 
   // Modal states
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const [alertConfig, setAlertConfig] = useState<{
     visible: boolean;
     title: string;
@@ -164,6 +166,25 @@ const ProfileScreen: React.FC = () => {
     setShowLogoutModal(false);
     await logOut();
     clearStore();
+  };
+
+  const handleDeleteAccount = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteAccount = async () => {
+    setShowDeleteModal(false);
+    setDeleteLoading(true);
+    try {
+      await deleteMyAccount();
+      await logOut();
+      clearStore();
+    } catch (error) {
+      console.log('Error deleting account:', error);
+      showAlert('Error', 'Could not delete your account. Please try again later.');
+    } finally {
+      setDeleteLoading(false);
+    }
   };
 
   const handleLanguageChange = async (lang: Language) => {
@@ -341,29 +362,35 @@ const ProfileScreen: React.FC = () => {
           <View style={styles.languageSection}>
             <Text style={styles.languageSectionTitle}>{t.language}</Text>
             <View style={styles.languageOptions}>
-              {languages.map((lang) => (
-                <TouchableOpacity
-                  key={lang.code}
-                  style={[
-                    styles.languageOption,
-                    language === lang.code && styles.languageOptionActive,
-                  ]}
-                  onPress={() => handleLanguageChange(lang.code as Language)}
-                  activeOpacity={0.7}
-                >
-                  <Text style={styles.languageFlag}>
-                    {lang.code === 'en' ? '🇬🇧' : lang.code === 'de' ? '🇩🇪' : lang.code === 'fr' ? '🇫🇷' : '🇸🇦'}
-                  </Text>
-                  <Text
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.languageScrollContent}
+              >
+                {languages.map((lang) => (
+                  <TouchableOpacity
+                    key={lang.code}
                     style={[
-                      styles.languageLabel,
-                      language === lang.code && styles.languageLabelActive,
+                      styles.languageOption,
+                      language === lang.code && styles.languageOptionActive,
                     ]}
+                    onPress={() => handleLanguageChange(lang.code as Language)}
+                    activeOpacity={0.7}
                   >
-                    {lang.native}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                    <Text style={styles.languageFlag}>
+                      {lang.code === 'en' ? '🇬🇧' : lang.code === 'de' ? '🇩🇪' : lang.code === 'fr' ? '🇫🇷' : '🇸🇦'}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.languageLabel,
+                        language === lang.code && styles.languageLabelActive,
+                      ]}
+                    >
+                      {lang.native}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
             </View>
           </View>
 
@@ -392,6 +419,18 @@ const ProfileScreen: React.FC = () => {
             <Text style={[styles.menuItemText, styles.logoutText]}>{t.logout}</Text>
             <Ionicons name="chevron-forward" size={18} color="#BBBBBB" />
           </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={handleDeleteAccount} disabled={deleteLoading}>
+            <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(232, 85, 85, 0.10)' }]}>
+              {deleteLoading ? (
+                <ActivityIndicator size="small" color="#E85555" />
+              ) : (
+                <Ionicons name="trash-outline" size={18} color="#E85555" />
+              )}
+            </View>
+            <Text style={[styles.menuItemText, styles.logoutText]}>{t.deleteAccount}</Text>
+            <Ionicons name="chevron-forward" size={18} color="#BBBBBB" />
+          </TouchableOpacity>
         </View>
       </ScrollView>
 
@@ -406,6 +445,17 @@ const ProfileScreen: React.FC = () => {
         confirmText={t.logoutConfirm}
         onCancel={() => setShowLogoutModal(false)}
         onConfirm={confirmLogout}
+      />
+
+      {/* Delete Account Modal */}
+      <CustomModal
+        visible={showDeleteModal}
+        title={t.deleteAccountTitle}
+        message={t.deleteAccountMessage}
+        cancelText={t.cancel}
+        confirmText={t.deleteAccountConfirm}
+        onCancel={() => setShowDeleteModal(false)}
+        onConfirm={confirmDeleteAccount}
       />
 
       {/* Alert Modal */}

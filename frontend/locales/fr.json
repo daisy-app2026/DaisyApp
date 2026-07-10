@@ -37,7 +37,7 @@
     "greeting_afternoon": "Bon après-midi",
     "greeting_evening": "Bonsoir",
     "title": "Mon Journal",
-    "whatsOnMind": "Ce journal thérapeutique est fait pour toi si tu aimes utiliser l'IA comme espace pour te confier ou comme meilleure amie potin",
+    "whatsOnMind": "Ce journal thérapeutique est fait pour toi si tu aimes utiliser l'IA comme espace pour te confier ou comme meilleure amie potin 🌼",
     "chooseSpace": "Choisis ton espace",
     "yourSpaces": "Tes Espaces",
     "recent": "Récent",
@@ -105,7 +105,11 @@
     "disclaimerSigned": "— Meriem Tafsi, Psychologue",
     "iUnderstand": "J'ai compris",
     "editName": "Modifier le nom",
-    "saveName": "Enregistrer"
+    "saveName": "Enregistrer",
+    "deleteAccount": "Supprimer mon compte",
+    "deleteAccountTitle": "Supprimer le compte ?",
+    "deleteAccountMessage": "Es-tu absolument sûr ? Cette action est irréversible. Toutes tes entrées de journal, ton historique de chat et tes paramètres de compte seront définitivement supprimés et ne pourront pas être récupérés.",
+    "deleteAccountConfirm": "Oui, tout supprimer"
   },
   "disclaimer": {
     "title": "Avertissement",

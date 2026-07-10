@@ -114,15 +114,10 @@ export const styles = StyleSheet.create({
     marginTop: 12,
   },
   greetingTop: {
-    fontSize: 11,
-    color: '#4A7C2A',
-    marginBottom: 4,
-  },
-  greetingBottom: {
     fontFamily: 'serif',
     fontSize: 14,
     fontWeight: '700',
-    color: '#1A2E0F',
+    color: '#2D5A1B',
   },
 
   // Sections
