@@ -109,7 +109,7 @@
     "deleteAccount": "Mein Konto löschen",
     "deleteAccountTitle": "Konto löschen?",
     "deleteAccountMessage": "Bist du dir absolut sicher? Diese Aktion ist unumkehrbar. Alle deine Tagebucheinträge, dein Chat-Verlauf und deine Kontoeinstellungen werden dauerhaft gelöscht und können nicht wiederhergestellt werden.",
-    "deleteAccountConfirm": "Ja, alles löschen"
+    "deleteAccountConfirm": "Ja"
   },
   "disclaimer": {
     "title": "Haftungsausschluss",

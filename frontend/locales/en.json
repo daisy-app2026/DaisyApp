@@ -109,7 +109,7 @@
     "deleteAccount": "Delete My Account",
     "deleteAccountTitle": "Delete Account?",
     "deleteAccountMessage": "Are you absolutely sure? This action is irreversible. All of your journal entries, chat reflection history, and account settings will be permanently deleted and cannot be recovered.",
-    "deleteAccountConfirm": "Yes, Delete Everything"
+    "deleteAccountConfirm": "Yes"
   },
   "disclaimer": {
     "title": "Disclaimer",

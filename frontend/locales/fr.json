@@ -109,7 +109,7 @@
     "deleteAccount": "Supprimer mon compte",
     "deleteAccountTitle": "Supprimer le compte ?",
     "deleteAccountMessage": "Es-tu absolument sûr ? Cette action est irréversible. Toutes tes entrées de journal, ton historique de chat et tes paramètres de compte seront définitivement supprimés et ne pourront pas être récupérés.",
-    "deleteAccountConfirm": "Oui, tout supprimer"
+    "deleteAccountConfirm": "Oui"
   },
   "disclaimer": {
     "title": "Avertissement",

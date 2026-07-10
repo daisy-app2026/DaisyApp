@@ -109,7 +109,7 @@
     "deleteAccount": "حذف حسابي",
     "deleteAccountTitle": "حذف الحساب؟",
     "deleteAccountMessage": "هل أنت متأكد تماماً؟ هذا الإجراء لا يمكن التراجع عنه. سيتم حذف جميع تدوينات يومياتك، وسجل محادثاتك، وإعدادات حسابك نهائياً ولا يمكن استعادتها.",
-    "deleteAccountConfirm": "نعم، احذف كل شيء"
+    "deleteAccountConfirm": "نعم"
   },
   "disclaimer": {
     "title": "إخلاء المسؤولية",
