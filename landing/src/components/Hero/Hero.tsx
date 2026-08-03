@@ -60,13 +60,22 @@ export default function Hero({ showVideo = true }: HeroProps) {
             <div className={styles.videoGlow}></div>
             <div className={styles.videoContainer}>
               {LINKS.demoVideo ? (
-                <iframe
-                  src={LINKS.demoVideo}
-                  className={styles.videoIframe}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-                  allowFullScreen
-                  title={t('hero.watchDemo')}
-                />
+                LINKS.demoVideo.endsWith('.mp4') || LINKS.demoVideo.endsWith('.webm') ? (
+                  <video
+                    src={LINKS.demoVideo}
+                    controls
+                    playsInline
+                    className={styles.videoElement}
+                    title={t('hero.watchDemo')}
+                  />
+                ) : (
+                  <iframe
+                    src={LINKS.demoVideo}
+                    className={styles.videoIframe}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                    title={t('hero.watchDemo')}
+                  />
+                )
               ) : (
                 <div className={styles.videoPlaceholder}>
                   <button className={styles.playButton} aria-label="Play video demo">
