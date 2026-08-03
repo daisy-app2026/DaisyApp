@@ -63,7 +63,7 @@ export default function Hero({ showVideo = true }: HeroProps) {
                 <iframe
                   src={LINKS.demoVideo}
                   className={styles.videoIframe}
-                  allow="autoplay"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
                   allowFullScreen
                   title={t('hero.watchDemo')}
                 />
