@@ -21,6 +21,7 @@ export const fr: Translations = {
     downloadApk: 'Télécharger l\'APK',
     watchDemo: 'Voir la Démo',
     watchDemoDesc: 'Découvrez Daisy en action',
+    appStoreComingSoon: 'Daisy pour iOS arrive bientôt sur l\'Apple App Store ! Restez à l\'écoute.',
   },
   features: {
     sectionLabel: 'Cœur Empatique',

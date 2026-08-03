@@ -99,6 +99,12 @@ export default function Hero({ showVideo = true }: HeroProps) {
         <motion.div className={styles.downloadButtons} variants={childVariants}>
           <a
             href={LINKS.appStore}
+            onClick={(e) => {
+              if (!LINKS.appStore || LINKS.appStore === '#') {
+                e.preventDefault();
+                alert(t('hero.appStoreComingSoon'));
+              }
+            }}
             target="_blank"
             rel="noopener noreferrer"
             className={styles.storeBadgeWrapper}

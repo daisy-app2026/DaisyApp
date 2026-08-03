@@ -21,6 +21,7 @@ export const ar: Translations = {
     downloadApk: 'تحميل ملف APK',
     watchDemo: 'شاهد العرض التوضيحي',
     watchDemoDesc: 'استكشف تطبيق ديزي',
+    appStoreComingSoon: 'تطبيق ديزي لنظام iOS قادم قريباً على متجر أبل! انتظرونا قريباً.',
   },
   features: {
     sectionLabel: 'الجوهر التعاطفي',

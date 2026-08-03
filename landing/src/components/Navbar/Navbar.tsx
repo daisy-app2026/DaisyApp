@@ -80,7 +80,7 @@ export default function Navbar() {
       <nav className={`${styles.navbar} ${scrolled ? styles.navbarScrolled : ''}`}>
         <Link to="/" className={styles.logo} onClick={handleLogoClick}>
           <img src="/assets/logo.png" alt="Daisy App Logo" className={styles.logoImg} loading="lazy" style={{ objectFit: 'cover' }} />
-          <span className={styles.logoText}>Daisy</span>
+          <span className={styles.logoText}></span>
         </Link>
 
         {/* Desktop Links */}

@@ -26,6 +26,12 @@ export default function CTA() {
         <div className={styles.ctaButtons}>
           <a 
             href={LINKS.appStore} 
+            onClick={(e) => {
+              if (!LINKS.appStore || LINKS.appStore === '#') {
+                e.preventDefault();
+                alert(t('hero.appStoreComingSoon'));
+              }
+            }}
             target="_blank" 
             rel="noopener noreferrer"
             className={styles.storeBadgeWrapper}

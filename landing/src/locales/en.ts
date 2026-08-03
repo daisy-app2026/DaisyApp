@@ -19,6 +19,7 @@ export const en = {
     downloadApk: 'Download APK',
     watchDemo: 'Watch Demo',
     watchDemoDesc: 'Experience Daisy in action',
+    appStoreComingSoon: 'Daisy for iOS is coming soon on the Apple App Store! Stay tuned.',
   },
   features: {
     sectionLabel: 'Empathetic Core',
