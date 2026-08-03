@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useLanguage } from '../../context/LanguageContext';
 import styles from './StatsBar.module.css';
 
 interface StatItem {
@@ -7,10 +8,12 @@ interface StatItem {
 }
 
 export default function StatsBar() {
+  const { t } = useLanguage();
+
   const stats: StatItem[] = [
-    { number: '3', label: 'Core Features' },
-    { number: '∞', label: 'Healing Conversations' },
-    { number: '100%', label: 'Safe & Private' }
+    { number: t('stats.coreFeaturesNum'), label: t('stats.coreFeaturesLabel') },
+    { number: t('stats.healingConversationsNum'), label: t('stats.healingConversationsLabel') },
+    { number: t('stats.safePrivateNum'), label: t('stats.safePrivateLabel') }
   ];
 
   return (

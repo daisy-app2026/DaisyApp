@@ -1,0 +1,93 @@
+export const en = {
+  nav: {
+    home: 'Home',
+    features: 'Features',
+    about: 'About',
+    download: 'Download App',
+    privacy: 'Privacy Policy',
+    terms: 'Terms of Service',
+    lightMode: 'Light Mode',  
+    darkMode: 'Dark Mode',
+  },
+  hero: {
+    badge: 'Psychologist-Founded Self-Reflection & Healing App',
+    titleLine1: 'Sort Your Feelings.',
+    titleLine2: 'Heal Past Connections.',
+    subtitle: 'A psychologist-founded app for journaling, healing past connections, and navigating your love life — all in one safe space.',
+    getOnPlayStore: 'Get it on Google Play Store',
+    downloadAppStore: 'Download on Apple App Store',
+    downloadApk: 'Download APK',
+    watchDemo: 'Watch Demo',
+    watchDemoDesc: 'Experience Daisy in action',
+  },
+  features: {
+    sectionLabel: 'Empathetic Core',
+    sectionTitle: 'Designed For Your Inner World',
+    tabs: {
+      diary: 'Diary',
+      past: 'Breakup Closure',
+      crush: 'My Crush',
+    },
+    diary: {
+      tag: 'Personal Space',
+      title: 'Your Personal Diary',
+      description: 'Express yourself freely in 5 themed spaces. Write, record audio, capture images, or doodle your thoughts without judgment.',
+      steps: [
+        'Choose your space (Family, Bestie, Crush, Vent, or Imagine)',
+        'Write, record, draw or capture assets',
+        'Add a Memory Capsule to unlock later',
+        'Search and filter your entries easily',
+      ],
+    },
+    past: {
+      tag: 'Emotional Healing',
+      title: 'Breakup Closure',
+      description: 'Have healing conversations with people from your past. Process unresolved feelings and say what went unsaid with AI guidance.',
+      steps: [
+        'Tell us about the person',
+        'Share how it ended',
+        'Write what you never said',
+        'Imagine your meeting',
+        'Start your healing conversation',
+      ],
+    },
+    crush: {
+      tag: 'Relationship Advice',
+      title: 'My Crush',
+      description: 'Get bestie-level advice about your crush. Practice conversations, decode confusing signals, and figure out your next move!',
+      steps: [
+        'Tell us about your crush',
+        'Share what you need help with',
+        'Spill all the details',
+        'Chat with your AI bestie!',
+      ],
+    },
+  },
+  stats: {
+    coreFeaturesNum: '3',
+    coreFeaturesLabel: 'Core Features',
+    healingConversationsNum: '∞',
+    healingConversationsLabel: 'Healing Conversations',
+    safePrivateNum: '100%',
+    safePrivateLabel: 'Safe & Private',
+  },
+  about: {
+    sectionTitle: 'By a Psychologist, For You',
+    line1: 'Empathetic Design',
+    line2: 'Rooted in Science',
+    description: 'Daisy was built from a deep understanding of psychological healing, emotional relationships, and self-reflection patterns. We believe everyone deserves a modern, empathetic tool to sort out their emotions and heal past wounds in complete safety.',
+    founderName: 'Meriem Tafsi',
+    founderTitle: 'Psychologist & Founder',
+    founderQuote: '"As a psychologist, I created Daisy because everyone deserves a safe space to express themselves, heal from the past, and navigate their emotions with confidence."',
+  },
+  cta: {
+    title: 'Start Your Healing Journey',
+    subtitle: 'Download Daisy today to sort your feelings, heal unresolved connections, and practice conversations with confidence.',
+  },
+  footer: {
+    tagline: 'Your safe space to express, observe and heal. Founded by a psychologist.',
+    rights: 'Daisy. All rights reserved.',
+  },
+};
+
+export type Translations = typeof en;

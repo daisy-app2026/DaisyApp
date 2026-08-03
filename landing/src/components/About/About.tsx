@@ -1,8 +1,11 @@
 import { motion } from 'framer-motion';
 import { LINKS } from '../../constants';
+import { useLanguage } from '../../context/LanguageContext';
 import styles from './About.module.css';
 
 export default function About() {
+  const { t } = useLanguage();
+
   return (
     <section className={styles.about} id="about">
       <div className={styles.aboutInner}>
@@ -14,15 +17,13 @@ export default function About() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <span className={styles.founderTitle}>By a Psychologist, For You</span>
+          <span className={styles.founderTitle}>{t('about.sectionTitle')}</span>
           <h2 className={styles.aboutTitle}>
-            <span className={styles.line1}>Empathetic Design</span>
-            <span className={styles.line2}>Rooted in Science</span>
+            <span className={styles.line1}>{t('about.line1')}</span>
+            <span className={styles.line2}>{t('about.line2')}</span>
           </h2>
           <p className={styles.aboutText}>
-            Daisy was built from a deep understanding of psychological healing, emotional relationships, 
-            and self-reflection patterns. We believe everyone deserves a modern, empathetic tool 
-            to sort out their emotions and heal past wounds in complete safety.
+            {t('about.description')}
           </p>
         </motion.div>
 
@@ -51,12 +52,11 @@ export default function About() {
             </div>
           )}
           
-          <h3 className={styles.founderName}>Meriem Tafsi</h3>
-          <p className={styles.founderTitle}>Psychologist & Founder</p>
+          <h3 className={styles.founderName}>{t('about.founderName')}</h3>
+          <p className={styles.founderTitle}>{t('about.founderTitle')}</p>
           
           <p className={styles.founderQuote}>
-            "As a psychologist, I created Daisy because everyone deserves a safe space 
-            to express themselves, heal from the past, and navigate their emotions with confidence."
+            {t('about.founderQuote')}
           </p>
         </motion.div>
       </div>

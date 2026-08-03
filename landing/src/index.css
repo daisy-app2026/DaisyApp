@@ -4,27 +4,54 @@
   --yellow: #F5DC32;
   --yellow-glow: rgba(245, 220, 50, 0.4);
   --yellow-soft: rgba(245, 220, 50, 0.12);
+
+  --font-heading: 'Georgia', 'Times New Roman', serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-pill: 9999px;
+  
+  --transition-normal: 0.4s ease;
+  --transition-fast: 0.2s ease;
+}
+
+/* Dark Theme (Default) */
+:root, :root[data-theme="dark"] {
   --bg: #0A1A05;
   --glass: rgba(255, 255, 255, 0.06);
   --glass-border: rgba(255, 255, 255, 0.12);
   --text: #FFFFFF;
   --text-soft: rgba(255, 255, 255, 0.7);
   --text-muted: rgba(255, 255, 255, 0.4);
-  
-  /* Additional 3D Glass Variables */
-  --font-heading: 'Georgia', 'Times New Roman', serif;
-  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 24px;
-  --radius-xl: 32px;
-  --radius-pill: 9999px;
-  --transition-normal: 0.4s ease;
-  --transition-fast: 0.2s ease;
   --glass-3d-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.3),
     0 2px 8px rgba(245, 220, 50, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  --orb-yellow: rgba(245, 220, 50, 0.12);
+  --orb-green: rgba(45, 90, 27, 0.2);
+  --badge-bg: rgba(255, 255, 255, 0.08);
+  --card-bg: rgba(18, 38, 12, 0.75);
+}
+
+/* Light Theme */
+:root[data-theme="light"] {
+  --bg: #F5F8F2;
+  --glass: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(45, 90, 27, 0.15);
+  --text: #14280E;
+  --text-soft: #354D2B;
+  --text-muted: #68825C;
+  --glass-3d-shadow: 
+    0 10px 30px rgba(45, 90, 27, 0.08),
+    0 2px 6px rgba(245, 220, 50, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --orb-yellow: rgba(245, 220, 50, 0.25);
+  --orb-green: rgba(45, 90, 27, 0.08);
+  --badge-bg: rgba(45, 90, 27, 0.08);
+  --card-bg: rgba(255, 255, 255, 0.9);
 }
 
 * {
@@ -46,6 +73,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
 a {
@@ -89,12 +117,13 @@ h1, h2, h3, h4, h5, h6 {
   pointer-events: none;
   z-index: 0;
   animation: floatOrbs 20s ease-in-out infinite alternate;
+  transition: background var(--transition-normal);
 }
 
 .orbYellow {
   width: 600px;
   height: 600px;
-  background: rgba(245, 220, 50, 0.12);
+  background: var(--orb-yellow);
   top: -200px;
   right: -200px;
 }
@@ -102,7 +131,7 @@ h1, h2, h3, h4, h5, h6 {
 .orbGreen {
   width: 500px;
   height: 500px;
-  background: rgba(45, 90, 27, 0.2);
+  background: var(--orb-green);
   bottom: -100px;
   left: -100px;
 }
@@ -110,7 +139,7 @@ h1, h2, h3, h4, h5, h6 {
 .orbYellow2 {
   width: 300px;
   height: 300px;
-  background: rgba(245, 220, 50, 0.08);
+  background: var(--orb-yellow);
   top: 50%;
   left: 30%;
   animation-delay: -5s;
@@ -123,4 +152,9 @@ h1, h2, h3, h4, h5, h6 {
   100% {
     transform: translateY(30px) scale(1.05);
   }
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }

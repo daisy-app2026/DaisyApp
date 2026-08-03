@@ -1,13 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useTheme } from '../../context/ThemeContext';
+import { useLanguage, LANGUAGES, type Language } from '../../context/LanguageContext';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  
+  const { theme, toggleTheme } = useTheme();
+  const { language, setLanguage, t } = useLanguage();
+  
   const navigate = useNavigate();
   const location = useLocation();
+  const langMenuRef = useRef<HTMLDivElement>(null);
+
+  const activeLangOption = LANGUAGES.find((l) => l.code === language) || LANGUAGES[0];
 
   // Scroll detection for blurred background transition
   useEffect(() => {
@@ -23,10 +33,21 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on route changes
+  // Close menus on route changes or outside clicks
   useEffect(() => {
     setMenuOpen(false);
+    setLangMenuOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (langMenuRef.current && !langMenuRef.current.contains(e.target as Node)) {
+        setLangMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement>, sectionId: string) => {
     e.preventDefault();
@@ -49,6 +70,11 @@ export default function Navbar() {
     }
   };
 
+  const handleSelectLanguage = (code: Language) => {
+    setLanguage(code);
+    setLangMenuOpen(false);
+  };
+
   return (
     <>
       <nav className={`${styles.navbar} ${scrolled ? styles.navbarScrolled : ''}`}>
@@ -66,33 +92,90 @@ export default function Navbar() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }}>
-              Home
+              {t('nav.home')}
             </Link>
           </li>
           <li>
             <a href="#features" className={styles.navLink} onClick={(e) => handleNavClick(e, 'features')}>
-              Features
+              {t('nav.features')}
             </a>
           </li>
           <li>
             <a href="#about" className={styles.navLink} onClick={(e) => handleNavClick(e, 'about')}>
-              About
+              {t('nav.about')}
             </a>
           </li>
-          {/* <li>
-            <Link to="/contact" className={styles.navLink}>
-              Contact
-            </Link>
-          </li> */}
         </ul>
 
         <div className={styles.rightSide}>
+          {/* Controls: Theme Toggle & Language Selector */}
+          <div className={styles.controlsGroup}>
+            {/* Theme Toggle Button */}
+            <button 
+              className={styles.themeBtn} 
+              onClick={toggleTheme}
+              title={theme === 'dark' ? t('nav.lightMode') : t('nav.darkMode')}
+              aria-label="Toggle Theme"
+            >
+              {theme === 'dark' ? (
+                /* Sun Icon for switching to light mode */
+                <svg className={styles.themeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="5"/>
+                  <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+              ) : (
+                /* Moon Icon for switching to dark mode */
+                <svg className={styles.themeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                </svg>
+              )}
+            </button>
+
+            {/* Language Selector Dropdown */}
+            <div className={styles.langDropdownWrapper} ref={langMenuRef}>
+              <button 
+                className={styles.langBtn} 
+                onClick={() => setLangMenuOpen(!langMenuOpen)}
+                aria-label="Select Language"
+              >
+                <span className={styles.langFlag}>{activeLangOption.flag}</span>
+                <span>{activeLangOption.code.toUpperCase()}</span>
+                <svg className={`${styles.langChevron} ${langMenuOpen ? styles.langChevronOpen : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </button>
+
+              <AnimatePresence>
+                {langMenuOpen && (
+                  <motion.div 
+                    className={styles.langMenu}
+                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    {LANGUAGES.map((option) => (
+                      <button
+                        key={option.code}
+                        className={`${styles.langOption} ${option.code === language ? styles.langOptionActive : ''}`}
+                        onClick={() => handleSelectLanguage(option.code)}
+                      >
+                        <span>{option.flag}</span>
+                        <span>{option.name}</span>
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+
           <a href="#download" className={styles.downloadBtn} onClick={(e) => handleNavClick(e, 'download')}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={styles.downloadIcon}>
               <path d="M12 16l-6-6h4V4h4v6h4l-6 6z"/>
               <path d="M20 20H4v-2h16v2z"/>
             </svg>
-            Download App
+            {t('nav.download')}
           </a>
 
           {/* Hamburger Icon */}
@@ -108,7 +191,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Drawer Overlay using Framer Motion */}
+      {/* Mobile Drawer Overlay */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div 
@@ -124,34 +207,62 @@ export default function Navbar() {
                   setMenuOpen(false);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}>
-                  Home
+                  {t('nav.home')}
                 </Link>
               </li>
               <li>
                 <a href="#features" className={styles.mobileNavLink} onClick={(e) => handleNavClick(e, 'features')}>
-                  Features
+                  {t('nav.features')}
                 </a>
               </li>
               <li>
                 <a href="#about" className={styles.mobileNavLink} onClick={(e) => handleNavClick(e, 'about')}>
-                  About
-                </a>
-              </li>
-              {/* <li>
-                <Link to="/contact" className={styles.mobileNavLink}>
-                  Contact
-                </Link>
-              </li> */}
-              <li>
-                <a href="#download" className={styles.downloadBtn} style={{ display: 'inline-flex', marginTop: '20px' }} onClick={(e) => handleNavClick(e, 'download')}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={styles.downloadIcon}>
-                    <path d="M12 16l-6-6h4V4h4v6h4l-6 6z"/>
-                    <path d="M20 20H4v-2h16v2z"/>
-                  </svg>
-                  Download App
+                  {t('nav.about')}
                 </a>
               </li>
             </ul>
+
+            <div className={styles.mobileControlsRow}>
+              {/* Mobile Theme Switcher */}
+              <button 
+                className={styles.themeBtn} 
+                onClick={toggleTheme}
+                title={theme === 'dark' ? t('nav.lightMode') : t('nav.darkMode')}
+              >
+                {theme === 'dark' ? (
+                  <svg className={styles.themeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                  </svg>
+                ) : (
+                  <svg className={styles.themeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                  </svg>
+                )}
+              </button>
+
+              {/* Mobile Language Selector */}
+              <div className={styles.langDropdownWrapper}>
+                <button 
+                  className={styles.langBtn} 
+                  onClick={() => setLangMenuOpen(!langMenuOpen)}
+                >
+                  <span className={styles.langFlag}>{activeLangOption.flag}</span>
+                  <span>{activeLangOption.code.toUpperCase()}</span>
+                  <svg className={`${styles.langChevron} ${langMenuOpen ? styles.langChevronOpen : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M6 9l6 6 6-6"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <a href="#download" className={styles.downloadBtn} onClick={(e) => handleNavClick(e, 'download')}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={styles.downloadIcon}>
+                <path d="M12 16l-6-6h4V4h4v6h4l-6 6z"/>
+                <path d="M20 20H4v-2h16v2z"/>
+              </svg>
+              {t('nav.download')}
+            </a>
           </motion.div>
         )}
       </AnimatePresence>

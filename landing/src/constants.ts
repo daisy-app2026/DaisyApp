@@ -5,7 +5,7 @@ export const LINKS = {
   appStore: '#',
 
   // Play Store Download URL
-  playStore: '#',
+  playStore: 'https://play.google.com/store/apps/details?id=com.daisyapp.mobile',
 
   // APK direct download URL
   apkDownload: 'https://expo.dev/artifacts/eas/PWHg4wYLHZQf51CVBkrl6XToyC1ZEVIgJKXbAM7bfks.apk',
@@ -14,14 +14,14 @@ export const LINKS = {
   founderPhoto: 'https://res.cloudinary.com/diylru5iv/image/upload/v1781181073/589901796_17842435368640534_1995779922354039761_n_xypxne.jpg',
 
   // Cloudinary digital diary screen mockup
-  diaryScreenshot: 'https://res.cloudinary.com/diylru5iv/image/upload/v1781181099/never_lose_a_feeling_mp1djc.png',
+  diaryScreenshot: 'https://drive.google.com/thumbnail?id=1gJzewCleyyU769nqCqBfTg7HL0hrFVa_&sz=w800',
 
   // Cloudinary Talk to Past chat mockup
-  talkToPastScreenshot: 'https://res.cloudinary.com/diylru5iv/image/upload/v1781181099/feel_closure_in_minutes_fgvtwt.png',
+  talkToPastScreenshot: 'https://drive.google.com/thumbnail?id=1b3peuVihYlNr1Rm_rWGBBEbfdsuJYNJR&sz=w800',
 
   // Cloudinary Talk to Crush chat mockup
-  talkToCrushScreenshot: 'https://res.cloudinary.com/diylru5iv/image/upload/v1781181098/record_and_release_emotions_kgwsjc.png',
+  talkToCrushScreenshot: 'https://drive.google.com/thumbnail?id=1SEjGxaJc2JDvhNTG-zFZg9qsogjso3lz&sz=w800',
 
   // Cloudinary/YouTube demonstration video
-  demoVideo: '',
+  demoVideo: 'https://drive.google.com/file/d/1o1wt9BDKYhcsPZ7c7hd_5PyZona-VTwh/preview',
 };

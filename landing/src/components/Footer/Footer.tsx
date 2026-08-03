@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../../context/LanguageContext';
 import styles from './Footer.module.css';
 
 export default function Footer() {
+  const { t } = useLanguage();
+
   const handleScrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -18,7 +21,7 @@ export default function Footer() {
           <span className={styles.logoText}>Daisy</span>
         </Link>
         <p className={styles.tagline}>
-          Your safe space to heal, reflect & grow. Founded by a psychologist.
+          {t('footer.tagline')}
         </p>
       </div>
 
@@ -26,24 +29,19 @@ export default function Footer() {
       <ul className={styles.footerLinks}>
         <li>
           <Link to="/privacy" className={styles.footerLink} onClick={handleScrollToTop}>
-            Privacy Policy
+            {t('nav.privacy')}
           </Link>
         </li>
         <li>
           <Link to="/terms" className={styles.footerLink} onClick={handleScrollToTop}>
-            Terms of Service
+            {t('nav.terms')}
           </Link>
         </li>
-        {/* <li>
-          <Link to="/contact" className={styles.footerLink} onClick={handleScrollToTop}>
-            Contact Us
-          </Link>
-        </li> */}
       </ul>
 
       {/* Copyright */}
       <div className={styles.footerCopy}>
-        © {new Date().getFullYear()} Daisy. All rights reserved.
+        © {new Date().getFullYear()} {t('footer.rights')}
       </div>
     </footer>
   );

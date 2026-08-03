@@ -20,6 +20,11 @@
   text-align: left;
 }
 
+[dir="rtl"] .aboutContent {
+  text-align: right;
+  align-items: flex-start;
+}
+
 .aboutText {
   font-size: 17px;
   color: var(--text-soft);
@@ -54,18 +59,20 @@
 
 /* Founder glass card */
 .founderCard {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
   border-radius: 28px;
   padding: 36px;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  box-shadow:
-    0 16px 48px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: var(--glass-3d-shadow);
   position: relative;
   overflow: hidden;
   text-align: left;
+}
+
+[dir="rtl"] .founderCard {
+  text-align: right;
 }
 
 .founderCard::before {
@@ -75,7 +82,7 @@
   right: 0;
   width: 200px;
   height: 200px;
-  background: rgba(245, 220, 50, 0.05);
+  background: var(--orb-yellow);
   border-radius: 50%;
   filter: blur(40px);
   -webkit-filter: blur(40px);
@@ -134,6 +141,13 @@
   padding-left: 16px;
 }
 
+[dir="rtl"] .founderQuote {
+  border-left: none;
+  border-right: 2px solid rgba(245, 220, 50, 0.3);
+  padding-left: 0;
+  padding-right: 16px;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .about {
@@ -155,6 +169,10 @@
     font-size: 28px;
     letter-spacing: -0.5px;
     gap: 8px;
+  }
+
+  .line1, .line2 {
+    white-space: normal;
   }
 
   .aboutText {

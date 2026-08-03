@@ -1,62 +1,54 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LINKS } from '../../constants';
-import styles from './Features.module.css'; // Pure CSS Module styling
-
-interface TabData {
-  id: string;
-  tag: string;
-  title: string;
-  description: string;
-  image: string;
-  steps: string[];
-}
+import { useLanguage } from '../../context/LanguageContext';
+import styles from './Features.module.css';
 
 export default function Features() {
   const [activeTab, setActiveTab] = useState(0);
+  const { t } = useLanguage();
 
-  const tabs: TabData[] = [
+  const tabsData = [
     {
       id: 'diary',
-      tag: 'Personal Space',
-      title: 'Your Personal Diary',
-      description: 'Express yourself freely in 5 themed spaces. Write, record audio, capture images, or doodle your thoughts without judgment.',
+      tabLabel: t('features.tabs.diary'),
+      tag: t('features.diary.tag'),
+      title: t('features.diary.title'),
+      description: t('features.diary.description'),
       image: LINKS.diaryScreenshot,
-      steps: [
-        'Choose your space (Family, Bestie, Crush, Vent, or Imagine)',
-        'Write, record, draw or capture assets',
-        'Add a Memory Capsule to unlock later',
-        'Search and filter your entries easily'
-      ]
+      steps: t('features.diary.steps') as string[],
     },
     {
       id: 'past',
-      tag: 'Emotional Healing',
-      title: 'Talk to Your Past',
-      description: 'Have healing conversations with people from your past. Process unresolved feelings and say what went unsaid with AI guidance.',
+      tabLabel: t('features.tabs.past'),
+      tag: t('features.past.tag'),
+      title: t('features.past.title'),
+      description: t('features.past.description'),
       image: LINKS.talkToPastScreenshot,
-      steps: [
-        'Tell us about the person',
-        'Share how it ended',
-        'Write what you never said',
-        'Imagine your meeting',
-        'Start your healing conversation'
-      ]
+      steps: t('features.past.steps') as string[],
     },
     {
       id: 'crush',
-      tag: 'Relationship Advice',
-      title: 'Talk to Your Crush',
-      description: 'Get bestie-level advice about your crush. Practice conversations, decode confusing signals, and figure out your next move!',
+      tabLabel: t('features.tabs.crush'),
+      tag: t('features.crush.tag'),
+      title: t('features.crush.title'),
+      description: t('features.crush.description'),
       image: LINKS.talkToCrushScreenshot,
-      steps: [
-        'Tell us about your crush',
-        'Share what you need help with',
-        'Spill all the details',
-        'Chat with your AI bestie!'
-      ]
-    }
+      steps: t('features.crush.steps') as string[],
+    },
   ];
+
+  // Preload all screenshot images as soon as component mounts for instant tab switching
+  useEffect(() => {
+    tabsData.forEach((tab) => {
+      if (tab.image) {
+        const img = new Image();
+        img.src = tab.image;
+      }
+    });
+  }, []);
+
+  const currentTab = tabsData[activeTab];
 
   // Motion animation presets
   const tabContentVariants = {
@@ -88,18 +80,18 @@ export default function Features() {
 
   return (
     <section className={styles.features} id="features">
-      <div className={styles.sectionLabel}>Empathetic Core</div>
-      <h2 className={styles.sectionTitle}>Designed For Your Mind</h2>
+      <div className={styles.sectionLabel}>{t('features.sectionLabel')}</div>
+      <h2 className={styles.sectionTitle}>{t('features.sectionTitle')}</h2>
 
       {/* Tab Selector Buttons */}
       <div className={styles.tabContainer}>
-        {tabs.map((tab, idx) => (
+        {tabsData.map((tab, idx) => (
           <button
             key={tab.id}
             className={`${styles.tab} ${activeTab === idx ? styles.tabActive : ''}`}
             onClick={() => setActiveTab(idx)}
           >
-            {tab.id === 'diary' ? 'Diary' : tab.id === 'past' ? 'Talk to Past' : 'Talk to Crush'}
+            {tab.tabLabel}
           </button>
         ))}
       </div>
@@ -117,12 +109,13 @@ export default function Features() {
           >
             {/* Phone Mockup Frame (3D Glass) */}
             <div className={styles.phoneMockup}>
-              {tabs[activeTab].image ? (
+              {currentTab.image ? (
                 <img 
-                  src={tabs[activeTab].image} 
-                  alt={`${tabs[activeTab].title} Interface mockup`} 
+                  src={currentTab.image} 
+                  alt={`${currentTab.title} Interface mockup`} 
                   className={styles.screenshotImg} 
-                  loading="lazy"
+                  loading="eager"
+                  decoding="async"
                   style={{ objectFit: 'cover' }}
                 />
               ) : (
@@ -138,9 +131,9 @@ export default function Features() {
 
             {/* Feature details column */}
             <div className={styles.featureInfo}>
-              <span className={styles.featureTag}>{tabs[activeTab].tag}</span>
-              <h3 className={styles.featureTitle}>{tabs[activeTab].title}</h3>
-              <p className={styles.featureDesc}>{tabs[activeTab].description}</p>
+              <span className={styles.featureTag}>{currentTab.tag}</span>
+              <h3 className={styles.featureTitle}>{currentTab.title}</h3>
+              <p className={styles.featureDesc}>{currentTab.description}</p>
 
               {/* Numbered Steps list with staggered scroll animations */}
               <motion.ul 
@@ -149,7 +142,7 @@ export default function Features() {
                 initial="hidden"
                 animate="visible"
               >
-                {tabs[activeTab].steps.map((step, sIdx) => (
+                {Array.isArray(currentTab.steps) && currentTab.steps.map((step, sIdx) => (
                   <motion.li 
                     key={sIdx} 
                     className={styles.step}
@@ -163,6 +156,13 @@ export default function Features() {
             </div>
           </motion.div>
         </AnimatePresence>
+      </div>
+
+      {/* Hidden image preloader to keep all tab screenshots in browser cache */}
+      <div style={{ display: 'none' }} aria-hidden="true">
+        {tabsData.map((t) => t.image && (
+          <img key={t.id} src={t.image} alt="" loading="eager" />
+        ))}
       </div>
     </section>
   );
