@@ -22,6 +22,6 @@ export const LINKS = {
   // Cloudinary Talk to Crush chat mockup
   talkToCrushScreenshot: 'https://drive.google.com/thumbnail?id=1SEjGxaJc2JDvhNTG-zFZg9qsogjso3lz&sz=w800',
 
-  // Cloudinary/YouTube demonstration video
-  demoVideo: 'https://drive.google.com/file/d/1o1wt9BDKYhcsPZ7c7hd_5PyZona-VTwh/preview',
+  // Cloudinary demonstration video
+  demoVideo: 'https://res.cloudinary.com/diylru5iv/video/upload/v1785828527/WhatsApp_Video_2026-08-03_at_22.48.10_wgigra.mp4',
 };

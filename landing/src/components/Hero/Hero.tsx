@@ -60,11 +60,12 @@ export default function Hero({ showVideo = true }: HeroProps) {
             <div className={styles.videoGlow}></div>
             <div className={styles.videoContainer}>
               {LINKS.demoVideo ? (
-                LINKS.demoVideo.endsWith('.mp4') || LINKS.demoVideo.endsWith('.webm') ? (
+                LINKS.demoVideo.endsWith('.mp4') || LINKS.demoVideo.endsWith('.webm') || LINKS.demoVideo.includes('cloudinary.com/video') || LINKS.demoVideo.includes('.mp4') ? (
                   <video
                     src={LINKS.demoVideo}
                     controls
                     playsInline
+                    preload="metadata"
                     className={styles.videoElement}
                     title={t('hero.watchDemo')}
                   />
