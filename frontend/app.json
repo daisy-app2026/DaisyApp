@@ -13,13 +13,18 @@
       "barStyle": "light-content"
     },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.daisy.app",
+      "supportsTablet": false,
+      "bundleIdentifier": "com.daisyapp.mobile",
       "buildNumber": "1",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
         "UIBackgroundModes": [
           "remote-notification"
-        ]
+        ],
+        "NSCameraUsageDescription": "Daisy needs camera access to add photos to your diary entries.",
+        "NSMicrophoneUsageDescription": "Daisy needs microphone access to record audio diary entries.",
+        "NSPhotoLibraryUsageDescription": "Daisy needs photo library access to add images to your diary entries.",
+        "NSPhotoLibraryAddUsageDescription": "Daisy needs access to save images to your photo library."
       }
     },
     "android": {
@@ -60,6 +65,14 @@
           "image": "./assets/splash.png",
           "imageWidth": 200,
           "resizeMode": "contain"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/logo.png",
+          "color": "#1A3A0F",
+          "sounds": []
         }
       ]
     ],
