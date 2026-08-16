@@ -19,12 +19,14 @@
       "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
         "UIBackgroundModes": [
+          "remote-notification",
           "remote-notification"
         ],
         "NSCameraUsageDescription": "Daisy needs camera access to add photos to your diary entries.",
         "NSMicrophoneUsageDescription": "Daisy needs microphone access to record audio diary entries.",
         "NSPhotoLibraryUsageDescription": "Daisy needs photo library access to add images to your diary entries.",
-        "NSPhotoLibraryAddUsageDescription": "Daisy needs access to save images to your photo library."
+        "NSPhotoLibraryAddUsageDescription": "Daisy needs access to save images to your photo library.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -73,6 +75,15 @@
           "icon": "./assets/logo.png",
           "color": "#1A3A0F",
           "sounds": []
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static",
+            "deploymentTarget": "15.1"
+          }
         }
       ]
     ],
