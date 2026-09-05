@@ -3,7 +3,7 @@
     "name": "Daisy",
     "slug": "daisy-app",
     "scheme": "daisy",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,7 +15,8 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.daisyapp.mobile",
-      "buildNumber": "1",
+      "buildNumber": "2",
+      "usesAppleSignIn": true,
       "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
         "UIBackgroundModes": [
@@ -51,6 +52,7 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      "expo-apple-authentication",
       "expo-web-browser",
       "@react-native-community/datetimepicker",
       [

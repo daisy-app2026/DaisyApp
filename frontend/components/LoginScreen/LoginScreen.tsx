@@ -19,6 +19,8 @@ import { useLanguageStore } from '../../store/languageStore';
 import { signInWithEmail } from '../../services/authService';
 import { useAuthStore } from '../../store/authStore';
 import { useGoogleAuth } from '../../hooks/useGoogleAuth';
+import * as AppleAuthentication from 'expo-apple-authentication';
+import { useAppleAuth } from '../../hooks/useAppleAuth';
 
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -39,6 +41,7 @@ const LoginScreen: React.FC = () => {
 
   const { setUser } = useAuthStore();
   const { signInWithGoogle, loading: googleLoading } = useGoogleAuth();
+  const { signInWithApple, loading: appleLoading } = useAppleAuth();
 
   const validateForm = () => {
     let isValid = true;
@@ -267,6 +270,24 @@ const LoginScreen: React.FC = () => {
               </View>
               <Text style={styles.googleButtonText}>{t.login.googleLogin}</Text>
             </TouchableOpacity>
+
+            {Platform.OS === 'ios' && (
+              <AppleAuthentication.AppleAuthenticationButton
+                buttonType={
+                  AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
+                }
+                buttonStyle={
+                  AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+                }
+                cornerRadius={25}
+                style={{
+                  width: '100%',
+                  height: 50,
+                  marginTop: 12,
+                }}
+                onPress={signInWithApple}
+              />
+            )}
           </View>
 
           <View style={styles.bottomContainer}>

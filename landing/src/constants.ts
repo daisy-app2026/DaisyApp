@@ -2,7 +2,7 @@
 // Meriem can easily replace these placeholders with live Cloudinary/Store links!
 export const LINKS = {
   // App Store Download URL
-  appStore: '#',
+  appStore: 'https://apps.apple.com/in/app/daisy-your-safe-space/id6801609261',
 
   // Play Store Download URL
   playStore: 'https://play.google.com/store/apps/details?id=com.daisyapp.mobile',
