@@ -96,6 +96,28 @@ export default function Hero({ showVideo = true }: HeroProps) {
           {t('hero.subtitle')}
         </motion.p>
 
+        {/* 4b. Promotional Text */}
+        <motion.div className={styles.promoBox} variants={childVariants}>
+          <p className={styles.promoLine1}>{t('hero.promoLine1')}</p>
+          <p className={styles.promoLine2}>{t('hero.promoLine2')}</p>
+          <p className={styles.promoLine3}>
+            <svg
+              className={styles.downloadIcon}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span>{t('hero.promoLine3')}</span>
+          </p>
+        </motion.div>
+
         {/* 5. Download buttons (bottom) */}
         <motion.div className={styles.downloadButtons} variants={childVariants}>
           <a

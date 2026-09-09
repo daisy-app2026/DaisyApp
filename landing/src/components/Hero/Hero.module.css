@@ -75,9 +75,64 @@
   font-size: 17px;
   color: var(--text-soft);
   line-height: 1.8;
-  max-width: 520px;
-  margin: 32px auto 40px;
+  max-width: 540px;
+  margin: 32px auto 20px;
   text-align: center;
+}
+
+/* Promotional Callout Box */
+.promoBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 580px;
+  width: 100%;
+  margin: 0 auto 36px;
+  padding: 20px 24px;
+  background: var(--badge-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md, 16px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--glass-3d-shadow);
+  text-align: center;
+}
+
+.promoLine1 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--yellow);
+  line-height: 1.5;
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+.promoLine2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.promoLine3 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--yellow);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+.downloadIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  stroke: var(--yellow);
 }
 
 /* 3D Glass Video Container with 16:9 ratio */
@@ -264,7 +319,31 @@
   .heroSubtitle {
     font-size: 15px;
     padding: 0 8px;
-    margin: 24px auto 32px;
+    margin: 24px auto 20px;
+  }
+
+  .promoBox {
+    padding: 16px 16px;
+    margin: 0 auto 28px;
+    gap: 6px;
+    border-radius: 14px;
+  }
+
+  .promoLine1 {
+    font-size: 15px;
+  }
+
+  .promoLine2 {
+    font-size: 14px;
+  }
+
+  .promoLine3 {
+    font-size: 14px;
+  }
+
+  .downloadIcon {
+    width: 18px;
+    height: 18px;
   }
 
   .videoWrapper {
