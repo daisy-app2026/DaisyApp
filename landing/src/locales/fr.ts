@@ -4,12 +4,66 @@ export const fr: Translations = {
   nav: {
     home: 'Accueil',
     features: 'Fonctionnalités',
+    pricing: 'Tarifs',
     about: 'À Propos',
     download: 'Télécharger',
     privacy: 'Politique de Confidentialité',
     terms: 'Conditions d\'Utilisation',
     lightMode: 'Mode Clair',
     darkMode: 'Mode Sombre',
+  },
+  pricing: {
+    title: 'Tarifs Simples et Transparents',
+    subtitle: 'Choisissez l\'offre qui convient à votre voyage de guérison émotionnelle et de réflexion.',
+    monthly: 'Mensuel',
+    yearly: 'Annuel',
+    saveDiscount: 'Économisez 17%',
+    popularBadge: 'POPULAIRE',
+    comingSoon: 'Achats in-app bientôt disponibles sur iOS et Android !',
+    free: {
+      name: 'Gratuit',
+      price: '$0',
+      period: 'pour toujours',
+      cta: 'Commencer',
+      features: [
+        '3 chats IA au total',
+        '30 messages au total',
+        'Tenue de journal',
+        'Capsule temporelle',
+        '5 espaces',
+      ]
+    },
+    basic: {
+      name: 'Basique',
+      monthlyPrice: '$8.99',
+      yearlyPrice: '$89.99',
+      periodMonthly: '/mois',
+      periodYearly: '/an',
+      cta: 'Démarrer Basique',
+      features: [
+        '10 chats IA/mois',
+        '150 messages/mois',
+        'Tout ce qui est dans Gratuit',
+        'Entrées vocales',
+        'Entrées d\'images',
+        'Dessins & gribouillages',
+      ]
+    },
+    pro: {
+      name: 'Pro',
+      monthlyPrice: '$14.99',
+      yearlyPrice: '$149.99',
+      periodMonthly: '/mois',
+      periodYearly: '/an',
+      cta: 'Passer au Pro',
+      features: [
+        'Chats illimités',
+        '500 messages/mois',
+        'Tout ce qui est dans Basique',
+        'Support prioritaire',
+        'Accès anticipé aux nouvelles fonctionnalités',
+      ]
+    }
   },
   hero: {
     badge: 'Application de Réflexion et Guérison Fondée par une Psychologue',

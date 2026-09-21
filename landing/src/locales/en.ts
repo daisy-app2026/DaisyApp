@@ -2,12 +2,66 @@ export const en = {
   nav: {
     home: 'Home',
     features: 'Features',
+    pricing: 'Pricing',
     about: 'About',
     download: 'Download App',
     privacy: 'Privacy Policy',
     terms: 'Terms of Service',
     lightMode: 'Light Mode',  
     darkMode: 'Dark Mode',
+  },
+  pricing: {
+    title: 'Simple, Transparent Pricing',
+    subtitle: 'Choose the plan that fits your emotional healing & self-reflection journey.',
+    monthly: 'Monthly',
+    yearly: 'Yearly',
+    saveDiscount: 'Save 17%',
+    popularBadge: 'POPULAR',
+    comingSoon: 'In-app purchases coming soon on iOS & Android!',
+    free: {
+      name: 'Free',
+      price: '$0',
+      period: 'forever',
+      cta: 'Get Started',
+      features: [
+        '3 AI chats total',
+        '30 messages total',
+        'Diary journaling',
+        'Memory capsule',
+        '5 spaces',
+      ]
+    },
+    basic: {
+      name: 'Basic',
+      monthlyPrice: '$8.99',
+      yearlyPrice: '$89.99',
+      periodMonthly: '/month',
+      periodYearly: '/year',
+      cta: 'Start Basic',
+      features: [
+        '10 AI chats/month',
+        '150 messages/month',
+        'Everything in Free',
+        'Audio entries',
+        'Image entries',
+        'Doodle entries',
+      ]
+    },
+    pro: {
+      name: 'Pro',
+      monthlyPrice: '$14.99',
+      yearlyPrice: '$149.99',
+      periodMonthly: '/month',
+      periodYearly: '/year',
+      cta: 'Go Pro',
+      features: [
+        'Unlimited chats',
+        '500 messages/month',
+        'Everything in Basic',
+        'Priority support',
+        'Early access to new features',
+      ]
+    }
   },
   hero: {
     badge: 'Psychologist-Founded Self-Reflection & Healing App',

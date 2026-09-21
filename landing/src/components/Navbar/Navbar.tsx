@@ -100,6 +100,11 @@ export default function Navbar() {
               {t('nav.features')}
             </a>
           </li>
+          {/* <li>
+            <a href="#pricing" className={styles.navLink} onClick={(e) => handleNavClick(e, 'pricing')}>
+              {t('nav.pricing')}
+            </a>
+          </li> */}
           <li>
             <a href="#about" className={styles.navLink} onClick={(e) => handleNavClick(e, 'about')}>
               {t('nav.about')}
@@ -215,6 +220,11 @@ export default function Navbar() {
                   {t('nav.features')}
                 </a>
               </li>
+              {/* <li>
+                <a href="#pricing" className={styles.mobileNavLink} onClick={(e) => handleNavClick(e, 'pricing')}>
+                  {t('nav.pricing')}
+                </a>
+              </li> */}
               <li>
                 <a href="#about" className={styles.mobileNavLink} onClick={(e) => handleNavClick(e, 'about')}>
                   {t('nav.about')}

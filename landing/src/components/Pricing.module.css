@@ -1,0 +1,396 @@
+.pricingSection {
+  padding: 100px 24px;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  text-align: center;
+  max-width: 680px;
+  margin-bottom: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--badge-bg, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  border-radius: var(--radius-pill, 9999px);
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--yellow, #f5dc32);
+  margin-bottom: 20px;
+}
+
+.badgeIcon {
+  color: var(--yellow, #f5dc32);
+}
+
+.title {
+  font-family: var(--font-heading, serif);
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--text, #ffffff);
+  line-height: 1.25;
+  margin-bottom: 32px;
+}
+
+/* Toggle Switch */
+.toggleWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--card-bg, rgba(18, 38, 12, 0.75));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  border-radius: var(--radius-pill, 9999px);
+  padding: 8px 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.toggleLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-soft, rgba(255, 255, 255, 0.7));
+  cursor: pointer;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color var(--transition-fast, 0.2s ease);
+}
+
+.activeLabel {
+  color: var(--text, #ffffff);
+}
+
+.toggleSwitch {
+  width: 48px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 13px;
+  padding: 3px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background var(--transition-fast, 0.2s ease);
+}
+
+.toggleSlider {
+  width: 20px;
+  height: 20px;
+  background: var(--yellow, #f5dc32);
+  border-radius: 50%;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.toggleYearly {
+  transform: translateX(22px);
+}
+
+.saveBadge {
+  background: rgba(245, 220, 50, 0.25);
+  color: var(--yellow, #f5dc32);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill, 9999px);
+  border: 1px solid rgba(245, 220, 50, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Cards Grid */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  width: 100%;
+  align-items: stretch;
+}
+
+.card {
+  border-radius: 24px;
+  padding: 36px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+}
+
+/* 1. FREE CARD */
+.freeCard {
+  background: var(--glass, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.15));
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.iconBoxFree {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* 2. BASIC CARD (POPULAR) */
+.basicCard {
+  background: linear-gradient(145deg, rgba(26, 58, 15, 0.85) 0%, rgba(45, 90, 27, 0.75) 100%);
+  border: 2px solid var(--primary, #2d5a1b);
+  box-shadow: 0 16px 40px rgba(26, 58, 15, 0.4), 0 0 20px rgba(245, 220, 50, 0.1);
+}
+
+.popularBadge {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--yellow, #f5dc32);
+  color: #0d1f06;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 4px 16px;
+  border-radius: var(--radius-pill, 9999px);
+  box-shadow: 0 4px 14px rgba(245, 220, 50, 0.3);
+}
+
+.iconBoxBasic {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(245, 220, 50, 0.2);
+  color: var(--yellow, #f5dc32);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* 3. PRO CARD */
+.proCard {
+  background: linear-gradient(145deg, rgba(28, 25, 12, 0.9) 0%, rgba(48, 42, 16, 0.85) 100%);
+  border: 2px solid var(--yellow, #f5dc32);
+  box-shadow: 0 16px 40px rgba(245, 220, 50, 0.15);
+}
+
+.iconBoxPro {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(245, 220, 50, 0.25);
+  color: var(--yellow, #f5dc32);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.planName {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text, #ffffff);
+  margin-bottom: 12px;
+}
+
+.planNamePro {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--yellow, #f5dc32);
+  margin-bottom: 12px;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.price {
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--text, #ffffff);
+  line-height: 1;
+}
+
+.priceGold {
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--yellow, #f5dc32);
+  line-height: 1;
+}
+
+.strikethroughPrice {
+  font-size: 22px;
+  font-weight: 600;
+  text-decoration: line-through;
+  color: var(--text-soft, rgba(255, 255, 255, 0.5));
+}
+
+.strikethroughPricePro {
+  font-size: 22px;
+  font-weight: 600;
+  text-decoration: line-through;
+  color: rgba(245, 220, 50, 0.5);
+}
+
+.yearlySubText {
+  font-size: 12px;
+  color: var(--text-soft, rgba(255, 255, 255, 0.5));
+  margin-left: 2px;
+}
+
+.period {
+  font-size: 14px;
+  color: var(--text-soft, rgba(255, 255, 255, 0.6));
+}
+
+.featuresList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 36px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  color: var(--text-soft, rgba(255, 255, 255, 0.85));
+}
+
+.checkIconFree {
+  color: rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+}
+
+.checkIconBasic {
+  color: var(--yellow, #f5dc32);
+  flex-shrink: 0;
+}
+
+.checkIconPro {
+  color: var(--yellow, #f5dc32);
+  flex-shrink: 0;
+}
+
+/* Buttons */
+.ctaFree {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.2));
+  color: var(--text, #ffffff);
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.ctaFree:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.ctaBasic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--yellow, #f5dc32);
+  color: #0a1a05;
+  font-size: 15px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(245, 220, 50, 0.25);
+}
+
+.ctaBasic:hover {
+  background: #ffe338;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(245, 220, 50, 0.35);
+}
+
+.ctaPro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f5dc32 0%, #d4b518 100%);
+  color: #0a1a05;
+  font-size: 15px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(245, 220, 50, 0.3);
+}
+
+.ctaPro:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(245, 220, 50, 0.45);
+}
+
+.comingSoonNote {
+  margin-top: 48px;
+  font-size: 14px;
+  color: var(--text-soft, rgba(255, 255, 255, 0.7));
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed var(--glass-border, rgba(255, 255, 255, 0.18));
+  padding: 12px 28px;
+  border-radius: var(--radius-pill, 9999px);
+  text-align: center;
+}
+
+/* Mobile Responsive */
+@media (max-width: 992px) {
+  .cardsGrid {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .title {
+    font-size: 32px;
+  }
+}

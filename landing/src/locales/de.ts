@@ -4,12 +4,66 @@ export const de: Translations = {
   nav: {
     home: 'Startseite',
     features: 'Funktionen',
+    pricing: 'Preise',
     about: 'Über Uns',
     download: 'App Herunterladen',
     privacy: 'Datenschutz',
     terms: 'Nutzungsbedingungen',
     lightMode: 'Heller Modus',
     darkMode: 'Dunkler Modus',
+  },
+  pricing: {
+    title: 'Einfache, Transparente Preise',
+    subtitle: 'Wähle den passenden Tarif für deine emotionale Heilungs- und Selbstreflexionsreise.',
+    monthly: 'Monatlich',
+    yearly: 'Jährlich',
+    saveDiscount: '17% Sparen',
+    popularBadge: 'BELIEBT',
+    comingSoon: 'In-App-Käufe demnächst für iOS & Android verfügbar!',
+    free: {
+      name: 'Kostenlos',
+      price: '$0',
+      period: 'dauerhaft',
+      cta: 'Jetzt Starten',
+      features: [
+        '3 KI-Chats insgesamt',
+        '30 Nachrichten insgesamt',
+        'Tagebuch-Journaling',
+        'Erinnerungskapsel',
+        '5 Themenbereiche',
+      ]
+    },
+    basic: {
+      name: 'Basis',
+      monthlyPrice: '$8.99',
+      yearlyPrice: '$89.99',
+      periodMonthly: '/Monat',
+      periodYearly: '/Jahr',
+      cta: 'Basis Starten',
+      features: [
+        '10 KI-Chats/Monat',
+        '150 Nachrichten/Monat',
+        'Alles aus Kostenlos',
+        'Audio-Einträge',
+        'Bild-Einträge',
+        'Zeichen-Einträge',
+      ]
+    },
+    pro: {
+      name: 'Pro',
+      monthlyPrice: '$14.99',
+      yearlyPrice: '$149.99',
+      periodMonthly: '/Monat',
+      periodYearly: '/Jahr',
+      cta: 'Pro Werden',
+      features: [
+        'Unbegrenzte Chats',
+        '500 Nachrichten/Monat',
+        'Alles aus Basis',
+        'Prioritäts-Support',
+        'Frühzeitiger Zugang zu neuen Funktionen',
+      ]
+    }
   },
   hero: {
     badge: 'Von einer Psychologin entwickelte App für Selbstreflexion & Heilung',
