@@ -187,16 +187,21 @@ export default function BillingPage() {
 
     const priceIdMap = {
       basic: {
-        monthly: import.meta.env.VITE_PADDLE_BASIC_MONTHLY_ID || 'pri_01m3ea_basic_monthly',
-        yearly: import.meta.env.VITE_PADDLE_BASIC_YEARLY_ID || 'pri_01m3ea_basic_yearly',
+        monthly: import.meta.env.VITE_PADDLE_BASIC_MONTHLY_ID,
+        yearly: import.meta.env.VITE_PADDLE_BASIC_YEARLY_ID,
       },
       pro: {
-        monthly: import.meta.env.VITE_PADDLE_PRO_MONTHLY_ID || 'pri_01m3ea_pro_monthly',
-        yearly: import.meta.env.VITE_PADDLE_PRO_YEARLY_ID || 'pri_01m3ea_pro_yearly',
+        monthly: import.meta.env.VITE_PADDLE_PRO_MONTHLY_ID,
+        yearly: import.meta.env.VITE_PADDLE_PRO_YEARLY_ID,
       },
     };
 
     const targetPriceId = isYearly ? priceIdMap[planKey].yearly : priceIdMap[planKey].monthly;
+
+    if (!targetPriceId) {
+      setAuthError('Price configuration error. Please contact support.');
+      return;
+    }
 
     if (window.Paddle) {
       try {
