@@ -8,7 +8,7 @@ import {
 } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import { auth, googleProvider } from '../config/firebase';
-import { Check, Shield, Zap, Sparkles, ArrowLeft, Smartphone, CheckCircle2, XCircle } from 'lucide-react';
+import { Check, Sparkles, Smartphone, CheckCircle2, XCircle } from 'lucide-react';
 import styles from './Billing.module.css';
 
 declare global {
