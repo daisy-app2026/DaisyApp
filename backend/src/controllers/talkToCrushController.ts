@@ -55,7 +55,7 @@ export const createSession = async (
       res.status(403).json({
         error: 'Chat limit reached!',
         code: 'LIMIT_REACHED',
-        upgradeUrl: 'https://daisyapp.com/billing'
+        upgradeUrl: 'https://www.meriemtafsi.com/billing'
       });
       return;
     }
