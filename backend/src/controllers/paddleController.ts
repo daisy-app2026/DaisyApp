@@ -67,7 +67,7 @@ const getPlanLimits = (plan: 'basic' | 'pro' | 'free') => {
     },
     pro: { 
       messageLimit: 500, 
-      chatLimit: -1 
+      chatLimit: 15 
     },
   }
   return limits[plan]
@@ -125,10 +125,12 @@ export const handlePaddleWebhook = async (
       case 'subscription.activated': {
         const plan = getPlanFromPriceId(priceId)
         const limits = getPlanLimits(plan)
+        const messageResetAt = data.next_billed_at || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         
         await userRef.update({
           plan,
           ...limits,
+          messageResetAt,
           paddleSubscriptionId: data.id || null,
           planActivatedAt: new Date().toISOString(),
           planExpiresAt: data.next_billed_at || null,
@@ -161,10 +163,12 @@ export const handlePaddleWebhook = async (
       case 'subscription.updated': {
         const plan = getPlanFromPriceId(priceId)
         const limits = getPlanLimits(plan)
+        const messageResetAt = data.next_billed_at || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         
         await userRef.update({
           plan,
           ...limits,
+          messageResetAt,
           planExpiresAt: data.next_billed_at || null,
         })
         break
@@ -172,9 +176,12 @@ export const handlePaddleWebhook = async (
 
       case 'subscription.canceled':
       case 'subscription.cancelled': {
+        const messageResetAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+
         await userRef.update({
           plan: 'free',
           ...getPlanLimits('free'),
+          messageResetAt,
           paddleSubscriptionId: null,
           planExpiresAt: null,
           planCancelledAt: new Date().toISOString(),
@@ -232,10 +239,14 @@ export const cancelSubscription = async (
     const userData = userDoc.data()
     const subscriptionId = userData?.paddleSubscriptionId
 
+    const freeLimits = getPlanLimits('free')
+    const messageResetAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+
     if (!subscriptionId) {
       await db.collection('users').doc(userId).update({
         plan: 'free',
-        ...getPlanLimits('free'),
+        ...freeLimits,
+        messageResetAt,
         paddleSubscriptionId: null,
         planCancelledAt: new Date().toISOString(),
       })
@@ -264,7 +275,8 @@ export const cancelSubscription = async (
 
     await db.collection('users').doc(userId).update({
       plan: 'free',
-      ...getPlanLimits('free'),
+      ...freeLimits,
+      messageResetAt,
       paddleSubscriptionId: null,
       planCancelledAt: new Date().toISOString(),
     })

@@ -61,4 +61,10 @@ export const getSubscriptionStats = () =>
 export const clearAdminCache = () =>
   api.delete('/api/admin/cache');
 
+export const getPlanLimits = () =>
+  api.get('/api/admin/plans/limits');
+
+export const updatePlanLimits = (data: Record<string, unknown>) =>
+  api.put('/api/admin/plans/limits', data);
+
 export default api;

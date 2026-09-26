@@ -32,11 +32,17 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { DiaryStackParamList } from '../../navigation/types';
 
+import { useSubscriptionStore } from '../../store/subscriptionStore';
+import { useSubscription } from '../../hooks/useSubscription';
+
 type ProfileScreenNavigationProp = StackNavigationProp<DiaryStackParamList, 'Profile'>;
 
 const ProfileScreen: React.FC = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const { user, updateName, updatePhotoURL, logout: clearStore } = useAuthStore();
+  const { plan, chatLimit, chatCount, messageLimit, monthlyMessageCount } = useSubscriptionStore();
+  const { loadUserPlan, openBillingPage } = useSubscription();
+
   const [editingName, setEditingName] = useState(false);
   const [newName, setNewName] = useState(user?.name || '');
   const [nameLoading, setNameLoading] = useState(false);
@@ -68,7 +74,10 @@ const ProfileScreen: React.FC = () => {
 
   useEffect(() => {
     loadStats();
-  }, []);
+    if (user?.uid) {
+      loadUserPlan(user.uid);
+    }
+  }, [user?.uid]);
 
   const showAlert = (title: string, message: string) => {
     setAlertConfig({ visible: true, title, message });
@@ -394,15 +403,49 @@ const ProfileScreen: React.FC = () => {
             </View>
           </View>
 
-          {/* Payment - Coming Soon
-          <TouchableOpacity style={styles.menuItem} onPress={() => console.log('payment')}>
-            <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(45, 90, 27, 0.10)' }]}>
-              <Ionicons name="card-outline" size={18} color="#2D5A1B" />
+          {/* My Plan Section */}
+          <View style={styles.planSection}>
+            <View style={styles.planSectionHeader}>
+              <Text style={styles.planSectionTitle}>My Space Plan</Text>
+              <View
+                style={[
+                  styles.planBadge,
+                  plan === 'pro'
+                    ? { backgroundColor: 'rgba(245, 158, 11, 0.2)', borderColor: '#F59E0B' }
+                    : plan === 'basic'
+                    ? { backgroundColor: 'rgba(16, 185, 129, 0.2)', borderColor: '#10B981' }
+                    : { backgroundColor: 'rgba(156, 163, 175, 0.2)', borderColor: '#9CA3AF' },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.planBadgeText,
+                    plan === 'pro'
+                      ? { color: '#B45309' }
+                      : plan === 'basic'
+                      ? { color: '#047857' }
+                      : { color: '#4B5563' },
+                  ]}
+                >
+                  {(plan || 'FREE').toUpperCase()}
+                </Text>
+              </View>
             </View>
-            <Text style={styles.menuItemText}>{t.payment}</Text>
-            <Ionicons name="chevron-forward" size={18} color="#BBBBBB" />
-          </TouchableOpacity>
-          */}
+            <Text style={styles.planLimitsText}>
+              {`Messages: ${monthlyMessageCount}/${messageLimit} this month • Chats: `}
+              <Text style={chatLimit !== -1 && chatCount > chatLimit ? { color: '#E85555', fontWeight: '700' } : undefined}>
+                {`${chatCount}/${chatLimit}`}
+              </Text>
+            </Text>
+            <TouchableOpacity
+              style={styles.manageSpaceButton}
+              onPress={openBillingPage}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="sparkles" size={16} color="#FFFFFF" />
+              <Text style={styles.manageSpaceButtonText}>Manage My Space</Text>
+            </TouchableOpacity>
+          </View>
 
           <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Disclaimer')}>
             <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(45, 90, 27, 0.10)' }]}>

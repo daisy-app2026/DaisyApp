@@ -23,6 +23,7 @@ import { useAuthStore } from '../../store/authStore';
 import { createTalkToCrushSession, testConnection } from '../../services/talkToCrushService';
 import { useTalkToCrushStore } from '../../store/talkToCrushStore';
 import { styles } from './TalkToCrushSection.styles';
+import UpgradePrompt from '../UpgradePrompt/UpgradePrompt';
 
 const TalkToCrushSection: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<TalkToCrushStackParamList>>();
@@ -41,6 +42,8 @@ const TalkToCrushSection: React.FC = () => {
 
   const [crushName, setCrushName] = useState(route.params.crushName || '');
   const [saving, setSaving] = useState(false);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+  const [upgradePromptType, setUpgradePromptType] = useState<'chat' | 'message'>('chat');
 
   useEffect(() => {
     setTimeout(() => {
@@ -160,7 +163,7 @@ const TalkToCrushSection: React.FC = () => {
       const finalCrushName = 
         allAnswers.section1?.crushName ||
         crushName ||
-        'My Crush';
+        'My Crush/Friends';
       
       console.log('Final answers:', allAnswers);
       console.log('Crush name:', finalCrushName);
@@ -181,11 +184,10 @@ const TalkToCrushSection: React.FC = () => {
       });
     } catch (error: any) {
       console.log('Error details:', error)
-      if (error?.response?.data?.error === 'CHAT_LIMIT_REACHED') {
-        Alert.alert(
-          'Limit Reached',
-          'You can only have 2 chats. Delete one to create a new one.'
-        );
+      if (error?.response?.data?.code === 'LIMIT_REACHED' || error?.response?.status === 403) {
+        const limitType = error?.response?.data?.type || 'chat';
+        setUpgradePromptType(limitType);
+        setShowUpgradePrompt(true);
         return;
       }
       
@@ -570,6 +572,11 @@ Data: ${JSON.stringify(error?.response?.data) || 'None'}`
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
+      <UpgradePrompt
+        visible={showUpgradePrompt}
+        onClose={() => setShowUpgradePrompt(false)}
+        type={upgradePromptType}
+      />
     </View>
   );
 };

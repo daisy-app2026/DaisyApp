@@ -170,6 +170,9 @@ export const styles = StyleSheet.create({
     marginTop: 4,
   },
   // Questions
+  questionsContainer: {
+    marginTop: 4,
+  },
   questionBlock: {
     marginHorizontal: 16,
     marginTop: 16,

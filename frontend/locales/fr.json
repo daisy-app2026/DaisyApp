@@ -101,7 +101,7 @@
     "chooseLanguage": "Choisir la langue",
     "comingSoon": "Bientôt disponible 🌼",
     "disclaimerTitle": "Avertissement",
-    "disclaimerContent": "Daisy est une application de journal personnel et de réflexion. Elle ne remplace pas une aide psychologique professionnelle. Les fonctionnalités Breakup Closure et My Crush utilisent l'IA pour simuler des conversations à des fins de réflexion personnelle uniquement. Si tu rencontres des difficultés de santé mentale, consulte un professionnel qualifié.",
+    "disclaimerContent": "Daisy est une application de journal personnel et de réflexion. Elle ne remplace pas une aide psychologique professionnelle. Les fonctionnalités Breakup Closure et My Crush/Friends utilisent l'IA pour simuler des conversations à des fins de réflexion personnelle uniquement. Si tu rencontres des difficultés de santé mentale, consulte un professionnel qualifié.",
     "disclaimerSigned": "— Meriem Tafsi, Psychologue",
     "iUnderstand": "J'ai compris",
     "editName": "Modifier le nom",
@@ -160,7 +160,7 @@
     "beforeYouBegin": "Avant de commencer :",
     "beforeYouBeginText": "Ceci est une réflexion guidée. Tu ne contactes pas la vraie personne — tu explores seulement tes propres souvenirs et sentiments dans un cadre sûr et ancré.",
     "beginButton": "Commencer le parcours guidé",
-    "sections": "4 sections · Environ 5 minutes",
+    "sectionsCount": "4 sections · Environ 5 minutes",
     "continue": "Continuer →",
     "startConversation": "Démarrer la conversation →",
     "of": "sur",
@@ -181,18 +181,104 @@
       "🔄  Renouer contact si possible",
       "💭  Traiter mes sentiments",
       "🕊️  Faire la paix avec le passé"
-    ]
+    ],
+    "s1NameLabel": "Leur nom ou comment tu les appelais",
+    "extraOptional": "Autre chose ? (optionnel)",
+    "addMore": "Ajouter plus...",
+    "customMeetingPlace": "Écris ton propre lieu de rencontre...",
+    "promptsTitle": "IDÉES POUR T'INSPIRER :",
+    "sections": {
+      "section1": {
+        "title": "À propos d'eux",
+        "subtitle": "Reste proche de ce que tu as réellement vécu.",
+        "description": "Décris la personne avec qui le contact s'est terminé.",
+        "q1Label": "Qui étaient-ils dans ta vie ?",
+        "q2Label": "Qu'est-ce qui se démarquait chez eux — le bon et le difficile ?",
+        "q3Label": "Comment te faisaient-ils généralement te sentir ?",
+        "q3Options": ["Anxieux(se)", "En colère", "Confus(e)", "Aimé(e)", "Triste", "Submergé(e)", "En sécurité", "Invisible", "Blessé(e)", "Frustré(e)", "Chaotique", "Petit(e)"],
+        "q4Label": "Qui étais-tu quand tu étais avec eux ?",
+        "placeholders": [
+          "Mon ex-copain depuis 2 ans...",
+          "Il était drôle mais aussi imprévisible...",
+          "Anxieux(se), mais aussi aimé(e)...",
+          "J'avais l'impression d'être toujours celui/celle qui s'occupait de tout..."
+        ],
+        "buttonText": "Continuer →"
+      },
+      "section2": {
+        "title": "Comment ça s'est terminé",
+        "subtitle": "Pas besoin de juger, observe seulement.",
+        "description": "Prends un moment pour revoir la fin.",
+        "q1Label": "Qui a mis fin à la relation ou au contact ?",
+        "q1Options": ["Ils y ont mis fin", "J'y ai mis fin", "C'était mutuel", "Ça s'est simplement effacé", "Ils sont décédés", "Nous nous sommes perdus de vue"],
+        "q2Label": "Qu'ont-ils dit ou fait ?",
+        "q3Label": "Qu'as-tu dit ou fait ?",
+        "q4Label": "Qu'as-tu ressenti au fond de toi à ce moment-là ?",
+        "q4Options": ["Triste", "En colère", "Engourdi(e)", "Impuissant(e)", "Le cœur brisé", "Choqué(e)", "Soulagé(e)", "Frustré(e)", "Vide", "Perdu(e)", "Épuisé(e)"],
+        "q5Label": "Comment as-tu fait face ?",
+        "q6Label": "Qu'est-ce qui t'a aidé(e) à traverser cela ?",
+        "q7Label": "Qu'est-ce qui a rendu cela plus difficile ?",
+        "placeholders": [
+          "Ils y ont mis fin, soudainement...",
+          "Ils ont dit que nous voulions des choses différentes...",
+          "J'ai pleuré et je les ai suppliés de ne pas partir...",
+          "Choqué(e) et abandonné(e)...",
+          "J'ai parlé à des amis et je me suis concentré(e) sur le travail...",
+          "Faire son deuil pleinement quand nécessaire...",
+          "Le silence était difficile..."
+        ],
+        "buttonText": "Continuer →"
+      },
+      "section3": {
+        "title": "Ce qui est resté non-dit",
+        "subtitle": "Cet espace contient ce qui n'a jamais été partagé.",
+        "description": "Dis-leur ce que tu n'as jamais pu dire.",
+        "q1Label": "Écris ce que tu n'as jamais pu dire...",
+        "chips": [
+          "Quelque chose que j'aurais dû te dire est...",
+          "Je t'appréciais pour...",
+          "J'ai été blessé(e) quand...",
+          "J'aimerais avoir dit...",
+          "Ce que je ne t'ai jamais dit, c'est...",
+          "Je te pardonne pour..."
+        ],
+        "placeholders": [
+          "Je t'appréciais pour m'avoir fait rire même dans les jours sombres..."
+        ],
+        "buttonText": "Continuer →"
+      },
+      "section4": {
+        "title": "Imagine la rencontre",
+        "subtitle": "Un doux \"et si\" pour explorer tes sentiments d'aujourd'hui.",
+        "description": "Fais comme si.",
+        "q1Label": "Où vous rencontreriez-vous ?",
+        "q1Options": ["Un café calme", "Un parc paisible", "Quelque part où nous allions", "Un endroit issu de nos souvenirs", "Écris le tien..."],
+        "q2Label": "Que porterais-tu ?",
+        "q3Label": "Que commanderais-tu ? Que pourraient-ils commander ?",
+        "q4Label": "Que leur demanderais-tu ?",
+        "q5Label": "D'après ce que tu sais d'eux, que penses-tu qu me diraient ?",
+        "placeholders": [
+          "Un café calme où nous allions...",
+          "Quelque chose de confortable, comme moi-même...",
+          "Du café. Ils commanderaient du thé...",
+          "Comment vas-tu ? Es-tu heureux(se) ?",
+          "Je pense qu'ils diraient qu'ils sont désolés...",
+          ""
+        ],
+        "buttonText": "Démarrer la conversation →"
+      }
+    }
   },
   "talkToCrush": {
-    "title": "Mon Crush",
-    "homeTitle": "Mon Crush",
+    "title": "My Crush/Friends",
+    "homeTitle": "My Crush/Friends",
     "startNew": "Démarrer une nouvelle discussion",
     "startNewSub": "Reçois des conseils de meilleure amie sur ton crush",
     "pastChats": "Discussions passées",
     "eachFresh": "Chaque crush repart de zéro",
     "guidedReflection": "Ta meilleure amie IA — pas ton vrai crush",
     "inputPlaceholder": "Raconte-moi tout...",
-    "introTitle": "Mon Crush",
+    "introTitle": "My Crush/Friends",
     "introSubtitle": "Ta meilleure amie personnelle pour tout ce qui concerne les crushs",
     "beforeYouBegin": "Avant de commencer :",
     "beforeYouBeginText": "Ceci est un espace sûr et fun pour obtenir des conseils, t'entraîner à des conversations et trouver ton prochain mouvement avec ton crush !",

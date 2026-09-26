@@ -38,12 +38,95 @@ interface UserPlanInfo {
 
 type PaymentStatus = 'idle' | 'loading' | 'success' | 'failed';
 
+interface PlanFromBackend {
+  name: string;
+  monthlyPrice: number;
+  yearlyPrice: number;
+  originalYearlyPrice?: number;
+  discountPercent?: number;
+  chatLimit: number | string;
+  messageLimit: number | string;
+  features: string[];
+  isPopular: boolean;
+  isActive: boolean;
+}
+
+interface PricingBackendResponse {
+  plans?: {
+    free?: PlanFromBackend;
+    basic?: PlanFromBackend;
+    pro?: PlanFromBackend;
+  };
+  free?: PlanFromBackend;
+  basic?: PlanFromBackend;
+  pro?: PlanFromBackend;
+}
+
+const DEFAULT_PLANS: Record<'free' | 'basic' | 'pro', PlanFromBackend> = {
+  free: {
+    name: 'Free',
+    monthlyPrice: 0,
+    yearlyPrice: 0,
+    originalYearlyPrice: 0,
+    discountPercent: 0,
+    chatLimit: 3,
+    messageLimit: 30,
+    features: [
+      'Unlimited diary journaling',
+      '3 AI chats total',
+      '30 messages total',
+      'Memory capsule',
+      '5 spaces',
+    ],
+    isPopular: false,
+    isActive: true,
+  },
+  basic: {
+    name: 'Basic',
+    monthlyPrice: 8.99,
+    yearlyPrice: 86.30,
+    originalYearlyPrice: 107.88,
+    discountPercent: 20,
+    chatLimit: 10,
+    messageLimit: 150,
+    features: [
+      'Unlimited diary journaling',
+      '10 AI chats/month',
+      '150 messages/month',
+      'Audio entries',
+      'Image entries',
+      'Doodle entries',
+    ],
+    isPopular: true,
+    isActive: true,
+  },
+  pro: {
+    name: 'Pro',
+    monthlyPrice: 14.99,
+    yearlyPrice: 143.90,
+    originalYearlyPrice: 179.88,
+    discountPercent: 20,
+    chatLimit: -1,
+    messageLimit: 500,
+    features: [
+      'Unlimited diary journaling',
+      'Unlimited AI chats',
+      '500 messages/month',
+      'Priority support',
+      'Early access to features',
+    ],
+    isPopular: false,
+    isActive: true,
+  },
+};
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export default function BillingPage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState<boolean>(true);
   const [userPlanInfo, setUserPlanInfo] = useState<UserPlanInfo>({ plan: 'free' });
+  const [plans, setPlans] = useState<Record<'free' | 'basic' | 'pro', PlanFromBackend>>(DEFAULT_PLANS);
 
   // Auth form states
   const [email, setEmail] = useState<string>('');
@@ -60,6 +143,44 @@ export default function BillingPage() {
   const [purchasedPlan, setPurchasedPlan] = useState<'basic' | 'pro'>('basic');
   const [cancelLoading, setCancelLoading] = useState<boolean>(false);
   const [cancelSuccess, setCancelSuccess] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchPublicPricing();
+  }, []);
+
+  const fetchPublicPricing = async () => {
+    try {
+      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const res = await fetch(`${baseUrl}/api/app/pricing`);
+      if (res.ok) {
+        const data: PricingBackendResponse = await res.json();
+        const loadedPlans = data.plans || data;
+        if (loadedPlans && loadedPlans.free) {
+          setPlans({
+            free: { ...DEFAULT_PLANS.free, ...loadedPlans.free },
+            basic: { ...DEFAULT_PLANS.basic, ...loadedPlans.basic },
+            pro: { ...DEFAULT_PLANS.pro, ...loadedPlans.pro },
+          });
+        }
+      }
+    } catch {
+      // Fallback to DEFAULT_PLANS if server isn't reachable
+    }
+  };
+
+  const freeData = plans.free;
+  const basicData = plans.basic;
+  const proData = plans.pro;
+
+  const basicMonthlyRate = (basicData.monthlyPrice || 8.99).toFixed(2);
+  const basicYearlyMonthlyRate = (
+    (basicData.yearlyPrice || 86.30) / 12
+  ).toFixed(2);
+
+  const proMonthlyRate = (proData.monthlyPrice || 14.99).toFixed(2);
+  const proYearlyMonthlyRate = (
+    (proData.yearlyPrice || 143.90) / 12
+  ).toFixed(2);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -553,7 +674,7 @@ export default function BillingPage() {
             <div className={styles.planCard}>
               <div>
                 <div className={styles.planHeader}>
-                  <div className={styles.planName}>Free</div>
+                  <div className={styles.planName}>{freeData.name}</div>
                   <div className={styles.planPriceRow}>
                     <span className={styles.priceSymbol}>$</span>
                     <span className={styles.priceAmount}>0</span>
@@ -562,22 +683,12 @@ export default function BillingPage() {
                 </div>
 
                 <ul className={styles.featureList}>
-                  <li className={styles.featureItem}>
-                    <Check size={16} className={styles.featureIcon} />
-                    <span>3 AI chats total</span>
-                  </li>
-                  <li className={styles.featureItem}>
-                    <Check size={16} className={styles.featureIcon} />
-                    <span>30 messages total</span>
-                  </li>
-                  <li className={styles.featureItem}>
-                    <Check size={16} className={styles.featureIcon} />
-                    <span>Unlimited diary journaling</span>
-                  </li>
-                  <li className={styles.featureItem}>
-                    <Check size={16} className={styles.featureIcon} />
-                    <span>Memory capsule access</span>
-                  </li>
+                  {freeData.features.map((feature, idx) => (
+                    <li key={idx} className={styles.featureItem}>
+                      <Check size={16} className={styles.featureIcon} />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
@@ -595,31 +706,21 @@ export default function BillingPage() {
               <div className={styles.popularBadge}>MOST POPULAR</div>
               <div>
                 <div className={styles.planHeader}>
-                  <div className={styles.planName}>Basic</div>
+                  <div className={styles.planName}>{basicData.name}</div>
                   <div className={styles.planPriceRow}>
                     <span className={styles.priceSymbol}>$</span>
-                    <span className={styles.priceAmount}>{isYearly ? '7.19' : '8.99'}</span>
+                    <span className={styles.priceAmount}>{isYearly ? basicYearlyMonthlyRate : basicMonthlyRate}</span>
                     <span className={styles.pricePeriod}>/ month</span>
                   </div>
                 </div>
 
                 <ul className={styles.featureList}>
-                  <li className={styles.featureItem}>
-                    <Check size={16} className={styles.featureIcon} />
-                    <span>10 AI chats/month</span>
-                  </li>
-                  <li className={styles.featureItem}>
-                    <Check size={16} className={styles.featureIcon} />
-                    <span>150 messages/month</span>
-                  </li>
-                  <li className={styles.featureItem}>
-                    <Check size={16} className={styles.featureIcon} />
-                    <span>Unlimited diary journaling</span>
-                  </li>
-                  <li className={styles.featureItem}>
-                    <Check size={16} className={styles.featureIcon} />
-                    <span>Audio & image entries</span>
-                  </li>
+                  {basicData.features.map((feature, idx) => (
+                    <li key={idx} className={styles.featureItem}>
+                      <Check size={16} className={styles.featureIcon} />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
@@ -637,31 +738,21 @@ export default function BillingPage() {
             <div className={styles.planCard}>
               <div>
                 <div className={styles.planHeader}>
-                  <div className={styles.planName}>Pro</div>
+                  <div className={styles.planName}>{proData.name}</div>
                   <div className={styles.planPriceRow}>
                     <span className={styles.priceSymbol}>$</span>
-                    <span className={styles.priceAmount}>{isYearly ? '11.99' : '14.99'}</span>
+                    <span className={styles.priceAmount}>{isYearly ? proYearlyMonthlyRate : proMonthlyRate}</span>
                     <span className={styles.pricePeriod}>/ month</span>
                   </div>
                 </div>
 
                 <ul className={styles.featureList}>
-                  <li className={styles.featureItem}>
-                    <Check size={16} className={styles.featureIcon} />
-                    <span>Unlimited AI chats</span>
-                  </li>
-                  <li className={styles.featureItem}>
-                    <Check size={16} className={styles.featureIcon} />
-                    <span>500 messages/month</span>
-                  </li>
-                  <li className={styles.featureItem}>
-                    <Check size={16} className={styles.featureIcon} />
-                    <span>Unlimited diary journaling</span>
-                  </li>
-                  <li className={styles.featureItem}>
-                    <Check size={16} className={styles.featureIcon} />
-                    <span>Priority support & early access</span>
-                  </li>
+                  {proData.features.map((feature, idx) => (
+                    <li key={idx} className={styles.featureItem}>
+                      <Check size={16} className={styles.featureIcon} />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
 

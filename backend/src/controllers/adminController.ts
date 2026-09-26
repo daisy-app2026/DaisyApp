@@ -623,3 +623,59 @@ export const getSubscriptionStats = async (
   }
 };
 
+const defaultPlanLimits = {
+  free: { chatLimit: 3, messageLimit: 30 },
+  basic: { chatLimit: 10, messageLimit: 150 },
+  pro: { chatLimit: 15, messageLimit: 500 },
+};
+
+// GET /api/admin/plans/limits
+export const getPlanLimits = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const pricingDoc = await db.collection('config').doc('pricing').get();
+    if (!pricingDoc.exists) {
+      res.status(200).json(defaultPlanLimits);
+      return;
+    }
+    const data = pricingDoc.data();
+    const plans = data?.plans || data;
+    res.status(200).json({
+      free: { ...defaultPlanLimits.free, ...plans?.free },
+      basic: { ...defaultPlanLimits.basic, ...plans?.basic },
+      pro: { ...defaultPlanLimits.pro, ...plans?.pro },
+    });
+  } catch (error) {
+    res.status(200).json(defaultPlanLimits);
+  }
+};
+
+// PUT /api/admin/plans/limits
+export const updatePlanLimits = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const payload = req.body;
+    const pricingDoc = await db.collection('config').doc('pricing').get();
+    const existingData = pricingDoc.exists ? pricingDoc.data() : {};
+    const existingPlans = existingData?.plans || {};
+
+    const updatedPlans = {
+      free: { ...existingPlans.free, ...payload.free },
+      basic: { ...existingPlans.basic, ...payload.basic },
+      pro: { ...existingPlans.pro, ...payload.pro },
+    };
+
+    await db.collection('config').doc('pricing').set(
+      { plans: updatedPlans },
+      { merge: true }
+    );
+    res.status(200).json({ success: true, message: 'Plan limits updated successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update plan limits' });
+  }
+};
+

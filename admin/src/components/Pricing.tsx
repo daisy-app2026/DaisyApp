@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getPricing, updatePricing, getSubscriptionStats } from '../services/api';
+import { getPricing, updatePricing, getSubscriptionStats, getPlanLimits, updatePlanLimits } from '../services/api';
 import { CheckCircle, Save, Info, Sparkles, Zap, ShieldCheck, TrendingUp } from 'lucide-react';
 import styles from './Pricing.module.css';
 
@@ -99,6 +99,13 @@ const AdminPricing: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [stats, setStats] = useState<SubscriptionStatsData | null>(null);
 
+  const [planLimitsConfig, setPlanLimitsConfig] = useState({
+    free: { chatLimit: 3, messageLimit: 30 },
+    basic: { chatLimit: 10, messageLimit: 150 },
+    pro: { chatLimit: 15, messageLimit: 500 },
+  });
+  const [savingLimits, setSavingLimits] = useState(false);
+
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
@@ -107,7 +114,35 @@ const AdminPricing: React.FC = () => {
   useEffect(() => {
     fetchPricingFromBackend();
     fetchSubscriptionStats();
+    fetchPlanLimitsFromBackend();
   }, []);
+
+  const fetchPlanLimitsFromBackend = async () => {
+    try {
+      const res = await getPlanLimits();
+      if (res.data) {
+        setPlanLimitsConfig({
+          free: { chatLimit: parseInt(res.data.free?.chatLimit) || 3, messageLimit: parseInt(res.data.free?.messageLimit) || 30 },
+          basic: { chatLimit: parseInt(res.data.basic?.chatLimit) || 10, messageLimit: parseInt(res.data.basic?.messageLimit) || 150 },
+          pro: { chatLimit: parseInt(res.data.pro?.chatLimit) || 15, messageLimit: parseInt(res.data.pro?.messageLimit) || 500 },
+        });
+      }
+    } catch (err) {
+      console.log('Failed to fetch plan limits:', err);
+    }
+  };
+
+  const savePlanLimitsToBackend = async () => {
+    try {
+      setSavingLimits(true);
+      await updatePlanLimits(planLimitsConfig);
+      showToast('Saved plan limits to config/plans! Changes apply instantly to all users.');
+    } catch {
+      showToast('Failed to save plan limits to config/plans.');
+    } finally {
+      setSavingLimits(false);
+    }
+  };
 
   const fetchSubscriptionStats = async () => {
     try {
@@ -488,6 +523,67 @@ const AdminPricing: React.FC = () => {
           ) : (
             <p style={{ fontSize: '13px', color: '#6B7280' }}>No recent active subscriptions found.</p>
           )}
+        </div>
+      </div>
+
+      {/* Plan Limits Settings Section */}
+      <div className={styles.analyticsSection} style={{ marginTop: '24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <div>
+            <h3 className={styles.analyticsHeaderTitle} style={{ fontSize: '18px', fontWeight: 700 }}>
+              ⚡ Plan Limits Settings (Firestore config/plans)
+            </h3>
+            <p className={styles.infoText} style={{ fontSize: '13px', color: '#6B7280', margin: '4px 0 0 0' }}>
+              Changes saved here update the global <code>config/plans</code> document in Firestore and apply instantly to all users.
+            </p>
+          </div>
+          <button
+            type="button"
+            className={styles.saveAllBtn}
+            onClick={savePlanLimitsToBackend}
+            disabled={savingLimits}
+          >
+            <Save size={16} />
+            <span>{savingLimits ? 'Saving Limits...' : 'Save Plan Limits'}</span>
+          </button>
+        </div>
+
+        <div className={styles.plansGrid} style={{ marginTop: '16px' }}>
+          {(['free', 'basic', 'pro'] as const).map((pk) => (
+            <div key={pk} className={styles.card} style={{ padding: '20px' }}>
+              <h4 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '16px', textTransform: 'uppercase' }}>
+                {pk} Plan Limits
+              </h4>
+              <div className={styles.inputGroup} style={{ marginBottom: '12px' }}>
+                <label className={styles.label}>Chat Limit (-1 = Unlimited)</label>
+                <input
+                  type="number"
+                  className={styles.input}
+                  value={planLimitsConfig[pk].chatLimit}
+                  onChange={(e) =>
+                    setPlanLimitsConfig((prev) => ({
+                      ...prev,
+                      [pk]: { ...prev[pk], chatLimit: parseInt(e.target.value) || 0 },
+                    }))
+                  }
+                />
+              </div>
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>Message Limit (/ month)</label>
+                <input
+                  type="number"
+                  className={styles.input}
+                  value={planLimitsConfig[pk].messageLimit}
+                  onChange={(e) =>
+                    setPlanLimitsConfig((prev) => ({
+                      ...prev,
+                      [pk]: { ...prev[pk], messageLimit: parseInt(e.target.value) || 0 },
+                    }))
+                  }
+                />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

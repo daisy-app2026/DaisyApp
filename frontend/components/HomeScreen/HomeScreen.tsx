@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -42,6 +42,12 @@ import CapsuleNotification from '../shared/CapsuleNotification/CapsuleNotificati
 const { width } = Dimensions.get('window');
 const ITEMS_PER_PAGE = 4;
 
+const heroImages = [
+  require('../../assets/hero1.png'),
+  require('../../assets/hero2.png'),
+  require('../../assets/hero3.png'),
+];
+
 type Screen = 
   | 'splash' 
   | 'login' 
@@ -65,6 +71,25 @@ const HomeScreen: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<DiaryStackParamList, 'Home'>>();
   const { t } = useLanguageStore();
   const { user } = useAuthStore();
+
+  const carouselRef = useRef<FlatList>(null);
+  const [activeHeroIndex, setActiveHeroIndex] = useState(0);
+
+  // Auto scroll carousel every 3 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveHeroIndex((prevIndex) => {
+        const nextIndex = (prevIndex + 1) % heroImages.length;
+        carouselRef.current?.scrollToIndex({
+          index: nextIndex,
+          animated: true,
+        });
+        return nextIndex;
+      });
+    }, 3000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const { 
     recentEntries, 
@@ -449,8 +474,51 @@ const HomeScreen: React.FC = () => {
         </LinearGradient>
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
-          <View style={styles.greetingCard}>
-            <Text style={styles.greetingTop}>{t.home.whatsOnMind}</Text>
+          <View style={styles.carouselContainer}>
+            <FlatList
+              ref={carouselRef}
+              data={heroImages}
+              keyExtractor={(_, index) => `hero-${index}`}
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              getItemLayout={(_, index) => ({
+                length: width - 32,
+                offset: (width - 32) * index,
+                index,
+              })}
+              onMomentumScrollEnd={(e) => {
+                const offset = e.nativeEvent.contentOffset.x;
+                const index = Math.round(offset / (width - 32));
+                setActiveHeroIndex(index);
+              }}
+              onScrollToIndexFailed={(info) => {
+                carouselRef.current?.scrollToOffset({
+                  offset: info.averageItemLength * info.index,
+                  animated: true,
+                });
+              }}
+              renderItem={({ item }) => (
+                <View style={styles.heroSlide}>
+                  <Image
+                    source={item}
+                    style={styles.heroImage}
+                    resizeMode="cover"
+                  />
+                </View>
+              )}
+            />
+            <View style={styles.carouselDots}>
+              {heroImages.map((_, index) => (
+                <View
+                  key={`hero-dot-${index}`}
+                  style={[
+                    styles.carouselDot,
+                    activeHeroIndex === index && styles.carouselActiveDot,
+                  ]}
+                />
+              ))}
+            </View>
           </View>
 
           <View style={styles.section}>

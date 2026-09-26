@@ -10,9 +10,7 @@ import {
   Alert,
   ActivityIndicator,
   BackHandler,
-  Keyboard,
-  KeyboardEvent,
-  Animated,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -31,6 +29,7 @@ import {
 import { useTalkToPastStore } from '../../store/talkToPastStore';
 import { styles } from './TalkToPastChat.styles';
 import { getPersonIcon } from '../../utils/personIcon';
+import UpgradePrompt from '../UpgradePrompt/UpgradePrompt';
 
 const TypingIndicator: React.FC = () => {
   const [dots, setDots] = useState('');
@@ -77,6 +76,7 @@ const TalkToPastChat: React.FC = () => {
   const [isSending, setIsSending] = useState(false);
   const [pendingMessage, setPendingMessage] = useState<string | null>(null);
   const [dailyCount, setDailyCount] = useState(0);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
 
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0];
@@ -91,41 +91,6 @@ const TalkToPastChat: React.FC = () => {
   const remaining = Math.max(0, 5 - dailyCount);
 
   const flatListRef = useRef<FlatList>(null);
-  const keyboardHeight = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
-
-    const showSubscription = Keyboard.addListener(
-      showEvent,
-      (e: KeyboardEvent) => {
-        Animated.timing(keyboardHeight, {
-          toValue: Platform.OS === 'android'
-            ? e.endCoordinates.height + 24
-            : e.endCoordinates.height,
-          duration: 250,
-          useNativeDriver: false,
-        }).start();
-      }
-    );
-
-    const hideSubscription = Keyboard.addListener(
-      hideEvent,
-      () => {
-        Animated.timing(keyboardHeight, {
-          toValue: 0,
-          duration: 250,
-          useNativeDriver: false,
-        }).start();
-      }
-    );
-
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, [keyboardHeight]);
 
   const loadCurrentSession = useCallback(async () => {
     try {
@@ -252,6 +217,11 @@ const TalkToPastChat: React.FC = () => {
       // Remove typing indicator
       setMessages((prev) => prev.filter((m) => m.id !== 'typing'));
       
+      if (error?.response?.data?.code === 'LIMIT_REACHED' || error?.response?.status === 403) {
+        setShowUpgradePrompt(true);
+        return;
+      }
+
       const errorCode = error?.response?.data?.error;
       if (errorCode === 'DAILY_LIMIT_REACHED') {
         setDailyCount(5);
@@ -350,29 +320,30 @@ const TalkToPastChat: React.FC = () => {
         </SafeAreaView>
       </LinearGradient>
 
-      {isLoading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#2D5A1B" />
-        </View>
-      ) : (
-        <FlatList
-          ref={flatListRef}
-          data={[...messages].reverse()}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.messagesContent}
-          style={styles.messagesList}
-          showsVerticalScrollIndicator={false}
-          inverted={true}
-          keyboardDismissMode='interactive'
-          keyboardShouldPersistTaps='handled'
-        />
-      )}
-
-      {/* Input moves up with keyboard! */}
-      <Animated.View
-        style={{ marginBottom: keyboardHeight }}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#2D5A1B" />
+          </View>
+        ) : (
+          <FlatList
+            ref={flatListRef}
+            data={[...messages].reverse()}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.messagesContent}
+            style={styles.messagesList}
+            showsVerticalScrollIndicator={false}
+            inverted={true}
+            keyboardDismissMode='interactive'
+            keyboardShouldPersistTaps='handled'
+          />
+        )}
+
         <LinearGradient
           colors={[
             '#F9E65C',
@@ -416,7 +387,7 @@ const TalkToPastChat: React.FC = () => {
             />
           </TouchableOpacity>
         </LinearGradient>
-      </Animated.View>
+      </KeyboardAvoidingView>
       {remaining === 0 && (
         <SafeAreaView edges={['bottom']} style={styles.limitReached}>
           <Text style={styles.limitReachedText}>
@@ -424,6 +395,11 @@ const TalkToPastChat: React.FC = () => {
           </Text>
         </SafeAreaView>
       )}
+      <UpgradePrompt
+        visible={showUpgradePrompt}
+        onClose={() => setShowUpgradePrompt(false)}
+        type="message"
+      />
     </View>
   );
 };

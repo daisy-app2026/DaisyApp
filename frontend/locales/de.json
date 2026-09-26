@@ -101,7 +101,7 @@
     "chooseLanguage": "Sprache auswählen",
     "comingSoon": "Kommt bald 🌼",
     "disclaimerTitle": "Haftungsausschluss",
-    "disclaimerContent": "Daisy ist eine persönliche Tagebuch- und Reflexions-App. Sie ist kein Ersatz für professionelle psychologische Hilfe. Die Funktionen „Trennungsabschluss“ und „Mein Schwarm“ verwenden KI, um Gespräche ausschließlich zur Selbstreflexion zu simulieren. Wenn du psychische Schwierigkeiten hast, wende dich bitte an einen qualifizierten Fachmann.",
+    "disclaimerContent": "Daisy ist eine persönliche Tagebuch- und Reflexions-App. Sie ist kein Ersatz für professionelle psychologische Hilfe. Die Funktionen „Trennungsabschluss“ und „My Crush/Friends“ verwenden KI, um Gespräche ausschließlich zur Selbstreflexion zu simulieren. Wenn du psychische Schwierigkeiten hast, wende dich bitte an einen qualifizierten Fachmann.",
     "disclaimerSigned": "— Meriem Tafsi, Psychologin",
     "iUnderstand": "Ich verstehe",
     "editName": "Namen bearbeiten",
@@ -160,7 +160,7 @@
     "beforeYouBegin": "Bevor du beginnst:",
     "beforeYouBeginText": "Dies ist eine geführte Reflexion. Du nimmst keinen Kontakt zur echten Person auf — du erkundest nur deine eigenen Erinnerungen und Gefühle auf sichere, geerundete Weise.",
     "beginButton": "Geführte Reise beginnen",
-    "sections": "4 Abschnitte · Dauert ca. 5 Minuten",
+    "sectionsCount": "4 Abschnitte · Dauert ca. 5 Minuten",
     "continue": "Weiter →",
     "startConversation": "Gespräch beginnen →",
     "of": "von",
@@ -181,18 +181,104 @@
       "🔄  Wieder verbinden, falls möglich",
       "💭  Meine Gefühle verarbeiten",
       "🕊️  Frieden mit der Vergangenheit schließen"
-    ]
+    ],
+    "s1NameLabel": "Ihr/Sein Name oder wie du sie/ihn genannt hast",
+    "extraOptional": "Noch etwas? (optional)",
+    "addMore": "Mehr hinzufügen...",
+    "customMeetingPlace": "Schreib deinen eigenen Treffpunkt...",
+    "promptsTitle": "ANREGUNGEN FÜR DICH:",
+    "sections": {
+      "section1": {
+        "title": "Über sie/ihn",
+        "subtitle": "Bleib nah an dem, was du wirklich erlebt hast.",
+        "description": "Beschreibe die Person, mit der der Kontakt endete.",
+        "q1Label": "Wer waren sie in deinem Leben?",
+        "q2Label": "Was ist dir an ihnen aufgefallen — das Gute und das Schwierige?",
+        "q3Label": "Wie haben sie dich normalerweise fühlen lassen?",
+        "q3Options": ["Ängstlich", "Wütend", "Verwirrt", "Geliebt", "Traurig", "Überwältigt", "Sicher", "Unsichtbar", "Verletzt", "Frustriert", "Chaotisch", "Klein"],
+        "q4Label": "Wer warst du, als du mit ihnen zusammen warst?",
+        "placeholders": [
+          "Mein Ex-Freund von 2 Jahren...",
+          "Er war lustig, aber auch unberechenbar...",
+          "Ängstlich, aber auch geliebt...",
+          "Ich hatte das Gefühl, immer die Pflegekraft zu sein..."
+        ],
+        "buttonText": "Weiter →"
+      },
+      "section2": {
+        "title": "Wie es endete",
+        "subtitle": "Keine Beurteilung nötig, nimm es einfach wahr.",
+        "description": "Nimm dir einen Moment, um das Ende noch einmal zu betrachten.",
+        "q1Label": "Wer hat die Beziehung oder den Kontakt beendet?",
+        "q1Options": ["Sie haben es beendet", "Ich habe es beendet", "Es war gegenseitig", "Es hat sich einfach aufgelöst", "Sie sind gestorben", "Wir haben uns aus den Augen verloren"],
+        "q2Label": "Was haben sie gesagt oder getan?",
+        "q3Label": "Was hast du gesagt oder getan?",
+        "q4Label": "Was hast du damals innerlich gefühlt?",
+        "q4Options": ["Traurig", "Wütend", "Taub", "Hilflos", "Herzgebrochen", "Schockiert", "Erleichtert", "Frustriert", "Leer", "Verloren", "Erschöpft"],
+        "q5Label": "Wie bist du damit umgegangen?",
+        "q6Label": "Was hat dir geholfen?",
+        "q7Label": "Was hat es schwerer gemacht?",
+        "placeholders": [
+          "Sie haben es plötzlich beendet...",
+          "Sie sagten, wir wollten verschiedene Dinge...",
+          "Ich habe geweint und gebeten, nicht zu gehen...",
+          "Schockiert und verlassen...",
+          "Ich habe mit Freunden gesprochen und mich auf die Arbeit konzentriert...",
+          "Vollständig trauern, wenn nötig...",
+          "Die Stille war schwer..."
+        ],
+        "buttonText": "Weiter →"
+      },
+      "section3": {
+        "title": "Was ungesagt blieb",
+        "subtitle": "Dieser Raum hält, was nie geteilt wurde.",
+        "description": "Sag ihnen, was du nie sagen konntest.",
+        "q1Label": "Schreib, was du nie sagen konntest...",
+        "chips": [
+          "Etwas, das ich dir hätte sagen sollen, ist...",
+          "Ich habe dich dafür geschätzt...",
+          "Ich war verletzt, als...",
+          "Ich wünschte, ich hätte gesagt...",
+          "Was ich dir nie gesagt habe, ist...",
+          "Ich vergebe dir für..."
+        ],
+        "placeholders": [
+          "Ich habe dich dafür geschätzt, dass du mich auch an dunklen Tagen zum Lachen gebracht hast..."
+        ],
+        "buttonText": "Weiter →"
+      },
+      "section4": {
+        "title": "Stell dir das Treffen vor",
+        "subtitle": "Ein sanftes \"Was wäre wenn\", um deine heutigen Gefühle zu erkunden.",
+        "description": "Stell es dir einfach vor.",
+        "q1Label": "Wo würdet ihr euch treffen?",
+        "q1Options": ["Ein ruhiges Café", "Ein friedlicher Park", "Irgendwo, wo wir früher waren", "Ein Ort aus unseren Erinnerungen", "Schreib deinen eigenen..."],
+        "q2Label": "Was würdest du tragen?",
+        "q3Label": "Was würdest du bestellen? Was könnten sie bestellen?",
+        "q4Label": "Was würdest du sie fragen?",
+        "q5Label": "Was glaubst du, was sie sagen würden?",
+        "placeholders": [
+          "Ein ruhiges Café, in das wir früher gegangen sind...",
+          "Etwas Bequemes, wie ich selbst...",
+          "Kaffee. Sie würden Tee bestellen...",
+          "Wie geht es dir? Bist du glücklich?",
+          "Ich glaube, sie würden sagen, dass es ihnen leid tut...",
+          ""
+        ],
+        "buttonText": "Gespräch beginnen →"
+      }
+    }
   },
   "talkToCrush": {
-    "title": "Mein Schwarm",
-    "homeTitle": "Mein Schwarm",
+    "title": "My Crush/Friends",
+    "homeTitle": "My Crush/Friends",
     "startNew": "Neuen Chat starten",
     "startNewSub": "Erhalte Ratschläge deiner Bestie zu deinem Schwarm",
     "pastChats": "Vergangene Chats",
     "eachFresh": "Jeder Schwarm beginnt frisch",
     "guidedReflection": "Deine KI-Bestie — nicht dein echter Schwarm",
     "inputPlaceholder": "Erzähl mir alles...",
-    "introTitle": "Mein Schwarm",
+    "introTitle": "My Crush/Friends",
     "introSubtitle": "Deine persönliche Bestie für alles rund um deinen Schwarm",
     "beforeYouBegin": "Bevor du beginnst:",
     "beforeYouBeginText": "Dies ist ein sicherer, spaßiger Ort, um Ratschläge zu bekommen, Gespräche zu üben und deinen nächsten Schritt mit deinem Schwarm herauszufinden!",

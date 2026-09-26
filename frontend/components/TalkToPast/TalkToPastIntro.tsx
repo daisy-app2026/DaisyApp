@@ -21,7 +21,7 @@ import { styles as homeStyles } from './TalkToPastHome.styles';
 
 const TalkToPastIntro: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<TalkToPastStackParamList>>();
-  const { t: en } = useLanguageStore();
+  const { t } = useLanguageStore();
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
@@ -86,7 +86,7 @@ const TalkToPastIntro: React.FC = () => {
           <View style={styles.header}>
             <View style={styles.headerLeft} />
             <View style={styles.headerCenter}>
-              <Text style={styles.headerTitle}>{en.talkToPast.title}</Text>
+              <Text style={styles.headerTitle}>{t.talkToPast.title}</Text>
             </View>
             <View style={styles.headerRight}>
               <TouchableOpacity
@@ -121,15 +121,15 @@ const TalkToPastIntro: React.FC = () => {
             </View>
           </View>
 
-          <Text style={styles.title}>{en.talkToPast.introTitle}</Text>
-          <Text style={styles.subtitle}>{en.talkToPast.introSubtitle}</Text>
+          <Text style={styles.title}>{t.talkToPast.introTitle}</Text>
+          <Text style={styles.subtitle}>{t.talkToPast.introSubtitle}</Text>
 
           <View style={styles.beforeBeginCard}>
             <View style={styles.cardTitleRow}>
               <Ionicons name="information-circle-outline" size={18} color="#B8860B" />
-              <Text style={styles.cardTitle}>{en.talkToPast.beforeYouBegin}</Text>
+              <Text style={styles.cardTitle}>{t.talkToPast.beforeYouBegin}</Text>
             </View>
-            <Text style={styles.cardBodyText}>{en.talkToPast.beforeYouBeginText}</Text>
+            <Text style={styles.cardBodyText}>{t.talkToPast.beforeYouBeginText}</Text>
           </View>
 
           <TouchableOpacity
@@ -137,10 +137,12 @@ const TalkToPastIntro: React.FC = () => {
             onPress={handleBegin}
             activeOpacity={0.8}
           >
-            <Text style={styles.beginButtonText}>{en.talkToPast.beginButton}</Text>
+            <Text style={styles.beginButtonText}>{t.talkToPast.beginButton}</Text>
           </TouchableOpacity>
 
-          <Text style={styles.buttonSubtext}>{en.talkToPast.sections}</Text>
+          <Text style={styles.buttonSubtext}>
+            {(t.talkToPast as any).sectionsCount || "4 sections · Takes about 5 minutes"}
+          </Text>
         </Animated.View>
       </ScrollView>
     </View>

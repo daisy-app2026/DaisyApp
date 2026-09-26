@@ -101,7 +101,7 @@
     "chooseLanguage": "Choose Language",
     "comingSoon": "Coming soon 🌼",
     "disclaimerTitle": "Disclaimer",
-    "disclaimerContent": "Daisy is a personal diary and reflection app. It is not a substitute for professional psychological help. The Breakup Closure and My Crush features use AI to simulate conversations for self-reflection only. If you are experiencing mental health difficulties, please seek help from a qualified professional.",
+    "disclaimerContent": "Daisy is a personal diary and reflection app. It is not a substitute for professional psychological help. The Breakup Closure and My Crush/Friends features use AI to simulate conversations for self-reflection only. If you are experiencing mental health difficulties, please seek help from a qualified professional.",
     "disclaimerSigned": "— Meriem Tafsi, Psychologist",
     "iUnderstand": "I Understand",
     "editName": "Edit name",
@@ -160,7 +160,7 @@
     "beforeYouBegin": "Before you begin:",
     "beforeYouBeginText": "This is a guided reflection. You're not contacting the real person — only exploring your own memory and feelings in a safe, grounded way.",
     "beginButton": "Begin Guided Journey",
-    "sections": "4 sections · Takes about 5 minutes",
+    "sectionsCount": "4 sections · Takes about 5 minutes",
     "continue": "Continue →",
     "startConversation": "Start Conversation →",
     "of": "of",
@@ -181,18 +181,104 @@
       "🔄  Reconnect if possible",
       "💭  Process my feelings",
       "🕊️  Make peace with the past"
-    ]
+    ],
+    "s1NameLabel": "Their name or what you called them",
+    "extraOptional": "Anything else? (optional)",
+    "addMore": "Add more...",
+    "customMeetingPlace": "Write your own meeting place...",
+    "promptsTitle": "PROMPTS TO INSPIRE YOU:",
+    "sections": {
+      "section1": {
+        "title": "About Them",
+        "subtitle": "Stay close to what you truly experienced.",
+        "description": "Describe the person the contact ended with.",
+        "q1Label": "Who were they in your life?",
+        "q2Label": "What stood out about them — both good and difficult?",
+        "q3Label": "How did they usually make you feel?",
+        "q3Options": ["Anxious", "Angry", "Confused", "Loved", "Sad", "Overwhelmed", "Safe", "Unseen", "Hurt", "Frustrated", "Chaotic", "Small"],
+        "q4Label": "Who were you when you were with them?",
+        "placeholders": [
+          "My ex-boyfriend of 2 years...",
+          "He was funny but also unpredictable...",
+          "Anxious, but also loved...",
+          "I felt like I was always the caretaker..."
+        ],
+        "buttonText": "Continue →"
+      },
+      "section2": {
+        "title": "How It Ended",
+        "subtitle": "No need to judge, just notice.",
+        "description": "Take a moment to revisit the ending.",
+        "q1Label": "Who ended the relationship or contact?",
+        "q1Options": ["They ended it", "I ended it", "It was mutual", "It just faded away", "They passed away", "We lost touch"],
+        "q2Label": "What did they say or do?",
+        "q3Label": "What did you say or do?",
+        "q4Label": "What did you feel inside at the time?",
+        "q4Options": ["Sad", "Angry", "Numb", "Helpless", "Heartbroken", "Shocked", "Relieved", "Frustrated", "Empty", "Lost", "Exhausted"],
+        "q5Label": "How did you cope?",
+        "q6Label": "What helped you through it?",
+        "q7Label": "What made it harder?",
+        "placeholders": [
+          "They did, suddenly...",
+          "They said we wanted different things...",
+          "I cried and begged them not to go...",
+          "Shocked and abandoned...",
+          "I talked to friends and focused on work...",
+          "Grieving fully when needed...",
+          "The silence was hard..."
+        ],
+        "buttonText": "Continue →"
+      },
+      "section3": {
+        "title": "What Was Left Unsaid",
+        "subtitle": "This space holds what has never been shared.",
+        "description": "Tell them what you never got to say.",
+        "q1Label": "Write what you never got to say...",
+        "chips": [
+          "Something I should have told you is...",
+          "I appreciated you for...",
+          "I was hurt when...",
+          "I wish I had said...",
+          "What I never told you is...",
+          "I forgive you for..."
+        ],
+        "placeholders": [
+          "I appreciated you for making me laugh even on dark days..."
+        ],
+        "buttonText": "Continue →"
+      },
+      "section4": {
+        "title": "Imagine the Meeting",
+        "subtitle": "A gentle \"what-if\" to explore your feelings today.",
+        "description": "Play pretend.",
+        "q1Label": "Where would you meet?",
+        "q1Options": ["A quiet café", "A peaceful park", "Somewhere we used to go", "A place from our memories", "Write your own..."],
+        "q2Label": "What would you wear?",
+        "q3Label": "What would you order? What might they order?",
+        "q4Label": "What would you ask them?",
+        "q5Label": "Based on what you know about them, what do you think they would say?",
+        "placeholders": [
+          "A quiet café we used to go to...",
+          "Something comfortable, like myself...",
+          "Coffee. They would order tea...",
+          "How are you? Are you happy?",
+          "I think they would say they are sorry...",
+          ""
+        ],
+        "buttonText": "Start Conversation →"
+      }
+    }
   },
   "talkToCrush": {
-    "title": "My Crush",
-    "homeTitle": "My Crush",
+    "title": "My Crush/Friends",
+    "homeTitle": "My Crush/Friends",
     "startNew": "Start a new chat",
     "startNewSub": "Get bestie advice about your crush",
     "pastChats": "Past chats",
     "eachFresh": "Each crush starts fresh",
     "guidedReflection": "Your AI bestie — not your actual crush",
     "inputPlaceholder": "Tell me everything...",
-    "introTitle": "My Crush",
+    "introTitle": "My Crush/Friends",
     "introSubtitle": "Your personal bestie for all things crush-related",
     "beforeYouBegin": "Before you begin:",
     "beforeYouBeginText": "This is a safe, fun space to get advice, practice conversations, and figure out your next move with your crush!",

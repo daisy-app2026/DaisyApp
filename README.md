@@ -692,3 +692,27 @@ taskkill /f /pid <PID>
 - **Deep link**: `daisy://billing/success` handled in `App.tsx` → reloads plan + navigates to Profile
 - **Account creation**: App-only. No Sign Up on the billing/landing page — users must create account in the Daisy app first
 - **Apple Sign In**: Billing page has email-only fallback for users who used Sign in with Apple (Apple hides email after first auth)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

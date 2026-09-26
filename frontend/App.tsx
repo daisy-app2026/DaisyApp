@@ -27,6 +27,8 @@ import { getTalkToCrushSessions } from './services/talkToCrushService'
 import { useLanguageStore, initLanguageStore } from './store/languageStore'
 import { getFreshToken } from './utils/getToken'
 import { registerForPushNotifications } from './services/notificationService'
+import { Linking } from 'react-native'
+import { subscribeToUserPlan, useSubscription } from './hooks/useSubscription'
 import * as SplashScreen from 'expo-splash-screen'
 
 SplashScreen.preventAutoHideAsync()
@@ -203,6 +205,36 @@ export default function App() {
       setAppReady(true)
     }
   }, [isAuthenticated, user, isAuthLoading, isLoading])
+
+  const { loadUserPlan } = useSubscription()
+
+  useEffect(() => {
+    if (user?.uid) {
+      const unsubPlan = subscribeToUserPlan(user.uid, (plan) => {
+        console.log('Real-time plan updated:', plan)
+      })
+
+      const handleDeepLink = (event: { url: string }) => {
+        if (event.url && event.url.includes('billing/success')) {
+          console.log('Deep link payment success detected:', event.url)
+          loadUserPlan(user.uid)
+        }
+      }
+
+      const subscription = Linking.addEventListener('url', handleDeepLink)
+
+      Linking.getInitialURL().then((url) => {
+        if (url && url.includes('billing/success')) {
+          handleDeepLink({ url })
+        }
+      })
+
+      return () => {
+        unsubPlan()
+        subscription.remove()
+      }
+    }
+  }, [user?.uid])
 
   useEffect(() => {
     if (!isAuthLoading && appReady) {

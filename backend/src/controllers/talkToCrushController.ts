@@ -1,10 +1,11 @@
 import { Response } from 'express';
-import { db } from '../config/firebase';
+import admin, { db } from '../config/firebase';
 import { AuthRequest } from '../middleware/verifyToken';
 import { indexSessionAnswers, searchContext } from '../services/pineconeService';
 import { pineconeIndex } from '../config/pinecone';
 import { getTalkToCrushSystemPrompt } from '../config/crushSystemPrompt';
 import { generateChatResponse } from '../services/chatService';
+import { getPlansConfig } from '../services/planService';
 
 interface SessionMessage {
   id: string;
@@ -39,26 +40,30 @@ export const createSession = async (
       return;
     }
 
-    const userDoc = await db.collection('users').doc(userId).get();
-    const chatLimit = userDoc.data()?.chatLimit ?? 3;
+    const userRef = db.collection('users').doc(userId);
+    const userDoc = await userRef.get();
+    const userData = userDoc.data();
 
-    const sessionsSnapshot = await db
-      .collection('talkToCrushSessions')
-      .where('userId', '==', userId)
-      .get();
+    const plan = userData?.plan || 'free';
+    const chatCount = userData?.chatCount ?? 0;
 
-    const activeCount = sessionsSnapshot.docs.filter(
-      (doc) => !doc.data().isDeleted && !doc.data().deleted
-    ).length;
+    const plansConfig = await getPlansConfig();
+    const planLimits = plansConfig[plan as 'free' | 'basic' | 'pro'] || plansConfig.free;
+    const chatLimit = planLimits.chatLimit;
 
-    if (chatLimit !== -1 && activeCount >= chatLimit) {
+    if (chatLimit !== -1 && chatCount >= chatLimit) {
       res.status(403).json({
-        error: 'Chat limit reached!',
+        error: 'Chat limit reached',
         code: 'LIMIT_REACHED',
+        type: 'chat',
         upgradeUrl: 'https://www.meriemtafsi.com/billing'
       });
       return;
     }
+
+    await userRef.update({
+      chatCount: admin.firestore.FieldValue.increment(1)
+    });
 
     const sessionRef = db
       .collection('talkToCrushSessions')
@@ -215,21 +220,48 @@ export const sendMessage = async (
       return;
     }
 
-    const today = new Date().toISOString().split('T')[0];
-    const messages = (session.messages || []) as SessionMessage[];
-    const todayUserMessages = messages.filter((msg: SessionMessage) => {
-      if (!msg.isUser) return false;
-      const msgDate = new Date(msg.timestamp).toISOString().split('T')[0];
-      return msgDate === today;
-    });
+    const userRef = db.collection('users').doc(userId);
+    const userDoc = await userRef.get();
+    const userData = userDoc.data();
 
-    if (todayUserMessages.length >= 5) {
+    const plan = userData?.plan || 'free';
+    let monthlyMessageCount = userData?.monthlyMessageCount ?? 0;
+    let messageResetAt = userData?.messageResetAt;
+
+    const plansConfig = await getPlansConfig();
+    const planLimits = plansConfig[plan as 'free' | 'basic' | 'pro'] || plansConfig.free;
+    const messageLimit = planLimits.messageLimit;
+
+    const now = new Date();
+
+    if (!messageResetAt || new Date(messageResetAt) <= now) {
+      monthlyMessageCount = 0;
+      let nextReset: string;
+      if (userData?.planExpiresAt && new Date(userData.planExpiresAt) > now) {
+        nextReset = userData.planExpiresAt;
+      } else {
+        nextReset = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+      }
+      messageResetAt = nextReset;
+      await userRef.update({
+        monthlyMessageCount: 0,
+        messageResetAt: nextReset
+      });
+    }
+
+    if (monthlyMessageCount >= messageLimit) {
       res.status(403).json({
-        error: 'DAILY_LIMIT_REACHED',
-        message: 'Daily limit of 5 messages reached'
+        error: 'Message limit reached',
+        code: 'LIMIT_REACHED',
+        type: 'message',
+        upgradeUrl: 'https://www.meriemtafsi.com/billing'
       });
       return;
     }
+
+    await userRef.update({
+      monthlyMessageCount: admin.firestore.FieldValue.increment(1)
+    });
 
     // Build message history for AI
     const messageHistory = ((session.messages || []) as SessionMessage[]).map(
@@ -358,6 +390,15 @@ export const deleteSession = async (
     }
 
     await sessionRef.delete();
+
+    const userRef = db.collection('users').doc(userId);
+    const userDoc = await userRef.get();
+    const currentChatCount = userDoc.data()?.chatCount ?? 0;
+    if (currentChatCount > 0) {
+      await userRef.update({
+        chatCount: admin.firestore.FieldValue.increment(-1)
+      });
+    }
 
     console.log(
       'Session deleted:', sessionId

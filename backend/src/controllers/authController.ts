@@ -34,6 +34,10 @@ export const registerUser = async (
         language: 'en',
         notifications: true,
         deletedDefaultSpaces: [],
+        plan: 'free',
+        chatCount: 0,
+        monthlyMessageCount: 0,
+        messageResetAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
       });
     }
 

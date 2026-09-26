@@ -120,6 +120,50 @@ export const styles = StyleSheet.create({
     color: '#2D5A1B',
   },
 
+  // Carousel
+  carouselContainer: {
+    width: width - 32,
+    height: 160,
+    borderRadius: 16,
+    marginHorizontal: 16,
+    marginTop: 12,
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: '#2D5A1B',
+  },
+  heroSlide: {
+    width: width - 32,
+    height: 160,
+    backgroundColor: '#2D5A1B',
+  },
+  heroImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 16,
+  },
+  carouselDots: {
+    position: 'absolute',
+    bottom: 10,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 6,
+  },
+  carouselDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+  },
+  carouselActiveDot: {
+    width: 16,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#FFFFFF',
+  },
+
   // Sections
   section: {
     marginTop: 16,

@@ -23,38 +23,11 @@ import { useAuthStore } from '../../store/authStore';
 import { createTalkToPastSession } from '../../services/talkToPastService';
 import { useTalkToPastStore } from '../../store/talkToPastStore';
 import { styles } from './TalkToPastSection.styles';
+import UpgradePrompt from '../UpgradePrompt/UpgradePrompt';
 
-const section1Q3Options = [
-  '😰 Anxious', '😡 Angry', '😕 Confused',
-  '🥰 Loved', '😔 Sad', '🤯 Overwhelmed',
-  '😌 Safe', '🫤 Unseen', '💔 Hurt',
-  '😤 Frustrated', '🌪️ Chaotic', '🥺 Small'
-];
-
-const section2Q1Options = [
-  'They ended it',
-  'I ended it',
-  'It was mutual',
-  'It just faded away',
-  'They passed away',
-  'We lost touch'
-];
-
-const section2Q4Options = [
-  '😢 Sad', '😡 Angry', '😶 Numb',
-  '😰 Helpless', '💔 Heartbroken',
-  '😮 Shocked', '😌 Relieved',
-  '😤 Frustrated', '🫤 Empty',
-  '😣 Lost', '😪 Exhausted'
-];
-
-const section4Q1Options = [
-  '☕ A quiet café',
-  '🌳 A peaceful park',
-  '🏠 Somewhere we used to go',
-  '🌙 A place from our memories',
-  '✍️ Write your own...'
-];
+const section1Q3Emojis = ['😰', '😡', '😕', '🥰', '😔', '🤯', '😌', '🫤', '💔', '😤', '🌪️', '🥺'];
+const section2Q4Emojis = ['😢', '😡', '😶', '😰', '💔', '😮', '😌', '😤', '🫤', '😣', '😪'];
+const section4Q1Emojis = ['☕', '🌳', '🏠', '🌙', '✍️'];
 
 interface SingleSelectProps {
   options: string[];
@@ -142,97 +115,12 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   </View>
 );
 
-const sections = [
-  {
-    number: 1,
-    title: 'About Them',
-    subtitle: 'Stay close to what you truly experienced.',
-    description: 'Describe the person the contact ended with.',
-    questions: [
-      'Who were they in your life?',
-      'What stood out about them — both good and difficult?',
-      'How did they usually make you feel?',
-      'Who were you when you were with them?',
-    ],
-    placeholders: [
-      'My ex-boyfriend of 2 years...',
-      'He was funny but also unpredictable...',
-      'Anxious, but also loved...',
-      'I felt like I was always the caretaker...',
-    ],
-    buttonText: 'Continue →',
-    nextSection: 2 as const,
-  },
-  {
-    number: 2,
-    title: 'How It Ended',
-    subtitle: 'No need to judge, just notice.',
-    description: 'Take a moment to revisit the ending.',
-    questions: [
-      'Who ended the relationship or contact?',
-      'What did they say or do?',
-      'What did you say or do?',
-      'What did you feel inside at the time?',
-      'How did you cope?',
-      'What helped you through it?',
-      'What made it harder?',
-    ],
-    placeholders: [
-      'They did, suddenly...',
-      'They said we wanted different things...',
-      'I cried and begged them not to go...',
-      'Shocked and abandoned...',
-      'I talked to friends and focused on work...',
-      'Grieving fully when needed...',
-      'The silence was hard...',
-    ],
-    buttonText: 'Continue →',
-    nextSection: 3 as const,
-  },
-  {
-    number: 3,
-    title: 'What Was Left Unsaid',
-    subtitle: 'This space holds what has never been shared.',
-    description: 'Tell them what you never got to say.',
-    questions: [
-      'Write what you never got to say...',
-    ],
-    placeholders: [
-      'I appreciated you for making me laugh even on dark days...',
-    ],
-    buttonText: 'Continue →',
-    nextSection: 4 as const,
-  },
-  {
-    number: 4,
-    title: 'Imagine the Meeting',
-    subtitle: 'A gentle "what-if" to explore your feelings today.',
-    description: 'Play pretend.',
-    questions: [
-      'Where would you meet?',
-      'What would you wear?',
-      'What would you order? What might they order?',
-      'What would you ask them?',
-      'Based on what you know about them, what do you think they would say?',
-      'What outcome are you hoping for from this?',
-    ],
-    placeholders: [
-      'A quiet café we used to go to...',
-      'Something comfortable, like myself...',
-      'Coffee. They would order tea...',
-      'How are you? Are you happy?',
-      'I think they would say they are sorry...',
-      '',
-    ],
-    buttonText: 'Start Conversation →',
-    nextSection: null,
-  },
-];
-
 const TalkToPastSection: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<TalkToPastStackParamList>>();
-  const { t: en } = useLanguageStore();
+  const { t } = useLanguageStore();
   const route = useRoute<RouteProp<TalkToPastStackParamList, 'TalkToPastSection'>>();
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+  const [upgradePromptType, setUpgradePromptType] = useState<'chat' | 'message'>('chat');
 
   const { sectionNumber } = route.params;
   const { user } = useAuthStore();
@@ -250,6 +138,131 @@ const TalkToPastSection: React.FC = () => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+
+  const section1Q3Options = useMemo(() => {
+    const opts = t.talkToPast?.sections?.section1?.q3Options || [
+      "Anxious", "Angry", "Confused", "Loved", "Sad", "Overwhelmed", "Safe", "Unseen", "Hurt", "Frustrated", "Chaotic", "Small"
+    ];
+    return opts.map((opt: string, idx: number) => section1Q3Emojis[idx] ? `${section1Q3Emojis[idx]} ${opt}` : opt);
+  }, [t]);
+
+  const section2Q1Options = useMemo(() => {
+    return t.talkToPast?.sections?.section2?.q1Options || [
+      "They ended it", "I ended it", "It was mutual", "It just faded away", "They passed away", "We lost touch"
+    ];
+  }, [t]);
+
+  const section2Q4Options = useMemo(() => {
+    const opts = t.talkToPast?.sections?.section2?.q4Options || [
+      "Sad", "Angry", "Numb", "Helpless", "Heartbroken", "Shocked", "Relieved", "Frustrated", "Empty", "Lost", "Exhausted"
+    ];
+    return opts.map((opt: string, idx: number) => section2Q4Emojis[idx] ? `${section2Q4Emojis[idx]} ${opt}` : opt);
+  }, [t]);
+
+  const section4Q1Options = useMemo(() => {
+    const opts = t.talkToPast?.sections?.section4?.q1Options || [
+      "A quiet café", "A peaceful park", "Somewhere we used to go", "A place from our memories", "Write your own..."
+    ];
+    return opts.map((opt: string, idx: number) => section4Q1Emojis[idx] ? `${section4Q1Emojis[idx]} ${opt}` : opt);
+  }, [t]);
+
+  const promptChips = useMemo(() => {
+    return t.talkToPast?.sections?.section3?.chips || [
+      "Something I should have told you is...",
+      "I appreciated you for...",
+      "I was hurt when...",
+      "I wish I had said...",
+      "What I never told you is...",
+      "I forgive you for..."
+    ];
+  }, [t]);
+
+  const sections = useMemo(() => [
+    {
+      number: 1,
+      title: t.talkToPast?.sections?.section1?.title || 'About Them',
+      subtitle: t.talkToPast?.sections?.section1?.subtitle || 'Stay close to what you truly experienced.',
+      description: t.talkToPast?.sections?.section1?.description || 'Describe the person the contact ended with.',
+      questions: [
+        t.talkToPast?.sections?.section1?.q1Label || 'Who were they in your life?',
+        t.talkToPast?.sections?.section1?.q2Label || 'What stood out about them — both good and difficult?',
+        t.talkToPast?.sections?.section1?.q3Label || 'How did they usually make you feel?',
+        t.talkToPast?.sections?.section1?.q4Label || 'Who were you when you were with them?',
+      ],
+      placeholders: t.talkToPast?.sections?.section1?.placeholders || [
+        'My ex-boyfriend of 2 years...',
+        'He was funny but also unpredictable...',
+        'Anxious, but also loved...',
+        'I felt like I was always the caretaker...',
+      ],
+      buttonText: t.talkToPast?.sections?.section1?.buttonText || 'Continue →',
+      nextSection: 2 as const,
+    },
+    {
+      number: 2,
+      title: t.talkToPast?.sections?.section2?.title || 'How It Ended',
+      subtitle: t.talkToPast?.sections?.section2?.subtitle || 'No need to judge, just notice.',
+      description: t.talkToPast?.sections?.section2?.description || 'Take a moment to revisit the ending.',
+      questions: [
+        t.talkToPast?.sections?.section2?.q1Label || 'Who ended the relationship or contact?',
+        t.talkToPast?.sections?.section2?.q2Label || 'What did they say or do?',
+        t.talkToPast?.sections?.section2?.q3Label || 'What did you say or do?',
+        t.talkToPast?.sections?.section2?.q4Label || 'What did you feel inside at the time?',
+        t.talkToPast?.sections?.section2?.q5Label || 'How did you cope?',
+        t.talkToPast?.sections?.section2?.q6Label || 'What helped you through it?',
+        t.talkToPast?.sections?.section2?.q7Label || 'What made it harder?',
+      ],
+      placeholders: t.talkToPast?.sections?.section2?.placeholders || [
+        'They did, suddenly...',
+        'They said we wanted different things...',
+        'I cried and begged them not to go...',
+        'Shocked and abandoned...',
+        'I talked to friends and focused on work...',
+        'Grieving fully when needed...',
+        'The silence was hard...',
+      ],
+      buttonText: t.talkToPast?.sections?.section2?.buttonText || 'Continue →',
+      nextSection: 3 as const,
+    },
+    {
+      number: 3,
+      title: t.talkToPast?.sections?.section3?.title || 'What Was Left Unsaid',
+      subtitle: t.talkToPast?.sections?.section3?.subtitle || 'This space holds what has never been shared.',
+      description: t.talkToPast?.sections?.section3?.description || 'Tell them what you never got to say.',
+      questions: [
+        t.talkToPast?.sections?.section3?.q1Label || 'Write what you never got to say...',
+      ],
+      placeholders: t.talkToPast?.sections?.section3?.placeholders || [
+        'I appreciated you for making me laugh even on dark days...',
+      ],
+      buttonText: t.talkToPast?.sections?.section3?.buttonText || 'Continue →',
+      nextSection: 4 as const,
+    },
+    {
+      number: 4,
+      title: t.talkToPast?.sections?.section4?.title || 'Imagine the Meeting',
+      subtitle: t.talkToPast?.sections?.section4?.subtitle || 'A gentle "what-if" to explore your feelings today.',
+      description: t.talkToPast?.sections?.section4?.description || 'Play pretend.',
+      questions: [
+        t.talkToPast?.sections?.section4?.q1Label || 'Where would you meet?',
+        t.talkToPast?.sections?.section4?.q2Label || 'What would you wear?',
+        t.talkToPast?.sections?.section4?.q3Label || 'What would you order? What might they order?',
+        t.talkToPast?.sections?.section4?.q4Label || 'What would you ask them?',
+        t.talkToPast?.sections?.section4?.q5Label || 'Based on what you know about them, what do you think they would say?',
+        t.talkToPast?.s4OutcomeLabel || 'What outcome are you hoping for from this?',
+      ],
+      placeholders: t.talkToPast?.sections?.section4?.placeholders || [
+        'A quiet café we used to go to...',
+        'Something comfortable, like myself...',
+        'Coffee. They would order tea...',
+        'How are you? Are you happy?',
+        'I think they would say they are sorry...',
+        '',
+      ],
+      buttonText: t.talkToPast?.sections?.section4?.buttonText || 'Start Conversation →',
+      nextSection: null,
+    },
+  ], [t]);
 
   // Scroll to top when section changes!
   useEffect(() => {
@@ -273,7 +286,7 @@ const TalkToPastSection: React.FC = () => {
 
   const currentSection = useMemo(() => {
     return sections[sectionNumber - 1];
-  }, [sectionNumber]);
+  }, [sections, sectionNumber]);
 
   const handleBack = () => {
     const { sectionNumber } = route.params
@@ -304,7 +317,7 @@ const TalkToPastSection: React.FC = () => {
         }
       )
     return () => backHandler.remove()
-  }, [sectionNumber])
+  }, [sectionNumber, handleBack])
 
   const handleTextChange = useCallback((text: string, index: number) => {
     const key = `q_${sectionNumber}_${index}`;
@@ -384,7 +397,7 @@ const TalkToPastSection: React.FC = () => {
         }
         
         if (s === 4 && index === 0) {
-          if (val === '✍️ Write your own...') {
+          if (val === section4Q1Options[4] || val === '✍️ Write your own...' || val?.includes('Write your own')) {
             valStr = answers[`${key}_custom`] || '';
           }
         }
@@ -398,7 +411,7 @@ const TalkToPastSection: React.FC = () => {
       sectionsData[`section${s}`] = sectionObj;
     }
     return sectionsData;
-  }, [answers]);
+  }, [answers, sections, section4Q1Options]);
 
   const handleContinue = useCallback(async () => {
     if (saving) return;
@@ -407,30 +420,30 @@ const TalkToPastSection: React.FC = () => {
     
     if (sectionNumber === 1) {
       if (!answers.q_1_0?.trim()) {
-        newErrors.q_1_0 = en.talkToPast.errors.nameRequired;
+        newErrors.q_1_0 = t.talkToPast.errors.nameRequired;
       }
     }
     
     if (sectionNumber === 2) {
       if (!answers.q_2_0) {
-        newErrors.q_2_0 = en.talkToPast.errors.whoEndedRequired;
+        newErrors.q_2_0 = t.talkToPast.errors.whoEndedRequired;
       }
       const q2q4 = answers.q_2_3;
       if (!q2q4 || q2q4.length === 0) {
-        newErrors.q_2_3 = en.talkToPast.errors.feelingRequired;
+        newErrors.q_2_3 = t.talkToPast.errors.feelingRequired;
       }
     }
     
     if (sectionNumber === 3) {
       const q3q1 = answers.q_3_0;
       if (!q3q1?.trim() || q3q1.trim().length < 10) {
-        newErrors.q_3_0 = en.talkToPast.errors.whatNeverSaidRequired;
+        newErrors.q_3_0 = t.talkToPast.errors.whatNeverSaidRequired;
       }
     }
     
     if (sectionNumber === 4) {
       if (!answers.q_4_3?.trim()) {
-        newErrors.q_4_3 = en.talkToPast.errors.whatWouldAskRequired;
+        newErrors.q_4_3 = t.talkToPast.errors.whatWouldAskRequired;
       }
     }
     
@@ -469,11 +482,10 @@ const TalkToPastSection: React.FC = () => {
         });
       } catch (error: any) {
         console.log('Create session error:', error);
-        if (error?.response?.data?.error === 'CHAT_LIMIT_REACHED') {
-          Alert.alert(
-            'Limit Reached',
-            'You can only have 2 chats. Delete one to create a new one.'
-          );
+        if (error?.response?.data?.code === 'LIMIT_REACHED' || error?.response?.status === 403) {
+          const limitType = error?.response?.data?.type || 'chat';
+          setUpgradePromptType(limitType);
+          setShowUpgradePrompt(true);
           return;
         }
         Alert.alert('Error', 'Could not start session. Try again!');
@@ -481,11 +493,16 @@ const TalkToPastSection: React.FC = () => {
         setSaving(false);
       }
     }
-  }, [navigation, currentSection, personName, answers, saving, bundleAnswers, addSession, sectionNumber]);
+  }, [saving, sectionNumber, answers, t, currentSection, navigation, personName, bundleAnswers, addSession, setHasCreatedSession]);
 
   const renderStepper = useCallback(() => {
     const steps = [1, 2, 3, 4];
-    const labels = ['About Them', 'How It Ended', 'Never Said', 'Imagine'];
+    const labels = [
+      sections[0].title,
+      sections[1].title,
+      sections[2].title,
+      sections[3].title,
+    ];
     return (
       <View style={styles.progressBarContainer}>
         {steps.map((step, idx) => {
@@ -512,7 +529,7 @@ const TalkToPastSection: React.FC = () => {
         })}
       </View>
     );
-  }, [sectionNumber]);
+  }, [sectionNumber, sections]);
 
   const dotIndicatorContainerStyle = (isCurrent: boolean) => {
     return isCurrent ? styles.dotIndicatorContainer : { height: 6 };
@@ -540,9 +557,9 @@ const TalkToPastSection: React.FC = () => {
     const isMandatory = isSection1Q1 || isSection2Q1 || isSection2Q4 || isSection3Q1 || isSection4Q4;
     
     const label = isSection1Q1 
-      ? 'Their name or what you called them' 
+      ? (t.talkToPast?.s1NameLabel || 'Their name or what you called them') 
       : (sectionNumber === 4 && index === 5)
-      ? (en.talkToPast.s4OutcomeLabel || question)
+      ? (t.talkToPast?.s4OutcomeLabel || question)
       : question;
       
     const placeholder = currentSection.placeholders[index];
@@ -565,7 +582,7 @@ const TalkToPastSection: React.FC = () => {
             />
             <TextInput
               style={[styles.textInput, { minHeight: 48, marginTop: 8 }]}
-              placeholder="Anything else? (optional)"
+              placeholder={t.talkToPast?.extraOptional || "Anything else? (optional)"}
               placeholderTextColor="#CCCCCC"
               underlineColorAndroid="transparent"
               value={extraValue}
@@ -600,7 +617,7 @@ const TalkToPastSection: React.FC = () => {
             />
             <TextInput
               style={[styles.textInput, { minHeight: 48, marginTop: 8 }]}
-              placeholder="Add more..."
+              placeholder={t.talkToPast?.addMore || "Add more..."}
               placeholderTextColor="#CCCCCC"
               underlineColorAndroid="transparent"
               value={extraValue}
@@ -613,20 +630,13 @@ const TalkToPastSection: React.FC = () => {
     } else if (sectionNumber === 3) {
       if (index === 0) {
         // Section 3 Q1: Prompts + Large Text area
-        const promptChips = [
-          "Something I should have told you is...",
-          "I appreciated you for...",
-          "I was hurt when...",
-          "I wish I had said...",
-          "What I never told you is...",
-          "I forgive you for..."
-        ];
-        
         customInput = (
           <View>
-            <Text style={[styles.promptsTitle, { marginBottom: 8 }]}>PROMPTS TO INSPIRE YOU:</Text>
+            <Text style={[styles.promptsTitle, { marginBottom: 8 }]}>
+              {t.talkToPast?.promptsTitle || "PROMPTS TO INSPIRE YOU:"}
+            </Text>
             <View style={styles.promptsContainer}>
-              {promptChips.map((prompt) => (
+              {promptChips.map((prompt: string) => (
                 <TouchableOpacity
                   key={prompt}
                   style={styles.promptChip}
@@ -653,7 +663,7 @@ const TalkToPastSection: React.FC = () => {
     } else if (sectionNumber === 4) {
       if (index === 0) {
         // Section 4 Q1: Single-Select + Write your own
-        const isCustomSelected = value === '✍️ Write your own...';
+        const isCustomSelected = value === section4Q1Options[4] || value === '✍️ Write your own...';
         const customKey = `${key}_custom`;
         const customValue = answers[customKey] || '';
         
@@ -667,7 +677,7 @@ const TalkToPastSection: React.FC = () => {
             {isCustomSelected && (
               <TextInput
                 style={[styles.textInput, { minHeight: 48, marginTop: 8 }]}
-                placeholder="Write your own meeting place..."
+                placeholder={t.talkToPast?.customMeetingPlace || "Write your own meeting place..."}
                 placeholderTextColor="#CCCCCC"
                 underlineColorAndroid="transparent"
                 value={customValue}
@@ -678,7 +688,7 @@ const TalkToPastSection: React.FC = () => {
           </View>
         );
       } else if (index === 5) {
-        const outcomeOptions = en.talkToPast.s4OutcomeOptions || [];
+        const outcomeOptions = t.talkToPast?.s4OutcomeOptions || [];
         customInput = (
           <SingleSelect
             options={outcomeOptions}
@@ -765,7 +775,7 @@ const TalkToPastSection: React.FC = () => {
             </View>
             <View style={styles.headerRight}>
               <Text style={styles.stepText}>
-                {sectionNumber} {en.talkToPast.of} 4
+                {sectionNumber} {t.talkToPast?.of || 'of'} 4
               </Text>
             </View>
           </View>
@@ -800,26 +810,27 @@ const TalkToPastSection: React.FC = () => {
             </Text>
           )}
 
-          {currentSection.questions.map((question, index) => renderQuestionBlock(question, index))}
+          <View style={styles.questionsContainer}>
+            {currentSection.questions.map((q, idx) => renderQuestionBlock(q, idx))}
+          </View>
 
           <TouchableOpacity
             style={continueButtonStyle}
             onPress={handleContinue}
-            disabled={saving}
             activeOpacity={0.8}
+            disabled={saving}
           >
-            {saving ? (
-              <ActivityIndicator color="#FFFFFF" />
-            ) : (
-              <Text style={styles.continueButtonText}>
-                {sectionNumber === 4
-                  ? en.talkToPast.startConversation
-                  : en.talkToPast.continue}
-              </Text>
-            )}
+            <Text style={styles.continueButtonText}>
+              {currentSection.buttonText}
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
+      <UpgradePrompt
+        visible={showUpgradePrompt}
+        onClose={() => setShowUpgradePrompt(false)}
+        type={upgradePromptType}
+      />
     </View>
   );
 };
