@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import Hero from '../../components/Hero/Hero';
 import Features from '../../components/Features/Features';
 import StatsBar from '../../components/StatsBar/StatsBar';
-// import Pricing from '../../components/Pricing';
+import Pricing from '../../components/Pricing';
 import About from '../../components/About/About';
 import CTA from '../../components/CTA/CTA';
 import styles from './Home.module.css';
@@ -29,7 +29,7 @@ export default function Home() {
     <div className={styles.homeWrapper}>
       <Hero />
       <Features />
-      {/* <Pricing /> */}
+      <Pricing />
       <StatsBar />
       <About />
       <CTA />

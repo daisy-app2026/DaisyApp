@@ -100,11 +100,11 @@ export default function Navbar() {
               {t('nav.features')}
             </a>
           </li>
-          {/* <li>
+          <li>
             <a href="#pricing" className={styles.navLink} onClick={(e) => handleNavClick(e, 'pricing')}>
               {t('nav.pricing')}
             </a>
-          </li> */}
+          </li>
           <li>
             <a href="#about" className={styles.navLink} onClick={(e) => handleNavClick(e, 'about')}>
               {t('nav.about')}
@@ -116,25 +116,25 @@ export default function Navbar() {
           {/* Controls: Theme Toggle & Language Selector */}
           <div className={styles.controlsGroup}>
             {/* Theme Toggle Button */}
-            <button 
+            {/* <button 
               className={styles.themeBtn} 
               onClick={toggleTheme}
               title={theme === 'dark' ? t('nav.lightMode') : t('nav.darkMode')}
               aria-label="Toggle Theme"
             >
               {theme === 'dark' ? (
-                /* Sun Icon for switching to light mode */
+               
                 <svg className={styles.themeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="5"/>
                   <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
                 </svg>
               ) : (
-                /* Moon Icon for switching to dark mode */
+              
                 <svg className={styles.themeIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
                 </svg>
               )}
-            </button>
+            </button> */}
 
             {/* Language Selector Dropdown */}
             <div className={styles.langDropdownWrapper} ref={langMenuRef}>
@@ -220,11 +220,11 @@ export default function Navbar() {
                   {t('nav.features')}
                 </a>
               </li>
-              {/* <li>
+              <li>
                 <a href="#pricing" className={styles.mobileNavLink} onClick={(e) => handleNavClick(e, 'pricing')}>
                   {t('nav.pricing')}
                 </a>
-              </li> */}
+              </li>
               <li>
                 <a href="#about" className={styles.mobileNavLink} onClick={(e) => handleNavClick(e, 'about')}>
                   {t('nav.about')}

@@ -3,6 +3,8 @@
 
 A psychologist-founded personal diary and mental wellness mobile app built with React Native + Expo SDK 54.
 
+**Status**: Live on App Store + Play Store ✅
+
 ---
 
 ## Project Structure
@@ -11,7 +13,7 @@ A psychologist-founded personal diary and mental wellness mobile app built with 
 daisy-app/
 ├── frontend/          # React Native mobile app (Expo SDK 54)
 ├── backend/           # Node.js + Express API server
-├── landing/           # Vite + React landing page
+├── landing/           # Vite + React landing page (daisyapp.com)
 └── admin/             # Vite + React admin panel
 ```
 
@@ -55,13 +57,21 @@ daisy-app/
 | openai | ^4.x | OpenAI API client |
 | @pinecone-database/pinecone | ^3.x | Vector database client |
 | cloudinary | ^2.x | Media storage |
-| expo-server-sdk | removed | Replaced with direct HTTP to Expo Push API |
 | axios | ^1.x | HTTP client (used for Expo Push API) |
 | cors | ^2.x | CORS middleware |
 | express-rate-limit | ^7.x | Rate limiting |
 | dotenv | ^16.x | Environment variables |
 | ts-node | ^10.x | TypeScript execution |
 | nodemon | ^3.x | Dev auto-restart |
+
+### Landing Page
+| Package | Version | Purpose |
+|---------|---------|---------|
+| react | ^18.x | UI framework |
+| vite | ^5.x | Build tool |
+| typescript | ^5.x | Type safety |
+| firebase | ^11.x | Auth (Email/Password + Google sign-in) |
+| lucide-react | ^0.x | Icons |
 
 ### Admin Panel
 | Package | Version | Purpose |
@@ -85,11 +95,13 @@ daisy-app/
 | Cloudinary | Media storage (images, audio, doodles) | daisy.nag.tm@gmail.com | Free (25GB) |
 | OpenAI | Chat (gpt-4o-mini) + Embeddings (text-embedding-3-small) | Meriem's account | Pay-as-you-go |
 | Pinecone | Vector database for RAG pipeline | daisy.nag.tm@gmail.com | Free |
-| Render | Backend hosting | daisy.nag.tm@gmail.com | Starter $7/month |
-| Expo EAS | APK/AAB builds | daisyapp2026 | Free |
+| Paddle | Web payment processing (Merchant of Record) | daisy.nag.tm@gmail.com | Free + 5% after $2500 MTR |
+| Render | Backend hosting | daisy.nag.tm@gmail.com | Hobby $7/month (always on) |
+| Expo EAS | APK/AAB builds + OTA updates | daisyapp2026 | Free |
 | Vercel | Landing page + Admin panel hosting | daisy.nag.tm@gmail.com | Free |
-| UptimeRobot | Server uptime monitoring | daisy.nag.tm@gmail.com | Free |
 | GitHub | Source code | daisy-app2026 | Free |
+
+> **UptimeRobot** was used on the free Render plan. Now on Hobby ($7/month), UptimeRobot is no longer needed since the server never sleeps.
 
 ---
 
@@ -109,9 +121,13 @@ PINECONE_API_KEY=your_key
 PINECONE_INDEX_NAME=daisy-entries
 PINECONE_INDEX_HOST=your_host_url
 ADMIN_SECRET=daisy-admin-2026
+PADDLE_WEBHOOK_SECRET=your_paddle_webhook_secret
+PADDLE_API_KEY=your_paddle_api_key
 ```
 
 > **IMPORTANT**: `FIREBASE_PRIVATE_KEY` must preserve `\n` characters. In Render dashboard paste the key with literal `\n` characters — the code applies `.replace(/\\n/g, '\n')` automatically.
+
+> **Paddle secrets**: Get `PADDLE_WEBHOOK_SECRET` from Paddle Dashboard → Notifications → Webhooks → your endpoint's secret. Get `PADDLE_API_KEY` from Paddle Dashboard → Developer → Authentication.
 
 ### Frontend (`frontend/.env`)
 ```env
@@ -126,6 +142,20 @@ EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=173246095861-84qqc7cckfvdavn3uq4a28alqgaq7s4u.a
 EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME=diylru5iv
 EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your_preset
 ```
+
+### Landing Page (`landing/.env`)
+```env
+VITE_FIREBASE_API_KEY=your_key
+VITE_FIREBASE_AUTH_DOMAIN=daisy-app-82b09.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=daisy-app-82b09
+VITE_FIREBASE_STORAGE_BUCKET=daisy-app-82b09.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=173246095861
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_PADDLE_CLIENT_TOKEN=your_paddle_client_token
+VITE_API_URL=https://daisyapp.onrender.com
+```
+
+> **`VITE_PADDLE_CLIENT_TOKEN`**: Get from Paddle Dashboard → Developer → Authentication → Client-side token. This is safe to expose in frontend (read-only, no billing access).
 
 ### Admin Panel (`admin/.env`)
 ```env
@@ -159,6 +189,14 @@ npx expo start --clear
 > **Local IP**: Run `ipconfig` (Windows) or `ifconfig` (Mac/Linux) to get your IPv4 address.
 > Update `EXPO_PUBLIC_API_URL` every time your IP changes.
 
+### Landing Page
+```bash
+cd landing
+npm install
+npm run dev
+# Runs on http://localhost:5174
+```
+
 ### Admin Panel
 ```bash
 cd admin
@@ -169,21 +207,13 @@ npm run dev
 # Runs on http://localhost:5173
 ```
 
-### Landing Page
-```bash
-cd landing
-npm install
-npm run dev
-# Runs on http://localhost:5174
-```
-
 ---
 
 ## Deployment
 
 ### Backend → Render
 - **URL**: https://daisyapp.onrender.com
-- **Plan**: Starter $7/month (always on, no sleep)
+- **Plan**: Hobby $7/month (always on, no sleep)
 - **Region**: Frankfurt, EU
 - **Node version**: 20.11.0
 - **Build command**: `npm install && npm run build`
@@ -192,9 +222,7 @@ npm run dev
 - **Auto deploy**: On every GitHub push to `main`
 - **Health check**: GET `/health`
 
-> **UptimeRobot** pings `/health` every 5 minutes to prevent cold starts.
-
-### Frontend → Expo EAS
+### Frontend → Expo EAS (App Store + Play Store)
 
 **Preview APK (for testing):**
 ```bash
@@ -208,11 +236,17 @@ cd frontend
 eas build --platform android --profile production
 ```
 
-**OTA Update (JS-only changes, no APK rebuild):**
+**iOS build (for App Store):**
+```bash
+cd frontend
+eas build --platform ios --profile production
+```
+
+**OTA Update (JS-only changes, no APK/IPA rebuild):**
 ```bash
 eas update --branch production --message "fix: description"
 ```
-> Use EAS Update for UI fixes, text changes, API URL changes. Build new APK only when native packages, `app.json`, or `google-services.json` change.
+> Use EAS Update for UI fixes, text changes, API URL changes. Build new APK/IPA only when native packages, `app.json`, or `google-services.json` change.
 
 ### Landing Page + Admin Panel → Vercel
 - Connect GitHub repo to Vercel
@@ -261,7 +295,7 @@ DELETE /api/spaces/delete           # Delete custom space
 POST   /api/talk-to-past/sessions                        # Create session (with section answers)
 GET    /api/talk-to-past/sessions                        # List all sessions
 GET    /api/talk-to-past/sessions/:id                    # Get session + messages
-POST   /api/talk-to-past/sessions/:id/message            # Send message (RAG + AI)
+POST   /api/talk-to-past/sessions/:id/message            # Send message (RAG + AI) — checks chatLimit/messageLimit
 DELETE /api/talk-to-past/sessions/:id                    # Delete session + Pinecone vectors
 ```
 
@@ -270,9 +304,11 @@ DELETE /api/talk-to-past/sessions/:id                    # Delete session + Pine
 POST   /api/talk-to-crush/sessions                       # Create session (with section answers)
 GET    /api/talk-to-crush/sessions                       # List all sessions
 GET    /api/talk-to-crush/sessions/:id                   # Get session + messages
-POST   /api/talk-to-crush/sessions/:id/message           # Send message (AI)
+POST   /api/talk-to-crush/sessions/:id/message           # Send message (AI) — checks chatLimit/messageLimit
 DELETE /api/talk-to-crush/sessions/:id                   # Delete session + Pinecone vectors
 ```
+
+> **Limit enforcement**: Both Talk to Past and Talk to Crush message endpoints read `chatLimit` and `messageLimit` dynamically from the user's Firestore document. On limit hit, returns HTTP `403` with `{ code: "LIMIT_REACHED", upgradeUrl: "https://daisyapp.com/billing" }` — this triggers the `UpgradePrompt` modal in the app.
 
 ### Notifications
 ```
@@ -280,12 +316,20 @@ POST   /api/notifications/save-token    # Save Expo push token for user
 POST   /api/notifications/send-all      # Broadcast to all users (admin only, x-admin-secret header)
 ```
 
+### Paddle (Payments)
+```
+POST   /api/webhooks/paddle             # Paddle webhook receiver (HMAC-SHA256 verified, rate-limited)
+POST   /api/paddle/cancel              # Cancel user subscription
+```
+
 ### Admin
 ```
-GET    /api/admin/stats                  # Dashboard stats
-GET    /api/admin/users                  # All users list
+GET    /api/admin/stats                  # Dashboard stats (users, entries, sessions) — cached 5 min
+GET    /api/admin/users                  # All users list — cached 5 min
 DELETE /api/admin/users/:uid             # Delete user
-GET    /api/admin/analytics              # Last 7 days entries chart data
+GET    /api/admin/analytics              # Last 7 days entries chart data — cached 5 min
+GET    /api/admin/subscription-stats     # Subscription analytics (paid users, revenue, plan breakdown) — cached 5 min
+DELETE /api/admin/cache                  # Clear all in-memory caches immediately
 PUT    /api/admin/config                 # Update Privacy Policy + ToS URLs (persisted to Firestore)
 POST   /api/admin/notifications/send     # Send broadcast notification
 ```
@@ -294,16 +338,117 @@ POST   /api/admin/notifications/send     # Send broadcast notification
 
 ---
 
+## Subscription / Payment System
+
+### Overview
+Payments are **web-only** via Paddle (no App Store / Play Store in-app purchase). This avoids the 30% platform cut and EU VAT complications (Paddle is Merchant of Record, they handle EU VAT automatically).
+
+### Plans & Pricing
+
+| Plan | Monthly | Yearly | Message Limit | Chat Limit |
+|------|---------|--------|---------------|------------|
+| Free | $0 | $0 | 30/month | 3 chats |
+| Basic | $8.99/mo | $86.30/yr (~20% off) | 150/month | 10 chats |
+| Pro | $14.99/mo | $143.90/yr (~20% off) | 500/month | Unlimited |
+
+### Paddle Products (in Paddle dashboard)
+| Product ID | Price |
+|------------|-------|
+| daisy_basic_monthly | $8.99/month |
+| daisy_basic_yearly | $86.30/year |
+| daisy_pro_monthly | $14.99/month |
+| daisy_pro_yearly | $143.90/year |
+
+### Payment Flow
+1. User taps "Upgrade" in app → `openBillingPage()` opens `https://daisyapp.com/billing` in browser
+2. User signs in on billing page with same credentials as app (Email/Password or Google)
+3. User selects plan → Paddle checkout opens
+4. Payment completes → Paddle sends webhook to `/api/webhooks/paddle`
+5. Backend verifies HMAC-SHA256 signature + timestamp (5-minute window)
+6. Firestore `users/{userId}` updated: `{ plan, messageLimit, chatLimit, paddleSubscriptionId, paddleCustomerId }`
+7. App's `onSnapshot` listener detects Firestore change → updates `subscriptionStore` in real time
+8. Full-screen overlay on billing page shows 3.5s loading buffer for webhook processing
+9. Success page shown → "Open Daisy App" deep link (`daisy://billing/success`)
+10. App handles deep link → reloads plan + navigates to Profile screen
+
+### Webhook Security
+- HMAC-SHA256 signature verified using `PADDLE_WEBHOOK_SECRET`
+- Timestamp check: rejects webhooks older than 5 minutes
+- Rate limiter on webhook route
+- `userId` extracted strictly from verified Paddle `custom_data` (never from raw request body)
+- Email fallback: if `userId` missing from `custom_data`, searches Firestore by Paddle customer email
+
+### Billing Page (`landing/src/pages/Billing.tsx`)
+- Firebase Auth (Email/Password + Google sign-in) — no Sign Up (account creation is app-only)
+- Apple ID fallback: email-only input box for users who used Sign in with Apple
+- New user detection: shows "No account found! Download the Daisy app first" + App Store / Play Store links
+- Monthly / Yearly billing toggle
+- 3 plan cards: Free / Basic / Pro
+- Paddle v2 JS checkout with `userId` in `customData` + `customer.email`
+- Full-screen loading overlay (3.5s webhook buffer)
+- Success page with plan breakdown + "Open Daisy App" deep link
+- Failed page: "Try Again" + "Contact Support"
+- Manage subscription section for paid users (cancel subscription button)
+
+### Paddle JS Setup
+Paddle v2 JS script is loaded in `landing/index.html`:
+```html
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+```
+
+### Frontend Subscription State (Zustand)
+`frontend/store/subscriptionStore.ts` — stores `plan`, `messageLimit`, `chatLimit`, `isLoading`.  
+`setPlan()` auto-sets limits: `free(30/3)`, `basic(150/10)`, `pro(500/-1 = unlimited)`.
+
+### Real-time Plan Updates
+`frontend/hooks/useSubscription.ts`:
+- `loadUserPlan()` — one-time Firestore read on login
+- `subscribeToUserPlan()` — `onSnapshot` real-time listener → updates store immediately when Firestore changes (after webhook)
+- `openBillingPage()` — `Linking.openURL('https://daisyapp.com/billing')`
+
+`frontend/App.tsx`:
+- Calls `subscribeToUserPlan()` after auth → unsubscribes on logout
+- Deep link handler: `Linking.addEventListener('url', ...)` + `Linking.getInitialURL()`
+  - Handles `daisy://billing/success` → reloads plan + navigates to Profile
+
+### UpgradePrompt Component
+`frontend/components/UpgradePrompt/UpgradePrompt.tsx`:
+- Modal triggered when API returns `403 { code: "LIMIT_REACHED" }`
+- Title: "You've reached your limit"
+- "Unlock More Space" button → opens billing page
+- "Maybe Later" → dismiss
+
+### Testing Paddle Payments (Sandbox)
+- Use sandbox card: `4242 4242 4242 4242` (any future expiry, any CVV)
+- Toggle sandbox mode in `Billing.tsx`: `Paddle.Environment.set('sandbox')`
+- Sandbox webhooks go to `/api/webhooks/paddle` (same endpoint)
+
+---
+
 ## Firestore Collections
 
 | Collection | Description |
 |-----------|-------------|
-| `users` | User profiles, push tokens, streaks, language preference |
+| `users` | User profiles, push tokens, streaks, language preference, plan, messageLimit, chatLimit, paddleSubscriptionId |
 | `users/{userId}/spaces` | Custom spaces created by user |
 | `entries` | All diary entries (text, audio, image, doodle, capsule) |
 | `talkToPastSessions` | Talk to Past sessions + messages array |
 | `talkToCrushSessions` | Talk to Crush sessions + messages array |
 | `config` | App config (Privacy Policy URL, ToS URL) - persisted by admin panel |
+
+### User Document Fields (subscription-related)
+```json
+{
+  "plan": "free | basic | pro",
+  "messageLimit": 30,
+  "chatLimit": 3,
+  "paddleSubscriptionId": "sub_xxx",
+  "paddleCustomerId": "ctm_xxx",
+  "paddleStatus": "active | canceled | past_due"
+}
+```
+
+> **Security note**: `plan`, `messageLimit`, `chatLimit` should be backend-write-only in Firestore security rules (only Firebase Admin SDK / backend can write these fields — users cannot self-promote their plan).
 
 ### Required Firestore Indexes
 
@@ -382,11 +527,19 @@ npx ts-node scripts/sendNotification.ts
 ### Features
 | Tab | Function |
 |-----|---------|
-| Dashboard | Total users, active today, entries count, session counts |
+| Dashboard | Total users, active today, entries count, session counts, **monthly revenue**, **paid members count**, **conversion rate** |
 | Users | List all users, view details, delete user |
 | Notifications | Send broadcast notification to all app users |
 | Analytics | Last 7 days diary entries line chart |
-| Config | Update Privacy Policy URL + Terms of Service URL (saved to Firestore, no APK needed) |
+| Pricing | **Subscription analytics**: plan breakdown (Free/Basic/Pro counts), revenue stats, recent subscriptions table, cache clear button |
+| Config | Service health monitor (Backend/Firebase/OpenAI/Pinecone/Cloudinary), Privacy Policy URL + Terms of Service URL (saved to Firestore) |
+
+### Admin Caching
+All admin stats endpoints use a **5-minute in-memory cache** to avoid hammering Firestore on every page load.
+
+- Cache is automatically invalidated after 5 minutes
+- Manual cache clear: `DELETE /api/admin/cache` (also available as button in Pricing tab)
+- Revenue calculation: Basic = $8.99/user, Pro = $14.99/user (counted per active paid user only)
 
 ---
 
@@ -474,9 +627,23 @@ netstat -ano | findstr :3000
 taskkill /f /pid <PID>
 ```
 
-### Backend cold start (Render free tier)
-- Upgrade to Starter plan ($7/month) for always-on
-- Or use UptimeRobot to ping `/health` every 5 minutes
+### Paddle webhook not receiving
+- Ensure backend is deployed and `/api/webhooks/paddle` is accessible
+- Check Paddle Dashboard → Notifications → Webhooks → your endpoint for delivery logs
+- Webhook secret must match `PADDLE_WEBHOOK_SECRET` in Render env
+- Test with Paddle sandbox: card `4242 4242 4242 4242`
+
+### User plan not updating after payment
+- Check Paddle webhook delivery in Paddle Dashboard → Events
+- Verify `userId` is in `custom_data` in the Paddle checkout call
+- Check Render logs for webhook errors
+- The `onSnapshot` listener in `App.tsx` updates plan in real time once Firestore is updated
+
+### Billing page Firebase auth error: does not provide an export named 'User'
+- Use `import type { User }` from `firebase/auth` (not `import { User }`)
+
+### Admin showing all users as paid
+- Verify `totalPaid = basic + pro` (not total user count) in `adminController.ts`
 
 ---
 
@@ -488,6 +655,7 @@ taskkill /f /pid <PID>
 | API URL change | `eas update` (no rebuild) |
 | System prompt change | Push to GitHub → auto deploy backend |
 | Privacy Policy URL | Admin panel → Config tab |
+| Pricing page changes | Push to GitHub → Vercel auto deploys |
 | New npm package | `eas build` (full rebuild) |
 | `app.json` changes | `eas build` (full rebuild) |
 | `google-services.json` changes | `eas build` (full rebuild) |
@@ -499,15 +667,16 @@ taskkill /f /pid <PID>
 
 | Service | Cost | Notes |
 |---------|------|-------|
-| Render (Backend) | $7/month | Starter plan, always on |
+| Render (Backend) | $7/month | Hobby plan, always on |
 | OpenAI API | ~$15-20/month | gpt-4o-mini + embeddings |
+| Paddle | Free until $2,500 MTR, then 5% | Merchant of Record, handles EU VAT |
 | Firebase | Free | Free tier sufficient |
 | Pinecone | Free | Free tier sufficient |
 | Cloudinary | Free | 25GB free storage |
 | Vercel | Free | Landing + Admin panel |
-| UptimeRobot | Free | Server monitoring |
-| **Total** | **~$22-27/month** | |
+| **Total** | **~$22-27/month** | Paddle fees extra after $2,500 MTR |
 
+---
 
 ## Notes for Developers
 
@@ -518,3 +687,8 @@ taskkill /f /pid <PID>
 - **AI model**: `gpt-4o-mini` for chat, `text-embedding-3-small` for embeddings — both use same `OPENAI_API_KEY`
 - **Expo Push**: Uses direct HTTP to `https://exp.host/--/api/v2/push/send` (no SDK)
 - **Config persistence**: Admin panel config updates are saved to Firestore `config/appConfig` document and loaded on server startup
+- **Payments**: Web-only via Paddle — no App Store / Play Store in-app purchases (avoids 30% platform cut)
+- **Plan updates**: Real-time via Firestore `onSnapshot` in `App.tsx` — no polling needed
+- **Deep link**: `daisy://billing/success` handled in `App.tsx` → reloads plan + navigates to Profile
+- **Account creation**: App-only. No Sign Up on the billing/landing page — users must create account in the Daisy app first
+- **Apple Sign In**: Billing page has email-only fallback for users who used Sign in with Apple (Apple hides email after first auth)

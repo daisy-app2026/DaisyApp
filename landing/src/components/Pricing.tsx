@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Check, Sparkles, Zap, ShieldCheck } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
@@ -88,6 +89,7 @@ const DEFAULT_PLANS: Record<'free' | 'basic' | 'pro', PlanFromBackend> = {
 
 export default function Pricing() {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [plans, setPlans] = useState<Record<'free' | 'basic' | 'pro', PlanFromBackend>>(DEFAULT_PLANS);
 
@@ -113,11 +115,6 @@ export default function Pricing() {
     } catch {
       // Fallback to DEFAULT_PLANS if server isn't reachable
     }
-  };
-
-  const handleCtaClick = (e: React.MouseEvent, planName: string) => {
-    e.preventDefault();
-    alert(`In-app purchases coming soon! ${planName} plan will be available directly inside the app.`);
   };
 
   const containerVariants = {
@@ -226,13 +223,13 @@ export default function Pricing() {
               ))}
             </ul>
 
-            <a
-              href="#download"
-              onClick={(e) => handleCtaClick(e, freeData.name)}
+            <button
+              type="button"
+              onClick={() => navigate('/billing')}
               className={styles.ctaFree}
             >
-              Coming Soon
-            </a>
+              Get Started Free
+            </button>
           </motion.div>
 
           {/* 2. BASIC CARD (POPULAR) */}
@@ -269,13 +266,13 @@ export default function Pricing() {
               ))}
             </ul>
 
-            <a
-              href="#download"
-              onClick={(e) => handleCtaClick(e, basicData.name)}
+            <button
+              type="button"
+              onClick={() => navigate('/billing')}
               className={styles.ctaBasic}
             >
-              Coming Soon
-            </a>
+              Get Basic
+            </button>
           </motion.div>
 
           {/* 3. PRO CARD */}
@@ -311,20 +308,15 @@ export default function Pricing() {
               ))}
             </ul>
 
-            <a
-              href="#download"
-              onClick={(e) => handleCtaClick(e, proData.name)}
+            <button
+              type="button"
+              onClick={() => navigate('/billing')}
               className={styles.ctaPro}
             >
-              Coming Soon
-            </a>
+              Get Pro
+            </button>
           </motion.div>
         </div>
-
-        {/* Note below all cards */}
-        <motion.p className={styles.comingSoonNote} variants={cardVariants}>
-          🔔 In-app purchases coming soon! Available on iOS and Android.
-        </motion.p>
       </motion.div>
     </section>
   );

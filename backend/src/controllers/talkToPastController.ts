@@ -22,6 +22,9 @@ export const createSession = async (
       return;
     }
 
+    const userDoc = await db.collection('users').doc(userId).get();
+    const chatLimit = userDoc.data()?.chatLimit ?? 3;
+
     const sessionsSnapshot = await db
       .collection('talkToPastSessions')
       .where('userId', '==', userId)
@@ -31,9 +34,11 @@ export const createSession = async (
       (doc) => !doc.data().isDeleted && !doc.data().deleted
     ).length;
 
-    if (activeCount >= 2) {
+    if (chatLimit !== -1 && activeCount >= chatLimit) {
       res.status(403).json({
-        error: 'Chat limit reached'
+        error: 'Chat limit reached!',
+        code: 'LIMIT_REACHED',
+        upgradeUrl: 'https://daisyapp.com/billing'
       });
       return;
     }

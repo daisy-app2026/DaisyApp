@@ -97,6 +97,13 @@ app.get('/health', (req, res) => {
   })
 })
 
+import paddleRoutes from './routes/paddle';
+import { getPublicPricing } from './controllers/adminController';
+
+app.get('/api/app/pricing', getPublicPricing);
+
+app.use('/api/webhooks/paddle', paddleRoutes);
+app.use('/api/paddle', paddleRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/spaces', spacesRoutes);
 app.use('/api/entries', entriesRoutes);

@@ -5,6 +5,7 @@ import Dashboard from '../components/Dashboard';
 import Users from '../components/Users';
 import Notifications from '../components/Notifications';
 import Analytics from '../components/Analytics';
+import AdminPricing from '../components/Pricing';
 import Config from '../components/Config';
 import styles from './DashboardPage.module.css';
 
@@ -12,7 +13,7 @@ interface DashboardPageProps {
   onLogout: () => void;
 }
 
-export type TabType = 'stats' | 'users' | 'notifications' | 'analytics' | 'config';
+export type TabType = 'stats' | 'users' | 'notifications' | 'analytics' | 'pricing' | 'config';
 
 const DashboardPage: React.FC<DashboardPageProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState<TabType>('stats');
@@ -27,6 +28,8 @@ const DashboardPage: React.FC<DashboardPageProps> = ({ onLogout }) => {
         return <Notifications />;
       case 'analytics':
         return <Analytics />;
+      case 'pricing':
+        return <AdminPricing />;
       case 'config':
         return <Config />;
       default:
@@ -44,6 +47,8 @@ const DashboardPage: React.FC<DashboardPageProps> = ({ onLogout }) => {
         return 'Broadcast Notifications';
       case 'analytics':
         return 'Usage Analytics';
+      case 'pricing':
+        return 'Plan Pricing';
       case 'config':
         return 'App Settings';
       default:

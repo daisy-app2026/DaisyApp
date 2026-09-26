@@ -7,7 +7,7 @@ import {
 
 const ADMIN_SECRET = 
   process.env.ADMIN_SECRET || 
-  'daisy-admin-2026';
+  'adminmeri@daisyapp20261801';
 
 // Save token endpoint
 export const saveToken = async (

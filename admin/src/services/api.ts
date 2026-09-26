@@ -40,4 +40,25 @@ export const sendNotification = (title: string, body: string) =>
 export const updateConfig = (privacyPolicyUrl: string, termsOfServiceUrl: string) => 
   api.put('/api/admin/config', { privacyPolicyUrl, termsOfServiceUrl });
 
+export const getServiceHealth = () =>
+  api.get('/api/admin/service-health');
+
+export const getPricing = () =>
+  api.get('/api/admin/pricing');
+
+export const updatePricing = (data: Record<string, unknown>) =>
+  api.put('/api/admin/pricing', data);
+
+export const getPricingPlans = () =>
+  api.get('/api/admin/pricing');
+
+export const updatePricingPlan = (planId: string, planData: Record<string, unknown>) =>
+  api.put(`/api/admin/pricing/${planId}`, planData);
+
+export const getSubscriptionStats = () =>
+  api.get('/api/admin/subscription-stats');
+
+export const clearAdminCache = () =>
+  api.delete('/api/admin/cache');
+
 export default api;

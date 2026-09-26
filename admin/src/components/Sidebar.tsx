@@ -1,6 +1,6 @@
 import React from 'react';
 import { TabType } from '../pages/DashboardPage';
-import { LayoutDashboard, Users, Bell, BarChart2, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, Bell, BarChart2, CreditCard, Settings } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
 interface SidebarProps {
@@ -14,6 +14,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
     { id: 'users' as TabType, label: 'Users', icon: <Users size={20} /> },
     { id: 'notifications' as TabType, label: 'Notifications', icon: <Bell size={20} /> },
     { id: 'analytics' as TabType, label: 'Analytics', icon: <BarChart2 size={20} /> },
+    { id: 'pricing' as TabType, label: 'Pricing', icon: <CreditCard size={20} /> },
     { id: 'config' as TabType, label: 'Config', icon: <Settings size={20} /> },
   ];
 
