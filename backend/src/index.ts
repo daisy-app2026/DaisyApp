@@ -43,6 +43,7 @@ app.use(cors({
   ],
   credentials: false
 }));
+app.use('/api/webhooks/paddle', express.raw({ type: 'application/json' }));
 app.use(express.json());
 
 // Global rate limit

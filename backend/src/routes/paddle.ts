@@ -13,7 +13,7 @@ const webhookLimiter = rateLimit({
 })
 
 router.post(
-  '/webhook',
+  '/',
   webhookLimiter,
   handlePaddleWebhook
 )
