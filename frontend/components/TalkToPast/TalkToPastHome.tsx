@@ -28,7 +28,7 @@ const TalkToPastHome: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<TalkToPastStackParamList>>();
   const { t: en } = useLanguageStore();
   const { user } = useAuthStore();
-  const { chatLimit } = useSubscriptionStore();
+  const { chatLimit, chatCount } = useSubscriptionStore();
 
   const {
     sessions,
@@ -219,9 +219,9 @@ const TalkToPastHome: React.FC = () => {
           </View>
 
           <Text style={styles.bottomLabel}>
-            {sessions.length >= chatLimit 
+            {chatCount >= chatLimit 
               ? `Chat limit reached (${chatLimit}/${chatLimit}). Delete a chat to start a new one.` 
-              : `Chat count: ${sessions.length}/${chatLimit} • Each new person starts fresh`
+              : `Chat count: ${chatCount}/${chatLimit} • Each new person starts fresh`
             }
           </Text>
         </ScrollView>
@@ -230,10 +230,10 @@ const TalkToPastHome: React.FC = () => {
       <TouchableOpacity
         style={[
           styles.plusButton,
-          sessions.length >= chatLimit && styles.plusButtonDisabled
+          chatCount >= chatLimit && styles.plusButtonDisabled
         ]}
         onPress={handleStartNew}
-        disabled={sessions.length >= chatLimit}
+        disabled={chatCount >= chatLimit}
         activeOpacity={0.8}
       >
         <Ionicons name="add" size={28} color="white" />

@@ -145,7 +145,6 @@ export const useSubscription = () => {
       }
     } catch (error) {
       console.log('Error loading user plan:', error)
-      setSubscriptionData({ plan: 'free' })
     } finally {
       setLoading(false)
     }

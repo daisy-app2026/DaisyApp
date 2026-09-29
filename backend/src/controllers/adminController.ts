@@ -5,6 +5,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { db, auth } from '../config/firebase';
 import { APP_CONFIG } from '../config/appConfig';
 import { cascadeDeleteUserData } from '../services/accountDeletionService';
+import { DEFAULT_PLANS_CONFIG } from '../services/planService';
 
 const getAdminSecret = (): string => {
   const secret = process.env.ADMIN_SECRET;
@@ -314,8 +315,8 @@ export const defaultPlans = {
     yearlyPrice: 0,
     originalYearlyPrice: 0,
     discountPercent: 0,
-    chatLimit: 3,
-    messageLimit: 30,
+    chatLimit: DEFAULT_PLANS_CONFIG.free.chatLimit,
+    messageLimit: DEFAULT_PLANS_CONFIG.free.messageLimit,
     features: [
       'Unlimited diary journaling',
       '3 AI chats total',
@@ -332,8 +333,8 @@ export const defaultPlans = {
     yearlyPrice: 86.30,
     originalYearlyPrice: 107.88,
     discountPercent: 20,
-    chatLimit: 10,
-    messageLimit: 150,
+    chatLimit: DEFAULT_PLANS_CONFIG.basic.chatLimit,
+    messageLimit: DEFAULT_PLANS_CONFIG.basic.messageLimit,
     features: [
       'Unlimited diary journaling',
       '10 AI chats/month',
@@ -351,8 +352,8 @@ export const defaultPlans = {
     yearlyPrice: 143.90,
     originalYearlyPrice: 179.88,
     discountPercent: 20,
-    chatLimit: -1,
-    messageLimit: 500,
+    chatLimit: DEFAULT_PLANS_CONFIG.pro.chatLimit,
+    messageLimit: DEFAULT_PLANS_CONFIG.pro.messageLimit,
     features: [
       'Unlimited diary journaling',
       'Unlimited AI chats',
@@ -650,11 +651,7 @@ export const getSubscriptionStats = async (
   }
 };
 
-const defaultPlanLimits = {
-  free: { chatLimit: 3, messageLimit: 30 },
-  basic: { chatLimit: 10, messageLimit: 150 },
-  pro: { chatLimit: 15, messageLimit: 500 },
-};
+const defaultPlanLimits = DEFAULT_PLANS_CONFIG;
 
 // GET /api/admin/plans/limits
 export const getPlanLimits = async (

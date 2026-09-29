@@ -3,6 +3,7 @@ import { AuthRequest } from '../middleware/verifyToken'
 import { db } from '../config/firebase'
 import crypto from 'crypto'
 import axios from 'axios'
+import { getPlansConfig } from '../services/planService'
 
 const verifyPaddleWebhook = (req: Request): boolean => {
   const secret = process.env.PADDLE_WEBHOOK_SECRET
@@ -60,24 +61,6 @@ const getPlanFromPriceId = (priceId: string): 'basic' | 'pro' => {
   return basicIds.includes(priceId) ? 'basic' : 'pro'
 }
 
-const getPlanLimits = (plan: 'basic' | 'pro' | 'free') => {
-  const limits = {
-    free: { 
-      messageLimit: 30, 
-      chatLimit: 3 
-    },
-    basic: { 
-      messageLimit: 150, 
-      chatLimit: 10 
-    },
-    pro: { 
-      messageLimit: 500, 
-      chatLimit: 15 
-    },
-  }
-  return limits[plan]
-}
-
 export const handlePaddleWebhook = async (
   req: Request,
   res: Response
@@ -133,12 +116,16 @@ export const handlePaddleWebhook = async (
       case 'subscription.created':
       case 'subscription.activated': {
         const plan = getPlanFromPriceId(priceId)
-        const limits = getPlanLimits(plan)
+        const plansConfig = await getPlansConfig()
+        const limits = plansConfig[plan as 'free' | 'basic' | 'pro'] || plansConfig.free
+        const chatLimit = limits.chatLimit
+        const messageLimit = limits.messageLimit
         const messageResetAt = data.next_billed_at || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         
         await userRef.update({
           plan,
-          ...limits,
+          chatLimit,
+          messageLimit,
           messageResetAt,
           paddleSubscriptionId: data.id || null,
           planActivatedAt: new Date().toISOString(),
@@ -171,12 +158,16 @@ export const handlePaddleWebhook = async (
 
       case 'subscription.updated': {
         const plan = getPlanFromPriceId(priceId)
-        const limits = getPlanLimits(plan)
+        const plansConfig = await getPlansConfig()
+        const limits = plansConfig[plan as 'free' | 'basic' | 'pro'] || plansConfig.free
+        const chatLimit = limits.chatLimit
+        const messageLimit = limits.messageLimit
         const messageResetAt = data.next_billed_at || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         
         await userRef.update({
           plan,
-          ...limits,
+          chatLimit,
+          messageLimit,
           messageResetAt,
           planExpiresAt: data.next_billed_at || null,
         })
@@ -185,11 +176,16 @@ export const handlePaddleWebhook = async (
 
       case 'subscription.canceled':
       case 'subscription.cancelled': {
+        const plansConfig = await getPlansConfig()
+        const limits = plansConfig.free
+        const chatLimit = limits.chatLimit
+        const messageLimit = limits.messageLimit
         const messageResetAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
 
         await userRef.update({
           plan: 'free',
-          ...getPlanLimits('free'),
+          chatLimit,
+          messageLimit,
           messageResetAt,
           paddleSubscriptionId: null,
           planExpiresAt: null,
@@ -248,7 +244,8 @@ export const cancelSubscription = async (
     const userData = userDoc.data()
     const subscriptionId = userData?.paddleSubscriptionId
 
-    const freeLimits = getPlanLimits('free')
+    const plansConfig = await getPlansConfig()
+    const freeLimits = plansConfig.free
     const messageResetAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
 
     if (!subscriptionId) {

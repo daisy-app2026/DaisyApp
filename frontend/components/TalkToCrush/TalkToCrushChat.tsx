@@ -27,6 +27,7 @@ import {
   TalkToCrushSession,
 } from '../../services/talkToCrushService';
 import { useTalkToCrushStore } from '../../store/talkToCrushStore';
+import { useSubscriptionStore } from '../../store/subscriptionStore';
 import { styles } from './TalkToCrushChat.styles';
 import { getPersonIcon } from '../../utils/personIcon';
 import UpgradePrompt from '../UpgradePrompt/UpgradePrompt';
@@ -74,20 +75,10 @@ const TalkToCrushChat: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
-  const [dailyCount, setDailyCount] = useState(0);
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
 
-  useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
-    const count = messages.filter((msg) => {
-      if (!msg.isUser) return false;
-      const msgDate = new Date(msg.timestamp).toISOString().split('T')[0];
-      return msgDate === today;
-    }).length;
-    setDailyCount(count);
-  }, [messages]);
-
-  const remaining = Math.max(0, 5 - dailyCount);
+  const { monthlyMessageCount, messageLimit } = useSubscriptionStore();
+  const remaining = Math.max(0, messageLimit - monthlyMessageCount);
 
   const flatListRef = useRef<FlatList>(null);
 
@@ -208,12 +199,6 @@ const TalkToCrushChat: React.FC = () => {
       
       if (error?.response?.data?.code === 'LIMIT_REACHED' || error?.response?.status === 403) {
         setShowUpgradePrompt(true);
-        return;
-      }
-
-      const errorCode = error?.response?.data?.error;
-      if (errorCode === 'DAILY_LIMIT_REACHED') {
-        setDailyCount(5);
         return;
       }
       
