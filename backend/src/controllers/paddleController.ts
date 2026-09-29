@@ -33,7 +33,11 @@ const verifyPaddleWebhook = (req: Request): boolean => {
       return false
     }
 
-    const payload = `${ts}:${JSON.stringify(req.body)}`
+    const rawBody = Buffer.isBuffer(req.body)
+      ? req.body.toString('utf8')
+      : (typeof req.body === 'string' ? req.body : JSON.stringify(req.body))
+
+    const payload = `${ts}:${rawBody}`
     const hash = crypto
       .createHmac('sha256', secret)
       .update(payload)
@@ -83,7 +87,11 @@ export const handlePaddleWebhook = async (
       return
     }
 
-    const event = req.body
+    const rawBodyString = Buffer.isBuffer(req.body)
+      ? req.body.toString('utf8')
+      : (typeof req.body === 'string' ? req.body : null)
+
+    const event = rawBodyString ? JSON.parse(rawBodyString) : req.body
     const eventType = event.event_type || event.alert_name
     const data = event.data || event
 
