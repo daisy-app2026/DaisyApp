@@ -5,9 +5,13 @@ import {
   savePushToken 
 } from '../services/notificationService';
 
-const ADMIN_SECRET = 
-  process.env.ADMIN_SECRET || 
-  'adminmeri@daisyapp20261801';
+const getAdminSecret = (): string => {
+  const secret = process.env.ADMIN_SECRET;
+  if (!secret) {
+    throw new Error('ADMIN_SECRET environment variable is not set');
+  }
+  return secret;
+};
 
 // Save token endpoint
 export const saveToken = async (
@@ -43,9 +47,10 @@ export const sendAll = async (
 ): Promise<void> => {
   try {
     // Admin check!
+    const adminSecret = getAdminSecret();
     const adminToken = req.headers['x-admin-secret'];
     
-    if (adminToken !== ADMIN_SECRET) {
+    if (adminToken !== adminSecret) {
       res.status(403).json({
         error: 'Unauthorized'
       });

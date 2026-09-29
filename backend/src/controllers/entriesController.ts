@@ -10,19 +10,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 })
 
-// Helper to extract public ID
-const getCloudinaryPublicId = (url: string): string => {
-  try {
-    const parts = url.split('/')
-    const uploadIndex = parts.indexOf('upload')
-    const pathAfterUpload = parts.slice(uploadIndex + 2)
-    const filename = pathAfterUpload.join('/')
-    return filename.split('.')[0]
-  } catch {
-    return ''
-  }
-}
-
 // Delete Cloudinary files
 export const deleteEntryMedia = async (
   content: unknown

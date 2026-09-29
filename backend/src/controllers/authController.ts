@@ -5,11 +5,13 @@ import { APP_CONFIG } from '../config/appConfig';
 import { cascadeDeleteUserData } from '../services/accountDeletionService';
 
 export const registerUser = async (
-  req: Request,
+  req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { uid, email, name, photoURL } = req.body;
+    const uid = req.userId;
+    const email = req.userEmail || req.body.email;
+    const { name, photoURL } = req.body;
 
     if (!uid || !email) {
       res.status(400).json({ 
@@ -55,13 +57,27 @@ export const registerUser = async (
 };
 
 export const getUser = async (
-  req: Request,
+  req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { uid } = req.params;
+    const userId = req.userId;
 
-    const userRef = db.collection('users').doc(uid as string);
+    if (!userId) {
+      res.status(401).json({ 
+        error: 'Unauthorized' 
+      });
+      return;
+    }
+
+    if (req.params.uid && req.params.uid !== userId) {
+      res.status(403).json({ 
+        error: 'Forbidden' 
+      });
+      return;
+    }
+
+    const userRef = db.collection('users').doc(userId);
     const userDoc = await userRef.get();
 
     if (!userDoc.exists) {

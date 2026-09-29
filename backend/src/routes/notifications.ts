@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { verifyToken } from '../middleware/verifyToken';
+import { adminAuth } from '../controllers/adminController';
 import {
   saveToken,
   sendAll
@@ -11,6 +12,6 @@ const router = Router();
 router.post('/save-token', verifyToken, saveToken);
 
 // Send to all (admin only!)
-router.post('/send-all', sendAll);
+router.post('/send-all', adminAuth, sendAll);
 
 export default router;

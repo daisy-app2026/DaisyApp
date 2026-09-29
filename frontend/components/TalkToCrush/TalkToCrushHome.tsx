@@ -19,6 +19,7 @@ import { useLanguageStore } from '../../store/languageStore';
 import { useAuthStore } from '../../store/authStore';
 import { getTalkToCrushSessions, deleteTalkToCrushSession, TalkToCrushSession } from '../../services/talkToCrushService';
 import { useTalkToCrushStore } from '../../store/talkToCrushStore';
+import { useSubscriptionStore } from '../../store/subscriptionStore';
 import { styles } from './TalkToCrushHome.styles';
 import { getPersonIcon } from '../../utils/personIcon';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -27,6 +28,7 @@ const TalkToCrushHome: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<TalkToCrushStackParamList>>();
   const { t: en } = useLanguageStore();
   const { user } = useAuthStore();
+  const { chatLimit } = useSubscriptionStore();
 
   const {
     sessions,
@@ -215,9 +217,9 @@ const TalkToCrushHome: React.FC = () => {
           </View>
 
           <Text style={styles.bottomLabel}>
-            {sessions.length >= 2 
-              ? "Chat limit reached (2/2). Delete a chat to start a new one." 
-              : `Chat count: ${sessions.length}/2 • ${en.talkToCrush.eachFresh}`
+            {sessions.length >= chatLimit 
+              ? `Chat limit reached (${chatLimit}/${chatLimit}). Delete a chat to start a new one.` 
+              : `Chat count: ${sessions.length}/${chatLimit} • ${en.talkToCrush.eachFresh}`
             }
           </Text>
         </ScrollView>
@@ -226,10 +228,10 @@ const TalkToCrushHome: React.FC = () => {
       <TouchableOpacity
         style={[
           styles.plusButton,
-          sessions.length >= 2 && styles.plusButtonDisabled
+          sessions.length >= chatLimit && styles.plusButtonDisabled
         ]}
         onPress={handleStartNew}
-        disabled={sessions.length >= 2}
+        disabled={sessions.length >= chatLimit}
         activeOpacity={0.8}
       >
         <Ionicons name="add" size={28} color="white" />

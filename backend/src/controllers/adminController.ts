@@ -6,9 +6,31 @@ import { db, auth } from '../config/firebase';
 import { APP_CONFIG } from '../config/appConfig';
 import { cascadeDeleteUserData } from '../services/accountDeletionService';
 
-const ADMIN_SECRET = 
-  process.env.ADMIN_SECRET || 
-  'adminmeri@daisyapp20261801';
+const getAdminSecret = (): string => {
+  const secret = process.env.ADMIN_SECRET;
+  if (!secret) {
+    throw new Error('ADMIN_SECRET environment variable is not set');
+  }
+  return secret;
+};
+
+export const adminLogin = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { password } = req.body;
+    const adminSecret = getAdminSecret();
+
+    if (password === adminSecret) {
+      res.json({ success: true, token: adminSecret });
+    } else {
+      res.status(401).json({ error: 'Invalid password' });
+    }
+  } catch (error: any) {
+    res.status(500).json({ error: error?.message || 'Server configuration error' });
+  }
+};
 
 // Admin auth middleware
 export const adminAuth = (
@@ -16,14 +38,19 @@ export const adminAuth = (
   res: Response,
   next: NextFunction
 ): void => {
-  const secret = req.headers['x-admin-secret'];
-  if (secret !== ADMIN_SECRET) {
-    res.status(403).json({
-      error: 'Unauthorized'
-    });
-    return;
+  try {
+    const secret = getAdminSecret();
+    const clientSecret = req.headers['x-admin-secret'];
+    if (clientSecret !== secret) {
+      res.status(403).json({
+        error: 'Unauthorized'
+      });
+      return;
+    }
+    next();
+  } catch (error: any) {
+    res.status(500).json({ error: error?.message || 'Server configuration error' });
   }
-  next();
 };
 
 // In-Memory Cache implementation (5 min TTL)

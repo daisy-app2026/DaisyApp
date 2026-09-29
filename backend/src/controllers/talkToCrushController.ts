@@ -25,8 +25,6 @@ export const createSession = async (
   res: Response
 ): Promise<void> => {
   console.log('=== CREATE CRUSH SESSION ===')
-  console.log('Headers:', req.headers)
-  console.log('Body:', req.body)
   console.log('UserId:', req.userId)
   
   try {

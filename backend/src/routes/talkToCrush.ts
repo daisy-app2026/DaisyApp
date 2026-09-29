@@ -16,10 +16,4 @@ router.get('/sessions/:sessionId', verifyToken, getSession);
 router.post('/sessions/:sessionId/message', verifyToken, sendMessage);
 router.delete('/sessions/:sessionId', verifyToken, deleteSession);
 
-router.get('/test', (req, res) => {
-  res.json({ 
-    message: 'Talk to Crush routes working!'
-  });
-});
-
 export default router;

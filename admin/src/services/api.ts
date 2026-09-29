@@ -6,11 +6,11 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
-// Request interceptor to attach x-admin-secret dynamically from sessionStorage
+// Request interceptor to attach x-admin-secret dynamically from localStorage
 api.interceptors.request.use(
   (config) => {
-    const secret = sessionStorage.getItem('adminSecret') || '';
-    config.headers['x-admin-secret'] = secret;
+    const token = localStorage.getItem('adminToken') || sessionStorage.getItem('adminSecret') || '';
+    config.headers['x-admin-secret'] = token;
     config.headers['Content-Type'] = 'application/json';
     return config;
   },

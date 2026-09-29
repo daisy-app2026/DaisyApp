@@ -19,6 +19,7 @@ import { useLanguageStore } from '../../store/languageStore';
 import { useAuthStore } from '../../store/authStore';
 import { getTalkToPastSessions, deleteTalkToPastSession, TalkToPastSession } from '../../services/talkToPastService';
 import { useTalkToPastStore } from '../../store/talkToPastStore';
+import { useSubscriptionStore } from '../../store/subscriptionStore';
 import { styles } from './TalkToPastHome.styles';
 import { LinearGradient } from 'expo-linear-gradient';
 import { getPersonIcon } from '../../utils/personIcon';
@@ -27,6 +28,7 @@ const TalkToPastHome: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<TalkToPastStackParamList>>();
   const { t: en } = useLanguageStore();
   const { user } = useAuthStore();
+  const { chatLimit } = useSubscriptionStore();
 
   const {
     sessions,
@@ -217,9 +219,9 @@ const TalkToPastHome: React.FC = () => {
           </View>
 
           <Text style={styles.bottomLabel}>
-            {sessions.length >= 2 
-              ? "Chat limit reached (2/2). Delete a chat to start a new one." 
-              : `Chat count: ${sessions.length}/2 • Each new person starts fresh`
+            {sessions.length >= chatLimit 
+              ? `Chat limit reached (${chatLimit}/${chatLimit}). Delete a chat to start a new one.` 
+              : `Chat count: ${sessions.length}/${chatLimit} • Each new person starts fresh`
             }
           </Text>
         </ScrollView>
@@ -228,10 +230,10 @@ const TalkToPastHome: React.FC = () => {
       <TouchableOpacity
         style={[
           styles.plusButton,
-          sessions.length >= 2 && styles.plusButtonDisabled
+          sessions.length >= chatLimit && styles.plusButtonDisabled
         ]}
         onPress={handleStartNew}
-        disabled={sessions.length >= 2}
+        disabled={sessions.length >= chatLimit}
         activeOpacity={0.8}
       >
         <Ionicons name="add" size={28} color="white" />

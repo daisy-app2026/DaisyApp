@@ -30,7 +30,15 @@ app.use((req, res, next) => {
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: '*',
+  origin: [
+    'https://www.meriemtafsi.com',
+    'https://meriemtafsi.com',
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://daisyadmin.vercel.app',
+    'http://localhost:19006'
+  ],
   methods: [
     'GET', 'POST',
     'PUT', 'DELETE',

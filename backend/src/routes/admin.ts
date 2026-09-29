@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   adminAuth,
+  adminLogin,
   getStats,
   getUsers,
   deleteUser,
@@ -20,6 +21,9 @@ import {
 } from '../controllers/notificationController';
 
 const router = Router();
+
+// Public login route
+router.post('/login', adminLogin);
 
 // All routes protected!
 router.use(adminAuth);

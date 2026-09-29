@@ -1,13 +1,14 @@
 import { Request, Response } from 'express'
+import { AuthRequest } from '../middleware/verifyToken'
 import { db } from '../config/firebase'
 import crypto from 'crypto'
 import axios from 'axios'
 
 const verifyPaddleWebhook = (req: Request): boolean => {
-  const secret = process.env.PADDLE_WEBHOOK_SECRET || ''
+  const secret = process.env.PADDLE_WEBHOOK_SECRET
   if (!secret) {
-    console.warn('PADDLE_WEBHOOK_SECRET is not set. Skipping signature verification in development.')
-    return true
+    console.error('PADDLE_WEBHOOK_SECRET is not set. Rejecting webhook signature verification.')
+    return false
   }
 
   const signature = req.headers['paddle-signature'] as string
@@ -228,13 +229,13 @@ export const handlePaddleWebhook = async (
 }
 
 export const cancelSubscription = async (
-  req: Request,
+  req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { userId } = req.body
+    const userId = req.userId
     if (!userId) {
-      res.status(400).json({ error: 'User ID is required' })
+      res.status(401).json({ error: 'Unauthorized' })
       return
     }
 

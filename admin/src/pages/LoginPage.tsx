@@ -10,15 +10,31 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   const [secret, setSecret] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     
-    const envSecret = import.meta.env.VITE_ADMIN_SECRET || 'daisy-admin-2026';
-    
-    if (secret.trim() === envSecret) {
-      onLogin(secret.trim());
-    } else {
-      setError('Access denied! Invalid Admin Secret.');
+    try {
+      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const response = await fetch(`${baseUrl}/api/admin/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password: secret.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success && data.token) {
+        localStorage.setItem('adminToken', data.token);
+        onLogin(data.token);
+      } else {
+        setError(data.error || 'Invalid password');
+        setTimeout(() => setError(null), 4000);
+      }
+    } catch (err) {
+      setError('Connection error. Please try again.');
       setTimeout(() => setError(null), 4000);
     }
   };

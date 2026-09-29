@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import rateLimit from 'express-rate-limit'
 import { handlePaddleWebhook, cancelSubscription } from '../controllers/paddleController'
+import { verifyToken } from '../middleware/verifyToken'
 
 const router = Router()
 
@@ -18,6 +19,6 @@ router.post(
   handlePaddleWebhook
 )
 
-router.post('/cancel', cancelSubscription)
+router.post('/cancel', verifyToken, cancelSubscription)
 
 export default router

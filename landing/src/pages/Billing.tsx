@@ -8,6 +8,7 @@ import {
 } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import { auth, googleProvider } from '../config/firebase';
+import { DEFAULT_PLANS, type PlanFromBackend } from '../constants';
 import { Check, Sparkles, Smartphone, CheckCircle2, XCircle } from 'lucide-react';
 import styles from './Billing.module.css';
 
@@ -38,19 +39,6 @@ interface UserPlanInfo {
 
 type PaymentStatus = 'idle' | 'loading' | 'success' | 'failed';
 
-interface PlanFromBackend {
-  name: string;
-  monthlyPrice: number;
-  yearlyPrice: number;
-  originalYearlyPrice?: number;
-  discountPercent?: number;
-  chatLimit: number | string;
-  messageLimit: number | string;
-  features: string[];
-  isPopular: boolean;
-  isActive: boolean;
-}
-
 interface PricingBackendResponse {
   plans?: {
     free?: PlanFromBackend;
@@ -62,65 +50,7 @@ interface PricingBackendResponse {
   pro?: PlanFromBackend;
 }
 
-const DEFAULT_PLANS: Record<'free' | 'basic' | 'pro', PlanFromBackend> = {
-  free: {
-    name: 'Free',
-    monthlyPrice: 0,
-    yearlyPrice: 0,
-    originalYearlyPrice: 0,
-    discountPercent: 0,
-    chatLimit: 3,
-    messageLimit: 30,
-    features: [
-      'Unlimited diary journaling',
-      '3 AI chats total',
-      '30 messages total',
-      'Memory capsule',
-      '5 spaces',
-    ],
-    isPopular: false,
-    isActive: true,
-  },
-  basic: {
-    name: 'Basic',
-    monthlyPrice: 8.99,
-    yearlyPrice: 86.30,
-    originalYearlyPrice: 107.88,
-    discountPercent: 20,
-    chatLimit: 10,
-    messageLimit: 150,
-    features: [
-      'Unlimited diary journaling',
-      '10 AI chats/month',
-      '150 messages/month',
-      'Audio entries',
-      'Image entries',
-      'Doodle entries',
-    ],
-    isPopular: true,
-    isActive: true,
-  },
-  pro: {
-    name: 'Pro',
-    monthlyPrice: 14.99,
-    yearlyPrice: 143.90,
-    originalYearlyPrice: 179.88,
-    discountPercent: 20,
-    chatLimit: -1,
-    messageLimit: 500,
-    features: [
-      'Unlimited diary journaling',
-      'Unlimited AI chats',
-      '500 messages/month',
-      'Priority support',
-      'Early access to features',
-    ],
-    isPopular: false,
-    isActive: true,
-  },
-};
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 export default function BillingPage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -150,7 +80,11 @@ export default function BillingPage() {
 
   const fetchPublicPricing = async () => {
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const baseUrl = import.meta.env.VITE_API_URL;
+      if (!baseUrl) {
+        console.error('VITE_API_URL environment variable is missing.');
+        return;
+      }
       const res = await fetch(`${baseUrl}/api/app/pricing`);
       if (res.ok) {
         const data: PricingBackendResponse = await res.json();
@@ -197,7 +131,11 @@ export default function BillingPage() {
   }, []);
 
   useEffect(() => {
-    const token = import.meta.env.VITE_PADDLE_CLIENT_TOKEN || 'test_01m3ea9mz8c4c5sfvzb17bx751';
+    const token = import.meta.env.VITE_PADDLE_CLIENT_TOKEN;
+    if (!token) {
+      console.error('VITE_PADDLE_CLIENT_TOKEN environment variable is missing.');
+      return;
+    }
     if (window.Paddle) {
       try {
         window.Paddle.Initialize({ token });
