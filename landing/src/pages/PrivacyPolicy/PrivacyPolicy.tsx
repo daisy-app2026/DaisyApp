@@ -10,7 +10,7 @@ export default function PrivacyPolicy() {
       transition={{ duration: 0.5 }}
     >
       <h1 className={styles.policyTitle}>Privacy Policy</h1>
-      <span className={styles.policyDate}>Last Updated: July 2026</span>
+      <span className={styles.policyDate}>Last Updated: September 2026</span>
 
       <div className={styles.policySection}>
         <h2 className={styles.policySectionTitle}>1. Who We Are</h2>
@@ -61,6 +61,7 @@ export default function PrivacyPolicy() {
           <li><strong>OpenAI:</strong> Processes your entries and conversation messages to generate AI responses and titles.</li>
           <li><strong>Pinecone:</strong> Stores vector representations ("embeddings") of your journal entries and AI conversation history, so that "Breakup Closure" and "My Crush" can refer back to relevant context in later conversations.</li>
           <li><strong>Render:</strong> Hosts our backend server, which securely connects the app to the services above.</li>
+          <li><strong>Paddle:</strong> Processes subscription payments on our behalf as Merchant of Record. When you purchase a subscription, your payment details are handled directly by Paddle and are subject to <a href="https://www.paddle.com/legal/privacy" target="_blank" rel="noopener noreferrer">Paddle's Privacy Policy</a>. We do not store your card or payment details on our servers.</li>
         </ul>
         <p className={styles.policyText}>
           These providers process data on our behalf under their own security and confidentiality

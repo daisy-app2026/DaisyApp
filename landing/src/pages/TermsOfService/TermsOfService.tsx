@@ -10,7 +10,7 @@ export default function TermsOfService() {
       transition={{ duration: 0.5 }}
     >
       <h1 className={styles.policyTitle}>Terms of Service</h1>
-      <span className={styles.policyDate}>Last Updated: July 2026</span>
+      <span className={styles.policyDate}>Last Updated: September 2026</span>
 
       <div className={styles.policySection}>
         <h2 className={styles.policySectionTitle}>1. Acceptance of Terms</h2>
@@ -74,9 +74,16 @@ export default function TermsOfService() {
       <div className={styles.policySection}>
         <h2 className={styles.policySectionTitle}>7. Cost of the Service</h2>
         <p className={styles.policyText}>
-          Daisy is currently free to use, with no paid subscriptions or in-app purchases. If this changes in
-          the future, we will update these Terms and clearly notify users before introducing any paid
-          features.
+          Daisy offers a free plan with limited features, and optional paid subscription plans (Basic and Pro) available through in-app or web purchase. Payments are processed by Paddle, our Merchant of Record. By purchasing a subscription, you also agree to <a href="https://www.paddle.com/legal/terms" target="_blank" rel="noopener noreferrer">Paddle's Terms of Service</a>.
+        </p>
+        <p className={styles.policyText}>
+          <strong>Billing:</strong> Subscriptions are billed monthly. Your subscription renews automatically at the end of each billing period unless cancelled.
+        </p>
+        <p className={styles.policyText}>
+          <strong>Cancellation:</strong> You may cancel your subscription at any time. Cancellation takes effect at the end of the current billing period — you will retain access to paid features until then.
+        </p>
+        <p className={styles.policyText}>
+          <strong>Refunds:</strong> All sales are final. We do not offer refunds for subscription payments. If you believe there has been an error in billing, contact us at <a href="mailto:mery.the.psychologist@gmail.com">mery.the.psychologist@gmail.com</a> and we will review it on a case-by-case basis.
         </p>
       </div>
 
