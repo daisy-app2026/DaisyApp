@@ -30,6 +30,9 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onAudiosChange, existingA
       setRecordings(existingAudios);
     }
   }, []);
+  const maxRecordingMs = 5 * 60 * 1000;
+  const recordingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [timer, setTimer] = useState(0);
@@ -95,6 +98,12 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onAudiosChange, existingA
       );
       setRecording(recording);
       setIsRecording(true);
+
+      recordingTimerRef.current = setTimeout(async () => {
+        if (recording) {
+          await stopRecording();
+        }
+      }, maxRecordingMs);
     } catch (err) {
       console.error('Failed to start recording', err);
       Alert.alert('Error', 'Could not start recording. Please check microphone permissions.');
@@ -102,6 +111,10 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onAudiosChange, existingA
   };
 
   const stopRecording = async () => {
+    if (recordingTimerRef.current) {
+      clearTimeout(recordingTimerRef.current);
+      recordingTimerRef.current = null;
+    }
     if (!recording) return;
     setIsRecording(false);
     try {

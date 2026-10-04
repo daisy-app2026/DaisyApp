@@ -133,6 +133,7 @@ export const logOut = async () => {
 }
 
 import { getFreshToken } from '../utils/getToken'
+export { getFreshToken }
 
 export const updateUserName = async (
   name: string
@@ -154,53 +155,41 @@ export const uploadProfilePhoto = async (
 ): Promise<string> => {
   try {
     const token = await getFreshToken()
+
+    const sigRes = await axios.get(`${API_URL}/api/upload/signature`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    const { signature, timestamp, cloudName, apiKey, folder } = sigRes.data
+
     const formData = new FormData()
     formData.append('file', {
       uri: imageUri,
       type: 'image/jpeg',
       name: 'profile.jpg',
     } as any)
-    
-    const uploadPreset = 'daisy_profiles'
-    formData.append('upload_preset', uploadPreset)
-    // formData.append('folder', `daisy-app/users/${token}/profile`)
-
-    const cloudName = process.env.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME
-    const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`
-
-    console.log('Cloud name:', cloudName)
-    console.log('Preset:', uploadPreset)
-    console.log('Image URI:', imageUri)
-    console.log('Upload URL:', uploadUrl)
+    formData.append('signature', signature)
+    formData.append('timestamp', String(timestamp))
+    formData.append('api_key', apiKey)
+    formData.append('folder', folder)
 
     const response = await axios.post(
-      uploadUrl,
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
       formData,
-      {
-        headers: { 
-          'Content-Type': 'multipart/form-data' 
-        }
-      }
+      { headers: { 'Content-Type': 'multipart/form-data' } }
     )
-
-    console.log('Response:', response.data)
 
     const photoURL = response.data.secure_url
 
     await axios.put(
       `${API_URL}/api/auth/update-photo`,
       { photoURL },
-      {
-        headers: { 
-          Authorization: `Bearer ${token}` 
-        }
-      }
+      { headers: { Authorization: `Bearer ${token}` } }
     )
 
     return photoURL
   } catch (error: any) {
-    console.log('Upload error details:', error.response?.data || error.message)
-    throw error
+    console.error('Error uploading profile photo:', error.response?.data || error)
+    throw new Error('Failed to upload profile photo')
   }
 }
 

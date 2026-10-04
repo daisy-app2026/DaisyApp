@@ -132,6 +132,11 @@ const ProfileScreen: React.FC = () => {
     });
 
     if (!result.canceled) {
+      const asset = result.assets[0];
+      if (asset.fileSize && asset.fileSize > 10 * 1024 * 1024) {
+        showAlert('File Too Large', 'Please select a profile photo under 10MB.');
+        return;
+      }
       try {
         setPhotoLoading(true);
         const { uploadProfilePhoto } = await import('../../services/authService');

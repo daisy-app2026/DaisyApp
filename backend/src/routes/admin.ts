@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import {
   adminAuth,
   adminLogin,
@@ -22,10 +23,16 @@ import {
 
 const router = Router();
 
-// Public login route
-router.post('/login', adminLogin);
+const adminLoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  skipSuccessfulRequests: true,
+  message: { error: 'Too many login attempts. Try again in 15 minutes.' },
+  validate: { xForwardedForHeader: false }
+});
 
-// All routes protected!
+router.post('/login', adminLoginLimiter, adminLogin);
+
 router.use(adminAuth);
 
 router.get('/stats', getStats);

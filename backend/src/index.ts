@@ -107,6 +107,7 @@ app.get('/health', (req, res) => {
 })
 
 import paddleRoutes from './routes/paddle';
+import uploadRoutes from './routes/upload';
 import { getPublicPricing } from './controllers/adminController';
 
 app.get('/api/app/pricing', getPublicPricing);
@@ -120,6 +121,7 @@ app.use('/api/talk-to-past', talkToPastRoutes);
 app.use('/api/talk-to-crush', talkToCrushRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/upload', uploadRoutes);
 
 app.listen(PORT, () => {
   console.log(

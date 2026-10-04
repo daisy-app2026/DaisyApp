@@ -302,9 +302,13 @@ export default function BillingPage() {
     try {
       setCancelLoading(true);
       setAuthError(null);
+      const token = await currentUser.getIdToken();
       const res = await fetch(`${API_URL}/api/paddle/cancel`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify({ userId: currentUser.uid }),
       });
       const data = await res.json();

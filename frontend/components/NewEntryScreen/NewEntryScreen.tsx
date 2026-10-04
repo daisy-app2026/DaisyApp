@@ -25,6 +25,9 @@ import ImageUploader from './ImageUploader';
 import DoodleCanvas, { DoodleCanvasRef } from './DoodleCanvas';
 import axios from 'axios';
 import CustomModal from '../shared/CustomModal/CustomModal';
+import { getFreshToken } from '../../services/authService';
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -271,45 +274,49 @@ const NewEntryScreen: React.FC = () => {
   };
 
   const uploadAudioToCloudinary = async (uri: string): Promise<string> => {
-    const cloudName = process.env.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME;
-    const uploadPreset = process.env.EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+    const token = await getFreshToken()
+    const sigRes = await axios.get(`${API_URL}/api/upload/signature`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    const { signature, timestamp, cloudName, apiKey, folder } = sigRes.data
 
-    const formData = new FormData();
-    formData.append('file', {
-      uri,
-      type: 'audio/m4a',
-      name: 'audio.m4a',
-    } as any);
-    formData.append('upload_preset', uploadPreset!);
-    formData.append('resource_type', 'video');
+    const formData = new FormData()
+    formData.append('file', { uri, type: 'audio/m4a', name: 'audio.m4a' } as any)
+    formData.append('signature', signature)
+    formData.append('timestamp', String(timestamp))
+    formData.append('api_key', apiKey)
+    formData.append('folder', folder)
+    formData.append('resource_type', 'video')
 
     const response = await axios.post(
       `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
-    );
-    return response.data.secure_url;
-  };
+    )
+    return response.data.secure_url
+  }
 
   const uploadImageToCloudinary = async (uri: string): Promise<string> => {
-    const cloudName = process.env.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME;
-    const uploadPreset = process.env.EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+    const token = await getFreshToken()
+    const sigRes = await axios.get(`${API_URL}/api/upload/signature`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    const { signature, timestamp, cloudName, apiKey, folder } = sigRes.data
 
-    const formData = new FormData();
-    formData.append('file', {
-      uri,
-      type: 'image/jpeg',
-      name: 'image.jpg',
-    } as any);
-    formData.append('upload_preset', uploadPreset!);
+    const formData = new FormData()
+    formData.append('file', { uri, type: 'image/jpeg', name: 'image.jpg' } as any)
+    formData.append('signature', signature)
+    formData.append('timestamp', String(timestamp))
+    formData.append('api_key', apiKey)
+    formData.append('folder', folder)
 
     const response = await axios.post(
       `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
-    );
-    return response.data.secure_url;
-  };
+    )
+    return response.data.secure_url
+  }
 
   const handleSave = async () => {
     if (!title.trim()) {

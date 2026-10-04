@@ -89,8 +89,17 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     });
 
     if (!result.canceled) {
-      const newUris = result.assets.map((a) => a.uri);
-      setImages((prev) => [...prev, ...newUris].slice(0, 5));
+      const validAssets: string[] = [];
+      for (const asset of result.assets) {
+        if (asset.fileSize && asset.fileSize > 50 * 1024 * 1024) {
+          showAlert('File Too Large', 'Please select an image under 50MB.');
+          continue;
+        }
+        validAssets.push(asset.uri);
+      }
+      if (validAssets.length > 0) {
+        setImages((prev) => [...prev, ...validAssets].slice(0, 5));
+      }
     }
   };
 
