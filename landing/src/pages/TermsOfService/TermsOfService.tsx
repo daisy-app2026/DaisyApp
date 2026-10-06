@@ -125,7 +125,7 @@ export default function TermsOfService() {
         <p className={styles.policyText}>
           For questions about these Terms, contact us at:
           <br />
-          <strong>Email:</strong> mery.the.psychologist@gmail.com
+          {/* <strong>Email:</strong> mery.the.psychologist@gmail.com */}
           <br />
           <strong>Location:</strong> Germany
         </p>
